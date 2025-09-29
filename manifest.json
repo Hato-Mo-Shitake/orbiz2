@@ -1,0 +1,11 @@
+{
+	"id": "obsidian-orbiz2",
+	"name": "orbiz2",
+	"version": "1.0.0",
+	"minAppVersion": "0.15.0",
+	"description": "Obsidian Plugin.",
+	"author": "Hato-Mo-Shitake",
+	"authorUrl": "",
+	"fundingUrl": "",
+	"isDesktopOnly": false
+}

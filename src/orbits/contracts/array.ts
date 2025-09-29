@@ -1,0 +1,1 @@
+export type ArrayElementType<T extends readonly unknown[]> = T extends (infer U)[] ? U : any;

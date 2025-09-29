@@ -1,0 +1,1 @@
+export type ValueWithLabel<TValue> = { value: TValue, label: string };

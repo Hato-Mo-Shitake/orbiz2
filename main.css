@@ -1,0 +1,12 @@
+/* src/looks/components/common/EditableItemList.module.css */
+li {
+  display: flex;
+}
+.label {
+  width: 100px;
+  flex-shrink: 0;
+}
+.container {
+  color: red;
+}
+/*# sourceMappingURL=data:application/json;base64,ewogICJ2ZXJzaW9uIjogMywKICAic291cmNlcyI6IFsic3JjL2xvb2tzL2NvbXBvbmVudHMvY29tbW9uL0VkaXRhYmxlSXRlbUxpc3QubW9kdWxlLmNzcyJdLAogICJzb3VyY2VzQ29udGVudCI6IFsibGkge1xuICAgIGRpc3BsYXk6IGZsZXg7XG59XG5cbi5sYWJlbCB7XG4gICAgd2lkdGg6IDEwMHB4O1xuICAgIGZsZXgtc2hyaW5rOiAwO1xufVxuXG4uY29udGFpbmVyIHtcbiAgICBjb2xvcjogcmVkO1xufSJdLAogICJtYXBwaW5ncyI6ICI7QUFBQTtBQUNJO0FBQUE7QUFHSjtBQUNJO0FBQ0E7QUFBQTtBQUdKO0FBQ0k7QUFBQTsiLAogICJuYW1lcyI6IFtdCn0K */
