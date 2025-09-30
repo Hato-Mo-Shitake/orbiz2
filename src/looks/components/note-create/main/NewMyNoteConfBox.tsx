@@ -1,14 +1,12 @@
 import { ReactNode, useState } from "react";
-import { isMyNote, MyNote } from "src/core/domain/MyNote";
 import { StdNote } from "src/core/domain/StdNote";
-import { isNewMyNoteConf, isRoleNodeConf, NewMyNoteConf, NewStdNoteConf, RoleNodeConf } from "src/orbits/contracts/create-note";
+import { isNewMyNoteConf, NewMyNoteConf, NewStdNoteConf } from "src/orbits/contracts/create-note";
 import { isMyNoteAspect, myNoteAspectList } from "src/orbits/schema/frontmatters/Aspect";
 import { isMyNoteType, myNoteTypeList } from "src/orbits/schema/frontmatters/NoteType";
 import { OSM } from "src/orbiz/managers/OrbizSettingManager";
 import { SelectableItemList } from "../../common/SelectableItemList";
 import { SelectBox } from "../../common/SelectBox";
 import { NewStdNoteConfBox } from "../sub/NewStdNoteConfBox";
-import { RoleNodeConfBox } from "../sub/RoleNodeConfBox";
 
 export function NewMyNoteConfBox({
     resolve,
@@ -24,12 +22,13 @@ export function NewMyNoteConfBox({
         const newConf: Partial<NewMyNoteConf> = {};
 
         // TODO: 追々整理してください。
-        const baseName = roleNodeConf.kind || newStdNoteConf.baseName;
-        if (!baseName) {
-            alert("input baseName");
-            return;
-        }
-        newConf.baseName = baseName;
+        // const baseName = roleNodeConf.kind || newStdNoteConf.baseName;
+        // if (!baseName) {
+        //     alert("input baseName");
+        //     return;
+        // }
+
+        newConf.baseName = newStdNoteConf.baseName;
 
         const subType = newStdNoteConf.subType;
         if (!isMyNoteType(subType)) {
@@ -40,13 +39,14 @@ export function NewMyNoteConfBox({
 
         newConf.linkedConf = newStdNoteConf.linkedConf;
 
-        if (_hasRole && isRoleNodeConf(roleNodeConf)) {
-            if (roleNodeConf.hub.baseName.includes("@")) {
-                alert("RoleHubノートにRoleNodeノートは指定できません。");
-                return;
-            }
-            newConf.roleNodeConf = roleNodeConf;
-        }
+        // if (_hasRole && isRoleNodeConf(roleNodeConf)) {
+        //     if (roleNodeConf.hub.baseName.includes("@")) {
+        //         alert("RoleHubノートにRoleNodeノートは指定できません。");
+        //         return;
+        //     }
+        //     newConf.roleNodeConf = roleNodeConf;
+        // }
+
         if (_hasAspect && isMyNoteAspect(aspect)) {
             newConf.aspect = aspect;
         }
@@ -66,11 +66,11 @@ export function NewMyNoteConfBox({
         subType: "knowledge",
     });
 
-    const [_hasRole, _setHasRole] = useState<boolean>(false);
-    const [roleNodeConf, setRoleNodeConf] = useState<Partial<RoleNodeConf>>({
-        kind: undefined,
-        hub: options?.rootNote,
-    });
+    // const [_hasRole, _setHasRole] = useState<boolean>(false);
+    // const [roleNodeConf, setRoleNodeConf] = useState<Partial<RoleNodeConf>>({
+    //     kind: undefined,
+    //     hub: options?.rootNote,
+    // });
 
     const [_hasAspect, _setHasAspect] = useState<boolean>(false);
     const [aspect, setAspect] = useState<string>("default");
@@ -78,10 +78,10 @@ export function NewMyNoteConfBox({
     const [_hasCategories, _setHasCategories] = useState<boolean>(false);
     const [categories, setCategories] = useState<string[]>([]);
 
-    let defaultRoleHub: MyNote | undefined = undefined;
-    if (options?.rootNote && isMyNote(options.rootNote)) {
-        defaultRoleHub = options.rootNote;
-    }
+    // let defaultRoleHub: MyNote | undefined = undefined;
+    // if (options?.rootNote && isMyNote(options.rootNote)) {
+    //     defaultRoleHub = options.rootNote;
+    // }
     return (<>
         <h1>to create MyNote</h1>
 
@@ -103,7 +103,7 @@ export function NewMyNoteConfBox({
             }}
         />
 
-        <div>
+        {/* <div>
             <h4>
                 <label style={{ display: "flex", gap: "0.5em" }} >
                     has role
@@ -132,7 +132,7 @@ export function NewMyNoteConfBox({
                 <div style={{ color: "red" }}>※ ノート名は自動的に「RoleKind@RoleHubのノート名」になります。</div>
                 <div style={{ color: "red" }}>※ subTypeは自動的に「RoleHub」と同じになります。</div>
             </>
-        }</div>
+        }</div> */}
 
         <div>
             <h4>

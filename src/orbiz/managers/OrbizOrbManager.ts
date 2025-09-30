@@ -37,8 +37,7 @@ export class OrbizOrbManager {
             } else if (ONM().isDiaryNotePath(tFile.path)) {
                 return this.getDiaryNoteOrb({ tFile })
             } else {
-                // TODO: dailyNoteOrbを持ってこないと。
-                OEM.throwNotImplementedError();
+                return null;
             }
         } else if (src.noteId) {
             const stdOrb = this.getStdNoteOrb({ noteId: src.noteId });

@@ -7,6 +7,7 @@ import { OrbizEventWatchManager } from "src/orbiz/managers/OrbizEventWatchManage
 import { OrbizFactoryManager } from "src/orbiz/managers/OrbizFactoryManager";
 import { OrbizNoteManager } from "src/orbiz/managers/OrbizNoteManager";
 import { OrbizOrbManager } from "src/orbiz/managers/OrbizOrbManager";
+import { OrbizReactManager } from "src/orbiz/managers/OrbizReactManager";
 import { OrbizRepositoryManager } from "src/orbiz/managers/OrbizRepositoryManager";
 import { OrbizSettingManager, OSM } from "src/orbiz/managers/OrbizSettingManager";
 import { OrbizTFileManager } from "src/orbiz/managers/OrbizTFileManager";
@@ -34,12 +35,25 @@ export class AppInitializer {
         this.viewRegistrar = new ViewRegistrar();
     }
 
+    async initialize(): Promise<void> {
+        // NOTE: 依存関係注意
+        await this._build();
+
+        await OSM().initialize();
+        await OCM().initialize();
+
+        this.looksRegistrar.register();
+        this.commandRegistrar.register();
+        this.eventRegistrar.register();
+        this.viewRegistrar.register();
+
+        await ODM().initialize();
+    }
+
     private async _build(): Promise<void> {
-        OrbizAppManager.setInstance(
-            this.app,
-            this.myPlugin
-        );
         OrbizSettingManager.setInstance(this.myPlugin);
+        OrbizAppManager.setInstance(this.app, this.myPlugin);
+
         OrbizDiaryManager.setInstance();
         OrbizFactoryManager.setInstance();
         OrbizRepositoryManager.setInstance();
@@ -51,22 +65,6 @@ export class AppInitializer {
         OrbizOrbManager.setInstance();
         OrbizViewManager.setInstance();
         OrbizEventWatchManager.setInstance();
-    }
-
-    async initialize(): Promise<void> {
-        await this._build();
-
-        await OSM().initialize();
-        await OCM().initialize();
-
-        this.looksRegistrar.register();
-
-        this.commandRegistrar.register();
-
-        this.eventRegistrar.register();
-
-        this.viewRegistrar.register();
-
-        await ODM().initialize();
+        OrbizReactManager.setInstance();
     }
 }

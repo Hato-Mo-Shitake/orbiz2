@@ -35,6 +35,7 @@ export class PromptNewLogNoteConfModal extends Modal {
 
     onOpen() {
         const { contentEl } = this;
+        // const { modalEl } = this;
 
         const resolve = (conf: NewLogNoteConf | null) => {
             this.resolve(conf);
@@ -42,8 +43,10 @@ export class PromptNewLogNoteConfModal extends Modal {
         }
 
         this.root = createRoot(contentEl);
-        this.root!.render(
+        if (!this.root) return;
+        this.root.render(
             <StrictMode>
+
                 <NewLogNoteConfBox
                     resolve={resolve}
                     options={{

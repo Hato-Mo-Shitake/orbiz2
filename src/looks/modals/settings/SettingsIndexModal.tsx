@@ -15,7 +15,8 @@ export class SettingsIndexModal extends Modal {
         const { contentEl } = this;
 
         this.root = createRoot(contentEl);
-        this.root!.render(
+        if (!this.root) return;
+        this.root.render(
             <SettingsIndex
                 closeModal={() => this.close()}
             />

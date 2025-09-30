@@ -28,7 +28,9 @@ export abstract class BaseNoteViewer<
 
     getTopSection(): ReactNode {
         return (<>
-            <div style={{ display: "flex", gap: "1em" }}>
+            <div
+                style={{ display: "flex", gap: "1em" }}
+            >
                 <OpenMainMenuButton />
                 <OpenFmEditButton
                     viewer={this}

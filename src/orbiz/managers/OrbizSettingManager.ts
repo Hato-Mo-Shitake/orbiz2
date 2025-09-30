@@ -1,9 +1,11 @@
 import MyPlugin from "main";
+import { debugConsole } from "src/assistance/utils/debug";
+import { OrbizSpaceType } from "src/orbits/contracts/orbiz-space-type";
 import { OEM } from "./OrbizErrorManager";
-
 
 interface MyPluginSettings {
     sampleSetting: string;
+    spaceType: OrbizSpaceType;
     categories: string[];
     roleKinds: string[];
 }
@@ -24,6 +26,7 @@ export class OrbizSettingManager {
 
     private _defaultSettings: MyPluginSettings = {
         sampleSetting: 'default',
+        spaceType: "my",
         categories: [],
         roleKinds: [],
     }
@@ -40,48 +43,56 @@ export class OrbizSettingManager {
     get sampleSetting(): string {
         return this._savedSettings.sampleSetting;
     }
-
+    get spaceType(): OrbizSpaceType {
+        return this._savedSettings.spaceType;
+    }
     get categories(): string[] {
         return this._savedSettings.categories;
     }
-
     get roleKinds(): string[] {
         return this._savedSettings.roleKinds;
     }
 
     setSampleSetting(setting: string) {
-        const newSettings = this._unsavedSettings;
+        const newSettings = structuredClone(this._savedSettings);
         newSettings.sampleSetting = setting;
         this._unsavedSettings = newSettings;
         // this._setSettings(newSettings);
     }
-
+    setSpaceType(type: "my" | "test") {
+        const newSettings = structuredClone(this._savedSettings);
+        newSettings.spaceType = type;
+        this._unsavedSettings = newSettings;
+    }
     setCategories(categories: string[]) {
-        const newSettings = this._unsavedSettings;
+        const newSettings = structuredClone(this._savedSettings);
         newSettings.categories = [...categories];
         this._unsavedSettings = newSettings;
     }
-
     setRoleKinds(roleKinds: string[]) {
-        const newSettings = this._unsavedSettings;
+        const newSettings = structuredClone(this._savedSettings);
         newSettings.roleKinds = [...roleKinds];
         this._unsavedSettings = newSettings;
     }
 
     async load() {
-        // TODO： 
         this._unsavedSettings = Object.assign({}, this._defaultSettings, await this._myPlugin.loadData());
         this._savedSettings = structuredClone(this._unsavedSettings);
     }
 
     async save() {
+        const preSpaceType = this.spaceType;
         this._savedSettings = structuredClone(this._unsavedSettings);
-        this._myPlugin.saveData(this._savedSettings);
-    }
+        await this._myPlugin.saveData(this._savedSettings);
 
-    // private _setSettings(settings: MyPluginSettings) {
-    //     this._unsavedSettings = settings;
-    // }
+        if (this.spaceType != preSpaceType) {
+
+            // やっぱりなんか色々と怪しいな。
+            const plugin = this._myPlugin;
+            plugin.load();
+            debugConsole(`OrbizSpaceType: ${preSpaceType} -> ${this.spaceType}`);
+        }
+    }
 }
 
 export const OSM = () => {

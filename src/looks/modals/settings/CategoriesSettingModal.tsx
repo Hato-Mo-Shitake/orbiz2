@@ -15,7 +15,8 @@ export class CategoriesSettingModal extends Modal {
         const { contentEl } = this;
 
         this.root = createRoot(contentEl);
-        this.root!.render(
+        if (!this.root) return;
+        this.root.render(
             <CategoriesSetting
                 closeModal={() => this.close()}
             />

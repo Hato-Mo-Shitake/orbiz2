@@ -11,10 +11,12 @@ export default class MyPlugin extends Plugin {
 		} else {
 			await this.initializeApp();
 		}
+		// なんでここでOSMを呼べないんだ？
+		// debugConsole("orbiz initialized");
 	}
 
 	onunload() {
-		alert("onunload");
+		alert("unload");
 	}
 
 	async saveProgress() {
@@ -27,6 +29,6 @@ export default class MyPlugin extends Plugin {
 			this
 		);
 
-		appInitializer.initialize();
+		await appInitializer.initialize();
 	}
 }

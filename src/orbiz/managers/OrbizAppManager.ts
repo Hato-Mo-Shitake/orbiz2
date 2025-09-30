@@ -1,6 +1,7 @@
 import MyPlugin from "main";
 import { App, Workspace } from "obsidian";
 import { OEM } from "./OrbizErrorManager";
+import { OSM } from "./OrbizSettingManager";
 
 export class OrbizAppManager {
     private static _instance: OrbizAppManager | null = null;
@@ -23,15 +24,13 @@ export class OrbizAppManager {
 
     /** ------------ */
 
-    private readonly _isProd: boolean;
-    private readonly MAIN_ROOT = "my-space";
-    private readonly TEST_ROOT = "test-space"
+    private readonly _myRoot = "my-space";
+    private readonly _testRoot = "test-space"
 
     private constructor(
         private readonly _app: App,
         private readonly _myPlugin: MyPlugin,
     ) {
-        this._isProd = false;
     }
 
     get app(): App {
@@ -46,22 +45,20 @@ export class OrbizAppManager {
         return this.app.workspace;
     }
 
-    get isProd(): boolean {
-        return this._isProd;
-    }
-
     get rootPath(): string {
-        if (this.isProd) {
-            return this.MAIN_ROOT;
-        } else {
-            return this.TEST_ROOT;
+        const spaceType = OSM().spaceType;
+        switch (spaceType) {
+            case ("my"):
+                return this._myRoot;
+            case ("test"):
+                return this._testRoot;
         }
     }
     get rootDir(): string {
         return this.rootPath + "/";
     }
 
-    isVaultPath(input: string, ext: string = ".md"): boolean {
+    isVaultPath(input: string, ext = ".md"): boolean {
         if (input.startsWith("/")) return false;
         const parts = input.split("/");
 

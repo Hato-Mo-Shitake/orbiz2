@@ -23,6 +23,7 @@ export function SettingsIndex({
             <ul style={{ fontSize: "20px" }}>
                 <li><a onClick={_handleOpenModal(CategoriesSettingModal)}>categories</a></li>
                 <li><a onClick={_handleOpenModal(RoleKindSettingModal)}>role kinds</a></li>
+                <li><a>space type</a></li>
             </ul>
         </div>
     </>)

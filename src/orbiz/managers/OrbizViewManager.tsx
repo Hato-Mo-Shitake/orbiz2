@@ -1,6 +1,6 @@
 import { MarkdownView, PaneType, WorkspaceLeaf } from "obsidian";
 import { StdNoteOrb } from "src/core/orb-system/orbs/NoteOrb";
-import { OrbizMdView, StdNoteView, VIEW_TYPE_ORBIZ_MD } from "src/looks/views/OrbizMdView";
+import { OrbizMdView, StdNoteView } from "src/looks/views/OrbizMdView";
 import { Note } from "src/orbits/contracts/note-orb";
 import { OAM } from "./OrbizAppManager";
 import { OEM } from "./OrbizErrorManager";
@@ -28,6 +28,17 @@ export class OrbizViewManager {
 
         return leaf;
     }
+
+    // get aliveMdView(): MarkdownView[] {
+    //     const { app } = OAM();
+    //     const views: MarkdownView[] = [];
+    //     app.workspace.iterateAllLeaves(leaf => {
+    //         if (leaf.view instanceof MarkdownView) {
+    //             views.push(leaf.view);
+    //         }
+    //     })
+    //     return views;
+    // }
 
     get aliveStdNoteView(): StdNoteView[] {
         const { app } = OAM();
@@ -65,17 +76,47 @@ export class OrbizViewManager {
     async setOrbizMdView(leaf: WorkspaceLeaf) {
         const view = leaf.view;
         if (!(view instanceof MarkdownView)) return;
-        const path = view.file?.path;
-        if (!path) return;
-        if (!OAM().isVaultPath(path)) return;
 
-        const tFile = view.file;
-        if (!tFile) return;
+        // const tFile = view.file;
+        // if (!tFile) return;
+        // const orb = OOM().getNoteOrb({ tFile: tFile });
 
-        const viewState = leaf!.getViewState();
-        viewState.type = VIEW_TYPE_ORBIZ_MD;
+        // if (!orb) return;
+        // if (view.containerEl.querySelector(".orbiz-note-top-section")) {
+        //     return;
+        // }
 
-        await leaf?.setViewState(viewState);
+        // const metadataContainer = view.containerEl.querySelector(".metadata-container") as HTMLElement;
+        // if (!metadataContainer) OEM.throwUnexpectedError();
+        // const tmpEl = document.createElement("div");
+        // metadataContainer.insertAdjacentElement("afterend", tmpEl);
+        // const root = createRoot(tmpEl);
+
+        // root.render(
+        //     <>
+        //         <div className="orbiz-note-top-section">
+        //             {orb.viewer.getTopSection()}
+        //             < div > テスト中7 </div>
+        //         </div>
+        //     </>
+        // );
+
+        // view.addChild(new OrbizMdView(view.leaf));
+
+        // const path = view.file?.path;
+        // if (!path) return;
+        // if (!OAM().isVaultPath(path)) return;
+
+        // const tFile = view.file;
+        // if (!tFile) return;
+
+        // const viewState = leaf.getViewState();
+        // viewState.type = VIEW_TYPE_ORBIZ_MD;
+
+        // await leaf.setViewState(viewState);
+
+
+
     }
 }
 

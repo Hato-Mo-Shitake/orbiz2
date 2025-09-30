@@ -1,8 +1,7 @@
-import { OAM } from "src/orbiz/managers/OrbizAppManager";
+import { OSM } from "src/orbiz/managers/OrbizSettingManager";
 
-const isDebug = true;
 export function debugConsole(...args: any[]): void {
-    if (isDebug && !OAM().isProd) {
+    if (OSM().spaceType === "test") {
         console.log(...args);
     }
 }
