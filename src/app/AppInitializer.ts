@@ -7,7 +7,7 @@ import { OrbizEventWatchManager } from "src/orbiz/managers/OrbizEventWatchManage
 import { OrbizFactoryManager } from "src/orbiz/managers/OrbizFactoryManager";
 import { OrbizNoteManager } from "src/orbiz/managers/OrbizNoteManager";
 import { OrbizOrbManager } from "src/orbiz/managers/OrbizOrbManager";
-import { OrbizReactManager } from "src/orbiz/managers/OrbizReactManager";
+// import { OrbizReactManager } from "src/orbiz/managers/OrbizReactManager";
 import { OrbizRepositoryManager } from "src/orbiz/managers/OrbizRepositoryManager";
 import { OrbizSettingManager, OSM } from "src/orbiz/managers/OrbizSettingManager";
 import { OrbizTFileManager } from "src/orbiz/managers/OrbizTFileManager";
@@ -65,6 +65,6 @@ export class AppInitializer {
         OrbizOrbManager.setInstance();
         OrbizViewManager.setInstance();
         OrbizEventWatchManager.setInstance();
-        OrbizReactManager.setInstance();
+        // OrbizReactManager.setInstance();
     }
 }

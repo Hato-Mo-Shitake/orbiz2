@@ -1,6 +1,9 @@
 import { CachedMetadata, FrontMatterCache, TFile } from "obsidian";
+import { debugConsole } from "src/assistance/utils/debug";
+import { getBasenameFromPath } from "src/assistance/utils/path";
 import { BaseFm } from "src/orbits/schema/frontmatters/fm";
 import { OAM } from "src/orbiz/managers/OrbizAppManager";
+import { OEM } from "src/orbiz/managers/OrbizErrorManager";
 import { OTM } from "src/orbiz/managers/OrbizTFileManager";
 
 export abstract class BaseNote<TFm extends BaseFm = BaseFm> {
@@ -11,15 +14,17 @@ export abstract class BaseNote<TFm extends BaseFm = BaseFm> {
         this.id = fm["id"];
     }
 
+    abstract get path(): string;
+
     get name(): string {
-        return this.tFile.name;
+        return `${this.baseName}.md`;
+
+        // return this.tFile.name;
     }
 
     get baseName(): string {
-        return this.tFile.basename;
+        return getBasenameFromPath(this.path);
     }
-
-    abstract get path(): string;
 
     get internalLink(): string {
         return `[[${this.path}|${this.name}]]`
@@ -43,17 +48,26 @@ export abstract class BaseNote<TFm extends BaseFm = BaseFm> {
         return this.tFile.stat.mtime;
     }
 
-    private _tFile: TFile | null;
     get tFile(): TFile {
-        if (!this._tFile) {
-            this._tFile = OTM().getMdTFileByPath(this.path)!
-        }
-        return this._tFile;
+        debugConsole(this.path);
+        // NOTE: 常に最新のものを取得。
+        const _tFile = OTM().getMdTFileByPath(this.path);
+
+
+
+        if (!_tFile) OEM.throwUnexpectedError();
+
+
+
+
+        return _tFile;
     }
 
     // なるべく最新の状態を返すために、fmは自身に持たないようにする。
-    get fmCache(): FrontMatterCache | null {
-        return this.metadata.frontmatter || null;
+    get fmCache(): FrontMatterCache {
+        const fmCache = this.metadata.frontmatter;
+        if (!fmCache) OEM.throwUnexpectedError();
+        return fmCache;
     }
 
     get metadata(): CachedMetadata {

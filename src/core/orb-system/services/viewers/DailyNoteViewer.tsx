@@ -1,5 +1,7 @@
 import { DailyNote } from "src/core/domain/DailyNote";
 import { DailyFm } from "src/orbits/schema/frontmatters/fm";
+import { DailyNoteState } from "src/orbits/schema/NoteState";
+import { StoreApi } from "zustand";
 import { DailyFmOrb } from "../../orbs/FmOrb";
 import { DailyNoteEditor } from "../editors/DailyNoteEditor";
 import { DailyNoteReader } from "../readers/DailyNoteReader";
@@ -15,7 +17,8 @@ export class DailyNoteViewer<
         public readonly fmOrb: DailyFmOrb,
         public readonly reader: TReader,
         public readonly editor: TEditor,
+        public readonly store: StoreApi<DailyNoteState>
     ) {
-        super(note, fmOrb, reader, editor);
+        super(note, fmOrb, reader, editor, store);
     }
 }

@@ -4,10 +4,13 @@ import { isMyNote } from "src/core/domain/MyNote";
 import { StdNote } from "src/core/domain/StdNote";
 import { NoteLink } from "src/looks/components/common/NoteLink";
 import { LinkedNoteLinks, LinkedNoteLinkTree } from "src/looks/components/fm-view/DisplayLinkedNoteLinks";
+import { TestLooks } from "src/looks/components/note-metadata/TestLooks";
 import { FmKey } from "src/orbits/contracts/fmKey";
 import { StdFm } from "src/orbits/schema/frontmatters/fm";
+import { StdNoteState } from "src/orbits/schema/NoteState";
 import { OTM } from "src/orbiz/managers/OrbizTFileManager";
 import { OUM } from "src/orbiz/managers/OrbizUseCaseManager";
+import { StoreApi } from "zustand";
 import { StdFmOrb } from "../../orbs/FmOrb";
 import { StdNoteEditor } from "../editors/StdNoteEditor";
 import { StdNoteReader } from "../readers/StdNoteReader";
@@ -23,8 +26,13 @@ export abstract class StdNoteViewer<
         public readonly fmOrb: StdFmOrb,
         public readonly reader: TReader,
         public readonly editor: TEditor,
+        public readonly store: StoreApi<StdNoteState>,
     ) {
-        super(note, fmOrb, reader, editor);
+        super(note, fmOrb, reader, editor, store);
+    }
+
+    getTestLooks(): React.ReactNode {
+        return <TestLooks store={this.store} />
     }
 
     getTopSection(): React.ReactNode {

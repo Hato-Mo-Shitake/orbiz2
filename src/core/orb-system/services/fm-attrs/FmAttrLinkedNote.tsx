@@ -1,5 +1,7 @@
 import { TFile } from "obsidian";
 import { ReactNode } from "react";
+import { debugConsole } from "src/assistance/utils/debug";
+import { isMyNote, MyNote } from "src/core/domain/MyNote";
 import { StdNote } from "src/core/domain/StdNote";
 import { FmLinkedNoteEditBox } from "src/looks/components/fm-edit/sub/FmLinkedNoteEditBox";
 import { FmKey } from "src/orbits/contracts/fmKey";
@@ -9,12 +11,13 @@ import { ORM } from "src/orbiz/managers/OrbizRepositoryManager";
 import { FmAttr } from "./FmAttr";
 
 type RawFmValueForLinkedNote = "noteId" | "internalLink";
-export abstract class FmAttrLinkedNote extends FmAttr<StdNote | null> {
+export abstract class FmAttrLinkedNote<TNote extends StdNote = StdNote> extends FmAttr<TNote | null> {
     constructor(
         tFile: TFile,
         fmKey: FmKey<"linkedNote">,
         rawFmValue: string | null | undefined, // 内部リンク or noteId
         protected readonly _rawFmValueType: RawFmValueForLinkedNote,
+        isNote: (note: any) => note is TNote,
         options?: {
             isImmutable?: boolean,
         }
@@ -25,11 +28,20 @@ export abstract class FmAttrLinkedNote extends FmAttr<StdNote | null> {
             note = null;
         } else if (_rawFmValueType === "internalLink") {
             note = ONM().getStdNote({ internalLink: rawFmValue });
+            if (!isNote(note)) {
+                debugConsole("????", note);
+                OEM.throwUnexpectedError();
+            }
         } else if (_rawFmValueType === "noteId") {
             note = ONM().getStdNote({ noteId: rawFmValue });
+            if (!isNote(note)) {
+                debugConsole("????", note);
+                OEM.throwUnexpectedError();
+            }
         } else {
             OEM.throwUnexpectedError();
         }
+
 
         super(
             tFile,
@@ -39,15 +51,15 @@ export abstract class FmAttrLinkedNote extends FmAttr<StdNote | null> {
         );
     }
 
-    validate(value: StdNote): boolean {
+    validate(value: TNote): boolean {
         return true;
     }
 
-    filter(value: StdNote): StdNote {
+    filter(value: TNote): TNote {
         return value;
     }
 
-    setNewValue(newValue: StdNote): this {
+    setNewValue(newValue: TNote): this {
         if (this.isImmutable) throw new Error("can not update.");
         if (this.value === newValue) return this;
 
@@ -83,7 +95,7 @@ export abstract class FmAttrLinkedNote extends FmAttr<StdNote | null> {
     }
 }
 
-export class FmAttrRoleHub extends FmAttrLinkedNote {
+export class FmAttrRoleHub extends FmAttrLinkedNote<MyNote> {
     constructor(
         tFile: TFile,
         _value: string | null | undefined,
@@ -93,6 +105,7 @@ export class FmAttrRoleHub extends FmAttrLinkedNote {
             "roleHub",
             _value,
             "internalLink",
+            isMyNote
         )
     }
 }

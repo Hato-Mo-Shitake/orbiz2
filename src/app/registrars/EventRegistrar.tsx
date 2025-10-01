@@ -5,7 +5,7 @@ import { OAM } from "src/orbiz/managers/OrbizAppManager";
 import { ODM } from "src/orbiz/managers/OrbizDiaryManager";
 import { OEwM } from "src/orbiz/managers/OrbizEventWatchManager";
 import { ONM } from "src/orbiz/managers/OrbizNoteManager";
-import { OReactM } from "src/orbiz/managers/OrbizReactManager";
+import { OVM } from "src/orbiz/managers/OrbizViewManager";
 import { handleListCacheChanged } from "../events/handlers/metadataCache";
 import { handleListTAbstractFileRename } from "../events/handlers/vault";
 import { handleListActiveLeafChange, handleListLayoutChange } from "../events/handlers/workspace";
@@ -43,7 +43,7 @@ export class EventRegistrar {
                 const mdView = leaf.view;
                 if (tFile.path !== mdView.file?.path) return;
 
-                OReactM().mountOrUpdateNoteTopSection(mdView);
+                OVM().mountOrUpdateNoteTopSection(mdView);
             });
             debugConsole("file-open-process end.");
         })

@@ -6,6 +6,8 @@ import { LinkedNoteLinks } from "src/looks/components/fm-view/DisplayLinkedNoteL
 import { AspectIndexTopSection } from "src/looks/components/note-top-section/aspects/AspectIndexTopSection";
 import { MyNoteTopSection } from "src/looks/components/note-top-section/MyNoteTopSection";
 import { MyFm } from "src/orbits/schema/frontmatters/fm";
+import { MyNoteState } from "src/orbits/schema/NoteState";
+import { StoreApi } from "zustand";
 import { MyFmOrb } from "../../orbs/FmOrb";
 import { MyNoteEditor } from "../editors/MyNoteEditor";
 import { MyNoteReader } from "../readers/MyNoteReader";
@@ -21,8 +23,9 @@ export class MyNoteViewer<
         public readonly fmOrb: MyFmOrb,
         public readonly reader: TReader,
         public readonly editor: TEditor,
+        public readonly store: StoreApi<MyNoteState>,
     ) {
-        super(note, fmOrb, reader, editor);
+        super(note, fmOrb, reader, editor, store);
     }
 
     getTopSection(): React.ReactNode {

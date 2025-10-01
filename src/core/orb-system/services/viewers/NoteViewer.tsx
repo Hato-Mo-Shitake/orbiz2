@@ -5,6 +5,8 @@ import { OpenMainMenuButton } from "src/looks/components/common-orbiz/OpenMainMe
 import { FmEditBox } from "src/looks/components/fm-edit/main/FmEditBox";
 import { FmAttrViewer } from "src/orbits/contracts/fmAttr";
 import { BaseFm } from "src/orbits/schema/frontmatters/fm";
+import { BaseNoteState } from "src/orbits/schema/NoteState";
+import { StoreApi } from "zustand";
 import { BaseFmOrb } from "../../orbs/FmOrb";
 import { BaseNoteEditor } from "../editors/NoteEditor";
 import { BaseNoteReader } from "../readers/NoteReader";
@@ -20,6 +22,7 @@ export abstract class BaseNoteViewer<
         public readonly fmOrb: BaseFmOrb,
         public readonly reader: TReader,
         public readonly editor: TEditor,
+        public readonly store: StoreApi<BaseNoteState>,
     ) {
         Object.values(fmOrb).forEach((viewer: FmAttrViewer) => {
             this.fmViewers.push(viewer);

@@ -35,16 +35,26 @@ const TestScript = {
     checkTodayRecordNoteIds: () => {
         console.log("todayRecordNoteIds: ", ODM().todayRecordNoteIds);
     },
+    checkSettings: () => {
+        // @ts-ignore NOTE: テスト用
+        console.log(OSM()._settings);
+    },
+    setTagsAndInLinks: () => {
+        const tFile = OTM().activeTFile;
+        if (!tFile) return;
+        const orb = OOM().getStdNoteOrb({ tFile });
+        if (!orb) return;
+        orb.store.getState().setFmAttrTags(["かに", "せみ"]);
+        orb.store.getState().setInLinkIds(["1", "2"]);
+        // いけてそう！！！
+    },
     openExampleView: async () => {
         OUM().viewActivator.openNewView(VIEW_TYPE_EXAMPLE);
     },
     openCategoriesSetting: async () => {
         CategoriesSettingModal.open();
     },
-    checkSettings: () => {
-        // @ts-ignore NOTE: テスト用
-        console.log(OSM()._settings);
-    },
+
     openNoteSearchlight: async () => {
         NoteSearchlightModal.open();
         // OUM().viewActivator.openNewView(VIEW_TYPE_NOTE_SEARCHLIGHT);

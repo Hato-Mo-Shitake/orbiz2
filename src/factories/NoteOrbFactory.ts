@@ -7,6 +7,7 @@ import { isMyNote, MyNote } from "src/core/domain/MyNote";
 import { StdNote } from "src/core/domain/StdNote";
 import { DailyNoteOrb, DiaryNoteOrb, LogNoteOrb, MyNoteOrb, StdNoteOrb } from "src/core/orb-system/orbs/NoteOrb";
 import { DailyFm, DiaryFm, isDailyFm, isLogFm, isMyFm, LogFm, MyFm, StdFm } from "src/orbits/schema/frontmatters/fm";
+import { createDailyNoteState, createLogNoteState, createMyNoteState } from "src/orbits/schema/NoteState";
 import { OAM } from "src/orbiz/managers/OrbizAppManager";
 import { FmOrbFactory } from "./FmOrbFactory";
 import { NoteEditorFactory } from "./NoteEditorFactory";
@@ -81,7 +82,7 @@ export class NoteOrbFactory {
     forMy(src: TFile | MyNote, options?: { fm: MyFm }): MyNoteOrb | null {
         let note: MyNote;
         let tFile: TFile
-        let fm: MyFm | undefined = options?.fm;
+        const fm: MyFm | undefined = options?.fm;
         if (src instanceof TFile) {
             const tmp = this.noteF.forMy(src);
             if (!tmp) return null;
@@ -95,19 +96,22 @@ export class NoteOrbFactory {
 
         const fmOrb = this.fmOrbF.forMy(tFile, { fm: fm });
         if (!fmOrb) return null;
+
+        const store = createMyNoteState(fmOrb, [...note.source.inLinkIds]);
         return new MyNoteOrb(
             note,
             fmOrb,
             this.readerF.forMy(note, fmOrb),
             this.editorF.forMy(note, fmOrb),
-            this.viewerF.forMy(note, fmOrb),
+            this.viewerF.forMy(note, fmOrb, store),
+            store,
         );
     }
 
     forLog(src: TFile | LogNote, options?: { fm: LogFm }): LogNoteOrb | null {
         let note: LogNote;
         let tFile: TFile
-        let fm: LogFm | undefined = options?.fm;
+        const fm: LogFm | undefined = options?.fm;
         if (src instanceof TFile) {
             const tmp = this.noteF.forLog(src);
             if (!tmp) return null;
@@ -121,19 +125,22 @@ export class NoteOrbFactory {
 
         const fmOrb = this.fmOrbF.forLog(tFile, { fm: fm });
         if (!fmOrb) return null;
+
+        const store = createLogNoteState(fmOrb, [...note.source.inLinkIds]);
         return new LogNoteOrb(
             note,
             fmOrb,
             this.readerF.forLog(note, fmOrb),
             this.editorF.forLog(note, fmOrb),
-            this.viewerF.forLog(note, fmOrb),
+            this.viewerF.forLog(note, fmOrb, store),
+            store
         );
     }
 
     forDaily(src: TFile | DailyNote, options?: { fm: DailyFm }): DailyNoteOrb | null {
         let note: DailyNote;
         let tFile: TFile
-        let fm: DailyFm | undefined = options?.fm;
+        const fm: DailyFm | undefined = options?.fm;
         if (src instanceof TFile) {
             tFile = src;
             const tmp = this.noteF.forDaily({ tFile: src });
@@ -148,12 +155,14 @@ export class NoteOrbFactory {
 
         const fmOrb = this.fmOrbF.forDaily(tFile, { fm: fm });
         if (!fmOrb) return null;
+        const store = createDailyNoteState(fmOrb);
         return new DailyNoteOrb(
             note,
             fmOrb,
             this.readerF.forDaily(note, fmOrb),
             this.editorF.forDaily(note, fmOrb),
-            this.viewerF.forDaily(note, fmOrb),
+            this.viewerF.forDaily(note, fmOrb, store),
+            store
         );
     }
 }

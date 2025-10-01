@@ -1,6 +1,8 @@
 import { LogNote } from "src/core/domain/LogNote";
 import { LogNoteTopSection } from "src/looks/components/note-top-section/LogNoteTopSection";
 import { LogFm } from "src/orbits/schema/frontmatters/fm";
+import { LogNoteState } from "src/orbits/schema/NoteState";
+import { StoreApi } from "zustand";
 import { LogFmOrb } from "../../orbs/FmOrb";
 import { LogNoteEditor } from "../editors/LogNoteEditor";
 import { LogNoteReader } from "../readers/LogNoteReader";
@@ -16,8 +18,9 @@ export class LogNoteViewer<
         public readonly fmOrb: LogFmOrb,
         public readonly reader: TReader,
         public readonly editor: TEditor,
+        public readonly store: StoreApi<LogNoteState>,
     ) {
-        super(note, fmOrb, reader, editor);
+        super(note, fmOrb, reader, editor, store);
     }
 
     getTopSection(): React.ReactNode {

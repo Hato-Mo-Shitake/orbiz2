@@ -1,4 +1,4 @@
-import { CachedMetadata, debounce, FrontMatterCache, FrontmatterLinkCache, LinkCache, TFile } from "obsidian";
+import { CachedMetadata, debounce, FrontMatterCache, FrontmatterLinkCache, LinkCache, MarkdownView, TFile } from "obsidian";
 import { generateCurrentIsoDatetime } from "src/assistance/utils/date";
 import { debugConsole } from "src/assistance/utils/debug";
 import { getBasenameFromPath } from "src/assistance/utils/path";
@@ -20,7 +20,6 @@ import { OOM } from "./OrbizOrbManager";
 import { ORM } from "./OrbizRepositoryManager";
 import { OTM } from "./OrbizTFileManager";
 import { OUM } from "./OrbizUseCaseManager";
-import { OVM } from "./OrbizViewManager";
 
 export class OrbizCacheManager {
     private static _instance: OrbizCacheManager | null = null;
@@ -117,15 +116,18 @@ export class OrbizCacheManager {
     // updateNoteOrbCaches = debounce(this._updateNoteOrbCaches, 3000, true);
     private readonly _deletedCacheNoteIdList = new Set<string>();
     updateNoteOrbCaches(): void {
-        // console.log("orbキャッシュ更新前", this._stdNoteOrbMapById);
-        const aliveViews = OVM().aliveOrbizMdView;
+        const leaves = OAM().app.workspace.getLeavesOfType("markdown");
         const aliveNoteIds = new Set<string>();
         const stdCacheMap = this._stdNoteOrbMapById;
         const diaryCacheMap = this._diaryNoteOrbMapById;
 
-        aliveViews.forEach(view => {
-            const orb = view.noteOrb;
+        leaves.forEach(leaf => {
+            const view = leaf.view;
+            if (!(view instanceof MarkdownView)) return;
+            const tFile = view.file;
+            if (!tFile) return;
 
+            const orb = OOM().getNoteOrb({ tFile });
             // if (!orb) OEM.throwUnexpectedError();
             if (!orb) return;
             const noteId = orb.note.id;
@@ -165,6 +167,57 @@ export class OrbizCacheManager {
                 this._deletedCacheNoteIdList.add(id);
             }
         }
+
+
+
+        // console.log("orbキャッシュ更新前", this._stdNoteOrbMapById);
+        // const aliveViews = OVM().aliveOrbizMdView;
+        // const aliveNoteIds = new Set<string>();
+        // const stdCacheMap = this._stdNoteOrbMapById;
+        // const diaryCacheMap = this._diaryNoteOrbMapById;
+
+        // aliveViews.forEach(view => {
+        //     const orb = view.noteOrb;
+
+        //     // if (!orb) OEM.throwUnexpectedError();
+        //     if (!orb) return;
+        //     const noteId = orb.note.id;
+
+        //     if (isStdNoteOrb(orb)) {
+        //         if (!stdCacheMap.has(noteId)) {
+        //             stdCacheMap.set(noteId, orb);
+        //         }
+        //     } else if (isDiaryNoteOrb(orb)) {
+        //         if (!diaryCacheMap.has(noteId)) {
+        //             diaryCacheMap.set(noteId, orb);
+        //         }
+        //     } else {
+        //         OEM.throwUnexpectedError();
+        //     }
+
+        //     aliveNoteIds.add(noteId);
+        // });
+
+        // for (const id of stdCacheMap.keys()) {
+        //     if (!aliveNoteIds.has(id)) {
+        //         // Note: 二回削除候補に上がったら消す的な。
+        //         // 一旦これで、新規作成先のノートに、実在する親ノートがTopSectionに表示されない問題は解決したけど、まだ色々とTopSection表示周りは不安定な気がする。ルートノートの子ノート表示が、新規作成先のものしか表示されない時あるし。
+        //         if (this._deletedCacheNoteIdList.has(id)) {
+        //             stdCacheMap.delete(id);
+        //             this._deletedCacheNoteIdList.delete(id);
+        //         } else {
+        //             this._deletedCacheNoteIdList.add(id);
+        //         }
+        //     }
+        // }
+        // for (const id of diaryCacheMap.keys()) {
+        //     if (this._deletedCacheNoteIdList.has(id)) {
+        //         diaryCacheMap.delete(id);
+        //         this._deletedCacheNoteIdList.delete(id);
+        //     } else {
+        //         this._deletedCacheNoteIdList.add(id);
+        //     }
+        // }
 
         // console.log("orbキャッシュ更新後", this._stdNoteOrbMapById);
     }
@@ -270,8 +323,12 @@ export class OrbizCacheManager {
         this._stdNoteIdMapByName.delete(oldName);
         this._stdNoteIdMapByName.set(newName, id);
 
+
+
+
+
         // TODO: inLinks変更の感知が厳しいので、結局こうする。
-        OVM().reloadStdNoteViews();
+        // OVM().reloadStdNoteViews();
 
 
     }
@@ -297,6 +354,38 @@ export class OrbizCacheManager {
             })
             return;
         }
+
+
+
+
+
+
+
+        // よくよく考えると、特定のファイルに紐づいている、topSectionの表示に必要なメタ情報って
+        // path
+        // inIds, outIds,
+        // metadataCacheくらい？
+        // NoteSourceの変更さえ検知できれば、inLinksの変更感知もできるだろ。
+        // なんか上手いことやれそうな気がするな。
+        // NoteTopSectionに渡す値を参照値じゃなくて実体値にすれば、効率よく、最新情報の反映できるかも
+        // useEffectとobserverパターンを活用する案もいけるかも
+
+        // noteOrbにfrontmatterとnoteSourceを持たせる？
+        // この二つが変わったときに、通知を送れば、、、、
+        // noteSourceとfrontmatterが変わるタイミングは別
+        // frontmatterの変更のタイミングは、fmAttrEditorでわかる。
+
+
+        // ここのNoteSourceを更新するタイミングで、Orbに通知を送って,inLinkIds, outLinkIdsを更新するような仕様にすればいいかもね。
+        // 多分ここで監視するのは、inLinkIdsとPathだけでいい
+        //     -> path（ノート名が変わったとき）、それを参照しているノートのView表示も変えないといけないから注意だna
+        // これ＋Editorの変更時の通知をReaderあたりに集めて、これを元にView表示で、差分があったところだけ更新するようにすれば、うまくいく気がする
+
+
+
+
+
+
 
         this._updateCacheWhenMetadataChanged(currentNoteId, tFile);
 

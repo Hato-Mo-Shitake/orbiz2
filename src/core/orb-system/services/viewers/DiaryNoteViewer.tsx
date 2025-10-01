@@ -1,5 +1,7 @@
 import { DiaryNote } from "src/core/domain/DiaryNote";
 import { DiaryFm } from "src/orbits/schema/frontmatters/fm";
+import { DailyNoteState } from "src/orbits/schema/NoteState";
+import { StoreApi } from "zustand";
 import { DiaryFmOrb } from "../../orbs/FmOrb";
 import { DiaryNoteEditor } from "../editors/DiaryNoteEditor";
 import { DiaryNoteReader } from "../readers/DiaryNoteReader";
@@ -15,7 +17,8 @@ export abstract class DiaryNoteViewer<
         public readonly fmOrb: DiaryFmOrb,
         public readonly reader: TReader,
         public readonly editor: TEditor,
+        public readonly store: StoreApi<DailyNoteState>
     ) {
-        super(note, fmOrb, reader, editor);
+        super(note, fmOrb, reader, editor, store);
     }
 }
