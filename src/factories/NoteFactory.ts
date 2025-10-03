@@ -1,5 +1,4 @@
 import { TFile } from "obsidian";
-import { debugConsole } from "src/assistance/utils/debug";
 import { DailyNote } from "src/core/domain/DailyNote";
 import { LogNote } from "src/core/domain/LogNote";
 import { MyNote } from "src/core/domain/MyNote";
@@ -82,8 +81,6 @@ export class NoteFactory {
         if (src.tFile) {
             const fmCache = OAM().app.metadataCache.getFileCache(src.tFile)?.frontmatter;
             if (!fmCache) return null;
-
-            debugConsole("dmCache", fmCache);
             if (isDailyFm(fmCache)) {
                 return new DailyNote(fmCache, src.tFile.path);
             }

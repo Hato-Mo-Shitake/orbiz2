@@ -59,7 +59,7 @@ export abstract class StdNoteOrb<TFm extends StdFm = StdFm> extends BaseNoteOrb<
         this.store.getState().setInLinkIds([...this.note.source.inLinkIds]);
     }
     resetStoreoutLinkIds() {
-        this.store.getState().setInLinkIds([...this.note.source.outLinkIds]);
+        this.store.getState().setOutLinkIds([...this.note.source.outLinkIds]);
     }
 }
 export function isStdNoteOrb(noteOrb: any): noteOrb is StdNoteOrb {

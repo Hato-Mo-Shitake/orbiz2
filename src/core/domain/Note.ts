@@ -22,6 +22,8 @@ export abstract class BaseNote<TFm extends BaseFm = BaseFm> {
     }
 
     get baseName(): string {
+        // debugConsole("path in note", this.path);
+        // debugConsole("baseName", getBasenameFromPath(this.path))
         return getBasenameFromPath(this.path);
     }
 

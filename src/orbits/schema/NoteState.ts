@@ -1,6 +1,5 @@
 import { MyNote } from "src/core/domain/MyNote";
 import { StdNote } from "src/core/domain/StdNote";
-import { BaseFmOrb } from "src/core/orb-system/orbs/FmOrb";
 import { createStore, StoreApi } from "zustand";
 import { Note } from "../contracts/note-orb";
 import { MyNoteAspect } from "./frontmatters/Aspect";
@@ -192,6 +191,6 @@ export function createMyNoteState(): StoreApi<MyNoteState> {
 export function createLogNoteState(): StoreApi<LogNoteState> {
     return createStore<LogNoteState>((set) => buildLogNoteState(set));
 }
-export function createDailyNoteState(fmOrb: BaseFmOrb): StoreApi<DailyNoteState> {
+export function createDailyNoteState(): StoreApi<DailyNoteState> {
     return createStore<DailyNoteState>((set) => buildDailyNoteState(set));
 }

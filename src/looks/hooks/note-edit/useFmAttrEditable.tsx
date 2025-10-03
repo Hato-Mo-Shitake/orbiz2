@@ -1,5 +1,6 @@
 import { Notice } from "obsidian";
 import { useEffect, useState } from "react";
+import { BaseNote } from "src/core/domain/Note";
 import { FmAttr } from "src/core/orb-system/services/fm-attrs/FmAttr";
 import { ReactSetState } from "src/orbits/contracts/react";
 
@@ -8,10 +9,21 @@ export function useFmAttrEditable<T>(fmAttr: FmAttr<T>): {
     setNewValue: ReactSetState<T>,
     handleCommit: () => Promise<void>
 } {
-    const value = structuredClone(fmAttr.value);
     const [newValue, setNewValue] = useState<T | null>(null);
 
     useEffect(() => {
+        // カスタムクラスのメソッド（ゲッター含む）はコピーされない（Dateなどは例外）ので、Noteを例外対応。
+        // もっといい方法を考えたいが。。。。。
+        // Noteに関しては参照コピーで問題なさそうだけど、さて。。。。
+        let value: T | null;
+        if (fmAttr.value instanceof BaseNote) {
+            value = fmAttr.value;
+        } else if (Array.isArray(fmAttr.value) && fmAttr.value[0] instanceof BaseNote) {
+            value = fmAttr.value;
+        } else {
+            value = structuredClone(fmAttr.value);
+        }
+
         // わかった.Viewが切り替わった先で、同じコンポーネントがあると、一番最初に評価した初期値を元にしちゃうんだ。
         // 引数だけ入れ替えているイメージ。だからここが必要。
         // 下記のuseEffectでやっているのはfmAttr内のnewValueにセットしているだけだから、循環が発生することはない。

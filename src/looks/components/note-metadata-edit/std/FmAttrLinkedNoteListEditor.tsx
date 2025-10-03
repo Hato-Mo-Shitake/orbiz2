@@ -16,8 +16,8 @@ export function FmAttrLinkedNoteListEditor({
 }) {
     const notes = useStore(store, selector);
     const { newValue, setNewValue, handleCommit } = useFmAttrEditable<StdNote[] | null>(fmAttr);
-    const handleChange = (note: StdNote[]) => {
-        setNewValue(note)
+    const handleChange = (notes: StdNote[]) => {
+        setNewValue(notes)
     }
     return (<>
         <div className="fm-string-list-edit-box">

@@ -56,9 +56,9 @@ export class MyNoteViewer<
             <div>
                 {super.getTopSection()}
             </div>
-            < div style={{ margin: "10px", display: "flex", alignItems: "center", gap: "0.2em" }}>
+            <div style={{ marginTop: "0.9em", display: "flex", alignItems: "center", gap: "0.2em" }}>
                 create:
-                <div style={{ margin: "10px", display: "flex", alignItems: "center", gap: "0.0em" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "0.0em" }}>
                     <CreateMyNoteButton rootNote={this.note} label="my" />
                     <div>
                         <span>（</span>
@@ -68,8 +68,14 @@ export class MyNoteViewer<
                 </div>
                 <CreateLogNoteButton rootNote={this.note} label="log" />
             </div >
+            <div style={{ marginTop: "0.5em", marginBottom: "0.5em" }}>
+                <hr />
+            </div>
             {this.fmOrb.tags.getView()}
             {this.fmOrb.categories.getView()}
+            <div style={{ marginTop: "0.5em", marginBottom: "0.5em" }}>
+                <hr />
+            </div>
             {this.getLinkedStdNoteList()}
             <h1>Note</h1>
         </>)

@@ -64,19 +64,25 @@ export abstract class StdNoteViewer<
     }
 
     getLinkedStdNote(fmKey: FmKey<"stdLinkedNoteList">, direction: LinkedNoteDirection): React.ReactNode {
+        const headerMap: Record<FmKey<"stdLinkedNoteList">, Record<LinkedNoteDirection, string>> = {
+            "belongsTo": { "in": "children", "out": "parents" },
+            "relatesTo": { "in": "relative children", "out": "relative parents" },
+            "references": { "in": "referenced", "out": "references" }
+        }
+
         return <LinkedStdNoteDisplay
             store={this.store}
             rootNote={this.note}
             fmKey={fmKey}
             direction={direction}
+            header={headerMap[fmKey][direction]}
         />
     }
     getLinkedStdNoteList() {
         return (<>
             {fmKeysForStdLinkedNoteList.map(key => {
-                return linkedNoteDirectionList.map(d =>
+                return [...linkedNoteDirectionList].reverse().map(d =>
                     <div key={`${key}-${d}`}>
-                        {`${key}-${d}`}
                         {this.getLinkedStdNote(key, d)}
                     </div>
 
@@ -90,41 +96,4 @@ export abstract class StdNoteViewer<
             super.getTopSection()
         );
     }
-
-    // getOutLinks(key: FmKey<"stdLinkedNoteList">): React.ReactNode {
-    //     const ids = this.reader.getOutLinkIds(key);
-    //     if (ids.length === 0) return null;
-
-    //     return <LinkedNoteLinks
-    //         ids={ids}
-    //         rootNotePath={this.note.path}
-    //     />
-    // }
-    // getInLinks(key: FmKey<"stdLinkedNoteList">): React.ReactNode {
-    //     const ids = this.reader.getInLinkIds(key);
-    //     if (ids.length === 0) return null;
-
-    //     return <LinkedNoteLinks
-    //         ids={ids}
-    //         rootNotePath={this.note.path}
-    //     />
-    // }
-    // getOutLinkTree(key: FmKey<"stdLinkedNoteList">): React.ReactNode {
-    //     const idTrees = this.reader.getOutLinkTree(key);
-    //     if (idTrees.length === 0) return null;
-
-    //     return <LinkedNoteLinkTree
-    //         idTrees={idTrees}
-    //         rootNotePath={this.note.path}
-    //     />
-    // }
-    // getInLinkTree(key: FmKey<"stdLinkedNoteList">): React.ReactNode {
-    //     const idTrees = this.reader.getInLinkTree(key);
-    //     if (idTrees.length === 0) return null;
-
-    //     return <LinkedNoteLinkTree
-    //         idTrees={idTrees}
-    //         rootNotePath={this.note.path}
-    //     />
-    // }
 }

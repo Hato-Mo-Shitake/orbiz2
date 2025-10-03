@@ -3,9 +3,11 @@ import { ODM } from "src/orbiz/managers/OrbizDiaryManager";
 import { NoteLink } from "./NoteLink";
 
 export function DateDisplay({
-    date
+    date,
+    format = "Y-m-d_D"
 }: {
     date: Date | null | undefined
+    format?: "Y-m-d_D" | "Y-m-d_H:i_D"
 }
 ) {
     if (!date) return <span></span>
@@ -14,7 +16,7 @@ export function DateDisplay({
     return (
         <span>
             <NoteLink linkText={dailyNotePath}>
-                {dateFormat(date, "Y-m-d_H:i_D")}
+                {dateFormat(date, format)}
             </NoteLink>
         </span>
     )

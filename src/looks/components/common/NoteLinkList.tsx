@@ -25,8 +25,6 @@ export function NoteLinkList({
         >
             {notes.map(n => (
                 <li key={n.path}>
-
-
                     <NoteLink
                         linkText={n.path}
                         beginningPath={rootNotePath}
@@ -36,8 +34,6 @@ export function NoteLinkList({
                             : getBasenameFromPath(n.path)
                         }
                     </NoteLink>
-
-
                 </li>
             ))}
         </ul>

@@ -1,3 +1,4 @@
+import { ReactNode, useEffect, useState } from "react";
 import { getBasenameFromPath } from "src/assistance/utils/path";
 import { Note } from "src/orbits/contracts/note-orb";
 import { RecursiveTree } from "src/orbits/contracts/tree";
@@ -6,14 +7,16 @@ import { NoteLink } from "./NoteLink";
 
 export function NoteLinkTree({
     noteTree,
+    openTree = false,
     rootNotePath = OAM().rootPath,
     cutSlug
 }: {
     noteTree: RecursiveTree<Note>,
+    openTree?: boolean,
     rootNotePath?: string,
     cutSlug?: string
 }) {
-    const createTree = (noteTrees: RecursiveTree<Note>[]) => {
+    const createTree = (noteTrees: RecursiveTree<Note>[], isOpen: boolean) => {
         return (
             <ul
                 style={{
@@ -23,21 +26,65 @@ export function NoteLinkTree({
             >
                 {noteTrees.map((noteTree) => (
                     <li key={noteTree.hub.id}>
-                        <NoteLink
-                            linkText={noteTree.hub.path}
-                            beginningPath={rootNotePath}
-                        >
-                            {cutSlug
-                                ? getBasenameFromPath(noteTree.hub.path).replace(cutSlug, "")
-                                : getBasenameFromPath(noteTree.hub.path)
-                            }
-                        </NoteLink>
-                        {noteTree.nodes && createTree(noteTree.nodes)}
+                        <NoteLinkTreeAble
+                            noteTree={noteTree}
+                            createTree={createTree}
+                            isOpen={isOpen}
+                            rootNotePath={rootNotePath}
+                            cutSlug={cutSlug}
+                        />
                     </li>
                 ))}
             </ul>
         )
     }
 
-    return createTree([noteTree]);
+    return createTree([noteTree], openTree);
+}
+
+function NoteLinkTreeAble({
+    noteTree,
+    isOpen = false,
+    createTree,
+    rootNotePath = OAM().rootPath,
+    cutSlug
+}: {
+    noteTree: RecursiveTree<Note>,
+    isOpen?: boolean,
+    createTree: (noteTrees: RecursiveTree<Note>[], openTree: boolean) => ReactNode,
+    rootNotePath?: string,
+    cutSlug?: string
+}) {
+    const [openTree, setOpenTree] = useState(isOpen);
+
+    useEffect(() => {
+        setOpenTree(isOpen);
+    }, [isOpen])
+
+    const handleClick = (is: boolean) => {
+        setOpenTree(is);
+    }
+    return (<>
+        <div>
+            {Boolean(noteTree.nodes.length) &&
+                <>
+                    {openTree
+                        ? <span onClick={() => handleClick(false)}>▼</span>
+                        : <span onClick={() => handleClick(true)}>▶︎</span>
+                    }
+                    <span>{" "}</span>
+                </>
+            }
+            <NoteLink
+                linkText={noteTree.hub.path}
+                beginningPath={rootNotePath}
+            >
+                {cutSlug
+                    ? getBasenameFromPath(noteTree.hub.path).replace(cutSlug, "")
+                    : getBasenameFromPath(noteTree.hub.path)
+                }
+            </NoteLink>
+            {Boolean(noteTree.nodes.length) && openTree && createTree(noteTree.nodes, openTree)}
+        </div>
+    </>)
 }

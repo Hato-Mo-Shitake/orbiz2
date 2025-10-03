@@ -4,7 +4,7 @@ import { LinkedNoteDirection } from "src/orbits/contracts/create-note";
 import { FmKey } from "src/orbits/contracts/fmKey";
 import { StdNoteState } from "src/orbits/schema/NoteState";
 import { StoreApi, useStore } from "zustand";
-import { NoteLinkTreeAbleList } from "../../common/NoteLinkTreeAbleList";
+import { NoteLinkTreeList } from "../../common/NoteLinkTreeList";
 
 export function LinkedStdNoteDisplay({
     store,
@@ -20,32 +20,24 @@ export function LinkedStdNoteDisplay({
     header?: string
 }) {
     let ids: string[] = [];
+
     if (direction == "out") {
+        const outLinkIds = useStore(store, (s) => s.outLinkIds);
         ids = StdNoteReader.getOutLinkedNoteList(
             rootNote,
             fmKey,
-            useStore(store, (s) => s.outLinkIds)
+            outLinkIds
         ).map(n => n.id);
     } else if (direction == "in") {
+        const inLinkIds = useStore(store, (s) => s.inLinkIds);
         ids = StdNoteReader.getInLinkedNoteList(
             rootNote,
             fmKey,
-            useStore(store, (s) => s.inLinkIds)
+            inLinkIds
         ).map(n => n.id);
     }
 
     if (!ids.length) return null;
-
-
-    // TODO: わかった。これ、outLinkIds全てをソースにしてるから、全部取ってきちゃってる。
-    // 何があってもルートノートは必ず表示される仕様だからこんなことに。
-    // ああ――ーーーわかった。
-
-
-
-
-    // ここでidsをそれぞれのkeyに合うものに分けないといけない。
-    // 自分自身も含めて表示すること前提のメソッドだから！！！ね。
 
     const noteTrees = ids.map(id => StdNoteReader.buildRecursiveStdNoteTree(
         id,
@@ -55,7 +47,7 @@ export function LinkedStdNoteDisplay({
     if (!noteTrees.length) return null;
     return (<>
         {header && <div>{header}: </div>}
-        <NoteLinkTreeAbleList
+        <NoteLinkTreeList
             noteTrees={noteTrees}
         />
     </>)

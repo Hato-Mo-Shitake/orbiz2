@@ -48,15 +48,22 @@ export class LogNoteViewer<
             <div>
                 {super.getTopSection()}
             </div>
-            < div style={{ margin: "10px", display: "flex", alignItems: "center", gap: "0.2em" }}>
+            < div style={{ marginTop: "0.9em", display: "flex", alignItems: "center", gap: "0.2em" }}>
                 create:
                 <CreateMyNoteButton rootNote={this.note} label="my" />
                 <CreateLogNoteButton rootNote={this.note} label="log" />
             </div >
+            <div style={{ marginTop: "0.5em", marginBottom: "0.5em" }}>
+                <hr />
+            </div>
             {this.fmOrb.status.getView()}
             {this.fmOrb.due.getView()}
             {this.fmOrb.resolved.getView()}
             {this.fmOrb.context.getView()}
+            <div style={{ marginTop: "0.5em", marginBottom: "0.5em" }}>
+                <hr />
+            </div>
+            {this.getLinkedStdNoteList()}
             <h1>Note</h1>
         </>)
     }

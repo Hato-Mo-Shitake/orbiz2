@@ -45,10 +45,9 @@ export abstract class BaseNoteViewer<
     }
 
     getTopSection(): ReactNode {
-
         return (<>
             <div
-                style={{ display: "flex", gap: "1em" }}
+                style={{ margin: "0.8em", display: "flex", gap: "1em" }}
             >
                 <OpenMainMenuButton />
                 <OpenFmDisplayButton
@@ -58,16 +57,18 @@ export abstract class BaseNoteViewer<
                     viewer={this}
                 />
             </div>
-            <div>
-                c:
-                <DateDisplay
-                    date={this.note.created}
-                />
-                |
-                m:
-                <DateDisplay
-                    date={this.note.modified}
-                />
+            <div
+                style={{ marginTop: "0.9em", display: "flex", gap: "0.3em" }}
+            >
+                <span>
+                    c:
+                    <DateDisplay date={this.note.created} />
+                </span>
+                <span>{"|"}</span>
+                <span>
+                    m:
+                    <DateDisplay date={this.note.modified} />
+                </span>
             </div>
         </>)
     }

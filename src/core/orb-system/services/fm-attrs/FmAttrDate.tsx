@@ -143,8 +143,8 @@ export class FmAttrResolved extends FmAttrDate {
     setStore(store: StoreApi<LogNoteState>): void {
         this._store = store;
         const state = store.getState();
-        this._storeGetter = () => state.fmAttrDue;
-        this._storeSetter = (value: Date) => state.setFmAttrDue(value);
+        this._storeGetter = () => state.fmAttrResolved;
+        this._storeSetter = (value: Date) => state.setFmAttrResolved(value);
 
         if (this._value) {
             this._storeSetter(this._value);
