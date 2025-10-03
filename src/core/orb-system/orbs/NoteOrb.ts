@@ -54,11 +54,17 @@ export abstract class StdNoteOrb<TFm extends StdFm = StdFm> extends BaseNoteOrb<
     ) {
         super(note, fmOrb, reader, editor, viewer, store);
     }
+
+    resetStoreInLinkIds() {
+        this.store.getState().setInLinkIds([...this.note.source.inLinkIds]);
+    }
+    resetStoreoutLinkIds() {
+        this.store.getState().setInLinkIds([...this.note.source.outLinkIds]);
+    }
 }
 export function isStdNoteOrb(noteOrb: any): noteOrb is StdNoteOrb {
     return noteOrb instanceof StdNoteOrb;
 }
-
 
 export class MyNoteOrb<TFm extends MyFm = MyFm> extends StdNoteOrb<TFm> {
     protected readonly _noteStore: StoreApi<MyNoteState> | undefined = undefined;

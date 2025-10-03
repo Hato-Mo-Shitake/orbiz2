@@ -8,5 +8,4 @@ export abstract class BaseNoteReader<TFm extends BaseFm = BaseFm> {
         public readonly fmOrb: BaseFmOrb
     ) {
     }
-
 }

@@ -21,4 +21,29 @@ export abstract class DiaryNoteViewer<
     ) {
         super(note, fmOrb, reader, editor, store);
     }
+
+    getFmAttrs(): React.ReactNode {
+        return (<>
+            {super.getFmAttrs()}
+            {this.fmOrb.subType.getView()}
+            {this.fmOrb.score.getView()}
+            {this.fmOrb.isClosed.getView()}
+        </>)
+    }
+    getFmAttrsEditor(): React.ReactNode {
+        return (<>
+            {super.getFmAttrsEditor()}
+            {this.fmOrb.score.getEditableView()}
+            {this.fmOrb.isClosed.getEditableView()}
+        </>)
+    }
+    getTopSection(): React.ReactNode {
+        return (<>
+            <div>
+                {super.getTopSection()}
+            </div>
+            {this.fmOrb.score.getView()}
+            {this.fmOrb.isClosed.getView()}
+        </>)
+    }
 }

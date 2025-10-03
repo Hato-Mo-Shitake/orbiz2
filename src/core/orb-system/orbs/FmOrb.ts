@@ -4,15 +4,21 @@ import { FmAttrAmountSpent, FmAttrRank, FmAttrScore } from "src/core/orb-system/
 import { FmAttrAspect, FmAttrContext, FmAttrId, FmAttrRoleKind, FmAttrStatus, FmAttrSubType, FmAttrType } from "src/core/orb-system/services/fm-attrs/FmAttrString";
 import { FmAttrAliases, FmAttrCategories, FmAttrTags, FmAttrTemplateDone } from "src/core/orb-system/services/fm-attrs/FmAttrStringList";
 import { DiaryNoteType, LogNoteType, MyNoteType, StdNoteType } from "../../../orbits/schema/frontmatters/NoteType";
+import { FmAttr } from "../services/fm-attrs/FmAttr";
 import { FmAttrRoleHub } from "../services/fm-attrs/FmAttrLinkedNote";
-import { FmAttrBelongsTo, FmAttrCreatedNoteIds, FmAttrModifiedNoteIds, FmAttrReferences, FmAttrRelatesTo, FmAttrResolvedNoteIds } from "../services/fm-attrs/FmAttrLinkedNoteList";
+import { FmAttrBelongsTo, FmAttrCreatedNotes, FmAttrModifiedNotes, FmAttrReferences, FmAttrRelatesTo, FmAttrResolvedNotes } from "../services/fm-attrs/FmAttrLinkedNoteList";
 
 export abstract class BaseFmOrb {
+    public readonly attrs: FmAttr[] = [];
     constructor(
         public readonly type: FmAttrType,
         public readonly id: FmAttrId,
         public readonly tags: FmAttrTags,
-    ) { }
+    ) {
+        Object.values(this).forEach((attr: FmAttr) => {
+            this.attrs.push(attr);
+        })
+    }
 }
 
 export abstract class StdFmOrb extends BaseFmOrb {
@@ -113,9 +119,9 @@ export class DailyFmOrb extends DiaryFmOrb {
         score: FmAttrScore,
         isClosed: FmAttrIsClosed,
         readonly theDay: FmAttrTheDay,
-        readonly createdNoteIds: FmAttrCreatedNoteIds,
-        readonly modifiedNoteIds: FmAttrModifiedNoteIds,
-        readonly resolvedNoteIds: FmAttrResolvedNoteIds,
+        readonly createdNotes: FmAttrCreatedNotes,
+        readonly modifiedNotes: FmAttrModifiedNotes,
+        readonly resolvedNotes: FmAttrResolvedNotes,
         readonly amountSpent: FmAttrAmountSpent,
         readonly templateDone: FmAttrTemplateDone,
     ) {

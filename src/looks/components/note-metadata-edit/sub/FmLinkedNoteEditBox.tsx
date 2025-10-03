@@ -17,8 +17,11 @@ export function FmLinkedNoteEditBox({
                 <button onClick={handleCommit}>更新</button>
             </h5>
             <StdNotePicker
-                note={newValue}
+                // note={newValue}
                 onChange={setNewValue}
+                options={{
+                    defaultNote: newValue || undefined
+                }}
             />
         </div>
     )

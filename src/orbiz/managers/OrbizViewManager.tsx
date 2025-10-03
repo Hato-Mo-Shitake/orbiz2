@@ -39,7 +39,7 @@ export class OrbizViewManager {
         if (!(metadataContainer instanceof HTMLElement)) return;
         const tFile = mdView.file;
         if (!tFile) return;
-        const orb = OOM().getStdNoteOrb({ tFile });
+        const orb = OOM().getNoteOrb({ tFile });
         if (!orb) return;
 
         const entry = this.containerRootMap.get(metadataContainer);
@@ -50,8 +50,10 @@ export class OrbizViewManager {
             // new Notice("再レンダリング");
 
 
+            // ここで、ノートが切り替わった先で、元のコンポーネントが残ることがある。
 
-            entry.root.render(orb.viewer.getTestLooks());
+            // entry.root.unmount();
+            entry.root.render(orb.viewer.getTopSection());
             // entry.root.render(<NoteTopSection tFile={tFile} />);
 
 
@@ -69,7 +71,9 @@ export class OrbizViewManager {
 
 
 
-        root.render(orb.viewer.getTestLooks());
+        root.render(
+            orb.viewer.getTopSection()
+        );
         // root.render(<NoteTopSection tFile={tFile} />);
 
 

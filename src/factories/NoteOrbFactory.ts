@@ -5,10 +5,13 @@ import { DiaryNote } from "src/core/domain/DiaryNote";
 import { isLogNote, LogNote } from "src/core/domain/LogNote";
 import { isMyNote, MyNote } from "src/core/domain/MyNote";
 import { StdNote } from "src/core/domain/StdNote";
+import { BaseFmOrb, LogFmOrb, MyFmOrb, StdFmOrb } from "src/core/orb-system/orbs/FmOrb";
 import { DailyNoteOrb, DiaryNoteOrb, LogNoteOrb, MyNoteOrb, StdNoteOrb } from "src/core/orb-system/orbs/NoteOrb";
 import { DailyFm, DiaryFm, isDailyFm, isLogFm, isMyFm, LogFm, MyFm, StdFm } from "src/orbits/schema/frontmatters/fm";
-import { createDailyNoteState, createLogNoteState, createMyNoteState } from "src/orbits/schema/NoteState";
+import { StdNoteSource } from "src/orbits/schema/NoteSource";
+import { BaseNoteState, createDailyNoteState, createLogNoteState, createMyNoteState, LogNoteState, MyNoteState, StdNoteState } from "src/orbits/schema/NoteState";
 import { OAM } from "src/orbiz/managers/OrbizAppManager";
+import { StoreApi } from "zustand";
 import { FmOrbFactory } from "./FmOrbFactory";
 import { NoteEditorFactory } from "./NoteEditorFactory";
 import { NoteFactory } from "./NoteFactory";
@@ -94,10 +97,10 @@ export class NoteOrbFactory {
             // fm = note.fm;
         }
 
+        const store = createMyNoteState();
         const fmOrb = this.fmOrbF.forMy(tFile, { fm: fm });
         if (!fmOrb) return null;
-
-        const store = createMyNoteState(fmOrb, [...note.source.inLinkIds]);
+        this._initializeMyStore(store, fmOrb, note.source);
         return new MyNoteOrb(
             note,
             fmOrb,
@@ -123,10 +126,10 @@ export class NoteOrbFactory {
             // fm = note.fm;
         }
 
+        const store = createLogNoteState();
         const fmOrb = this.fmOrbF.forLog(tFile, { fm: fm });
         if (!fmOrb) return null;
-
-        const store = createLogNoteState(fmOrb, [...note.source.inLinkIds]);
+        this._initializeLogStore(store, fmOrb, note.source);
         return new LogNoteOrb(
             note,
             fmOrb,
@@ -146,7 +149,6 @@ export class NoteOrbFactory {
             const tmp = this.noteF.forDaily({ tFile: src });
             if (!tmp) return null;
             note = tmp;
-
         } else {
             note = src;
             tFile = src.tFile;
@@ -164,5 +166,38 @@ export class NoteOrbFactory {
             this.viewerF.forDaily(note, fmOrb, store),
             store
         );
+    }
+
+    private _initializeBaseStore(store: StoreApi<BaseNoteState>, fmOrb: BaseFmOrb) {
+        fmOrb.tags.setStore(store);
+    }
+    private _initializeStdStore(store: StoreApi<StdNoteState>, fmOrb: StdFmOrb, source: StdNoteSource) {
+        this._initializeBaseStore(store, fmOrb);
+        fmOrb.belongsTo.setStore(store);
+        fmOrb.relatesTo.setStore(store);
+        fmOrb.references.setStore(store);
+
+        const state = store.getState();
+        state.setInLinkIds([...source.inLinkIds]);
+        state.setOutLinkIds([...source.outLinkIds]);
+    }
+
+    private _initializeMyStore(store: StoreApi<MyNoteState>, fmOrb: MyFmOrb, source: StdNoteSource) {
+        this._initializeStdStore(store, fmOrb, source);
+
+        fmOrb.rank.setStore(store);
+        fmOrb.categories.setStore(store);
+        fmOrb.aliases.setStore(store);
+        fmOrb.aspect.setStore(store);
+        fmOrb.roleKind.setStore(store);
+        fmOrb.roleHub.setStore(store);
+    }
+    private _initializeLogStore(store: StoreApi<LogNoteState>, fmOrb: LogFmOrb, source: StdNoteSource) {
+        this._initializeStdStore(store, fmOrb, source);
+
+        fmOrb.status.setStore(store);
+        fmOrb.due.setStore(store);
+        fmOrb.resolved.setStore(store);
+        fmOrb.context.setStore(store);
     }
 }

@@ -20,13 +20,14 @@ export class MyNoteReader<TFm extends MyFm = MyFm> extends StdNoteReader<TFm> {
 
     get linkedNoteIds(): string[] {
         return [
-            ...this.fmOrb.roleHub.value?.id || [],
             ...this.fmOrb.belongsTo.noteIds,
             ...this.fmOrb.relatesTo.noteIds,
             ...this.fmOrb.references.noteIds,
             ...this.getInLinkIds("belongsTo"),
             ...this.getInLinkIds("references"),
             ...this.getInLinkIds("relatesTo"),
+            ...(this.getRoleHubNoteId() || []),
+            ...this.getRoleNodeIds()
         ];
     }
 
@@ -34,27 +35,48 @@ export class MyNoteReader<TFm extends MyFm = MyFm> extends StdNoteReader<TFm> {
         return this.fmOrb.roleHub.value?.id || null;
     }
 
+    getRoleNodeIds(): string[] {
+        const results: string[] = [];
+        const thisNoteName = this.note.baseName;
+        this.note.source.inLinkIds.forEach(id => {
+            const source = OCM().getStdNoteSourceById(id);
+            if (!source) throw new Error("sourceがない: getInLinkIds()")
+
+            const fm = ONM().getFmCacheByPath(source.path);
+            if (!fm) throw new Error("fm cacheがない: getInLinkIds()")
+
+            const iLink = fm["roleHub"];
+            if (!iLink) return;
+            if (thisNoteName == extractNoteNameFromInternalLink(iLink)) {
+                results.push(id);
+            }
+        });
+
+        return results;
+    }
+
     getInLinkIds(key: FmKey<"stdLinkedNoteList"> | FmKey<"roleHub">): string[] {
-        if (key == "roleHub") {
-            const results: string[] = [];
-            const thisNoteName = this.note.baseName;
-            this.note.source.inLinkIds.forEach(id => {
-                const source = OCM().getStdNoteSourceById(id);
-                if (!source) throw new Error("sourceがない: getInLinkIds()")
-
-                const fm = ONM().getFmCacheByPath(source.path);
-                if (!fm) throw new Error("fm cacheがない: getInLinkIds()")
-
-                const iLink = fm["roleHub"];
-                if (!iLink) return;
-                if (thisNoteName == extractNoteNameFromInternalLink(iLink)) {
-                    results.push(id);
-                }
-            });
-
-            return results;
-        } else {
+        if (key != "roleHub") {
             return super.getInLinkIds(key);
         }
+        return this.getRoleNodeIds();
+
+        // const results: string[] = [];
+        // const thisNoteName = this.note.baseName;
+        // this.note.source.inLinkIds.forEach(id => {
+        //     const source = OCM().getStdNoteSourceById(id);
+        //     if (!source) throw new Error("sourceがない: getInLinkIds()")
+
+        //     const fm = ONM().getFmCacheByPath(source.path);
+        //     if (!fm) throw new Error("fm cacheがない: getInLinkIds()")
+
+        //     const iLink = fm["roleHub"];
+        //     if (!iLink) return;
+        //     if (thisNoteName == extractNoteNameFromInternalLink(iLink)) {
+        //         results.push(id);
+        //     }
+        // });
+
+        // return results;
     }
 }

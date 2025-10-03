@@ -11,7 +11,7 @@ export abstract class BaseFmBuilder<TFm extends BaseFm = BaseFm> {
         this._fm["tags"] = [];
     }
 
-    build(isDeepCopy: boolean = false): TFm {
+    build(isDeepCopy = false): TFm {
         // TODO: もっといい方法があれば。。。。
         const fm = this._fm as unknown as TFm;
         // const fm = this._fm;
@@ -79,9 +79,9 @@ export class DailyFmBuilder<TFm extends DailyFm = DailyFm> extends DiaryFmBuilde
         const daily = "daily" as const;
         super(`${daily}_${ODM().getToday()}`, daily);
         this._fm["theDay"] = (new Date()).getTime();
-        this._fm["createdNoteIds"] = [];
-        this._fm["modifiedNoteIds"] = [];
-        this._fm["resolvedNoteIds"] = [];
+        this._fm["createdNotes"] = [];
+        this._fm["modifiedNotes"] = [];
+        this._fm["resolvedNotes"] = [];
         this._fm["amountSpent"] = null;
         this._fm["templateDone"] = [];
     }

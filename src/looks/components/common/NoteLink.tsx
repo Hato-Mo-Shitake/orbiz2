@@ -4,23 +4,23 @@ import { OAM } from "src/orbiz/managers/OrbizAppManager";
 
 export function NoteLink({
     linkText,
-    beginningPath,
+    beginningPath = OAM().rootPath,
     children
 }: {
     linkText: string,
-    beginningPath?: string | null,
+    beginningPath?: string,
     children?: ReactNode | string
 }) {
     const ws = OAM().app.workspace;
-    const sourcePath = beginningPath || OAM().rootPath;
+    // const sourcePath = beginningPath || OAM().rootPath;
     const handleNoteLinkClick = (evt: React.MouseEvent, linkText: string) => {
         if (evt.metaKey) {
             // コマンドキーを押しながらの時
-            ws.openLinkText(linkText, sourcePath, "tab");
+            ws.openLinkText(linkText, beginningPath, "tab");
         } else if (evt.shiftKey) {
-            ws.openLinkText(linkText, sourcePath, "window");
+            ws.openLinkText(linkText, beginningPath, "window");
         } else {
-            ws.openLinkText(linkText, sourcePath);
+            ws.openLinkText(linkText, beginningPath);
         }
     }
 

@@ -53,8 +53,8 @@ export class DailyNoteEditor<TFm extends DailyFm = DailyFm> extends DiaryNoteEdi
             }
         });
 
-        if (cNotes.size) await this.fmOrb.createdNoteIds.mergeNewValue([...cNotes.values()]).commitNewValue();
-        if (mNotes.size) await this.fmOrb.modifiedNoteIds.mergeNewValue([...mNotes.values()]).commitNewValue();
-        if (rNotes.size) await this.fmOrb.resolvedNoteIds.mergeNewValue([...rNotes.values()]).commitNewValue();
+        if (cNotes.size) await this.fmOrb.createdNotes.mergeNewValue([...cNotes.values()]).commitNewValue();
+        if (mNotes.size) await this.fmOrb.modifiedNotes.mergeNewValue([...mNotes.values()]).commitNewValue();
+        if (rNotes.size) await this.fmOrb.resolvedNotes.mergeNewValue([...rNotes.values()]).commitNewValue();
     }
 }

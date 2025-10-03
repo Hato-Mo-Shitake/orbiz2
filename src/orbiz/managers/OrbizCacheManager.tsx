@@ -323,8 +323,11 @@ export class OrbizCacheManager {
         this._stdNoteIdMapByName.delete(oldName);
         this._stdNoteIdMapByName.set(newName, id);
 
-
-
+        for (const orb of this._stdNoteOrbMapById.values()) {
+            // TODO: でバウンスとか考えたほうがいいかも？
+            orb.resetStoreInLinkIds();
+            orb.resetStoreoutLinkIds();
+        }
 
 
         // TODO: inLinks変更の感知が厳しいので、結局こうする。
@@ -431,7 +434,6 @@ export class OrbizCacheManager {
             await this._promptCreateNewNoteForUnresolvedLinks(notHasIdLinks, noteOrb);
         }
 
-
         // ノート内にfmのlinkedNoteに存在しない内部リンクが置かれた時。
         const linkedNoteIds = noteOrb.reader.linkedNoteIds;
         const addLinkedNoteIds: Set<string> = new Set();
@@ -444,6 +446,11 @@ export class OrbizCacheManager {
             await this._promptAddLinkedNotes([...addLinkedNoteIds], noteOrb);
         }
 
+        for (const orb of this._stdNoteOrbMapById.values()) {
+            // TODO: でバウンスとか考えたほうがいいかも？
+            orb.resetStoreInLinkIds();
+            orb.resetStoreoutLinkIds();
+        }
         debugConsole(tFile.path, "キャッシュ更新");
         // reload();
         // TODO: inLinks変更の感知が厳しいので、結局こうする。

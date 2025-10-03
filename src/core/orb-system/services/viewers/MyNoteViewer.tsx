@@ -1,10 +1,10 @@
 import { ReactNode } from "react";
 import { MyNote } from "src/core/domain/MyNote";
+import { CreateLogNoteButton } from "src/looks/components/common-orbiz/CreateLogNoteButton";
+import { CreateMyNoteButton } from "src/looks/components/common-orbiz/CreateMyNoteButton";
+import { CreateRoleNodeButton } from "src/looks/components/common-orbiz/CreateRoleNodeButton";
 import { NoteLink } from "src/looks/components/common/NoteLink";
-import { FmEditBox } from "src/looks/components/fm-edit/main/FmEditBox";
-import { LinkedNoteLinks } from "src/looks/components/fm-view/DisplayLinkedNoteLinks";
-import { AspectIndexTopSection } from "src/looks/components/note-top-section/aspects/AspectIndexTopSection";
-import { MyNoteTopSection } from "src/looks/components/note-top-section/MyNoteTopSection";
+import { LinkedNoteLinks } from "src/looks/components/note-metadata-view/DisplayLinkedNoteLinks";
 import { MyFm } from "src/orbits/schema/frontmatters/fm";
 import { MyNoteState } from "src/orbits/schema/NoteState";
 import { StoreApi } from "zustand";
@@ -28,18 +28,51 @@ export class MyNoteViewer<
         super(note, fmOrb, reader, editor, store);
     }
 
-    getTopSection(): React.ReactNode {
-        let el: ReactNode;
-        switch (this.fmOrb.aspect.value) {
-            case ("index"):
-                el = this._getTopSectionIndex();
-                break;
-            default:
-                el = this._getTopSectionDefault();
-        }
+    getFmAttrs(): React.ReactNode {
         return (<>
-            {el}
-        </>);
+            {super.getFmAttrs()}
+            {this.fmOrb.rank.getView()}
+            {this.fmOrb.categories.getView()}
+            {this.fmOrb.aliases.getView()}
+            {this.fmOrb.aspect.getView()}
+            {this.fmOrb.roleKind.getView()}
+            {this.fmOrb.roleHub.getView()}
+        </>)
+    }
+    getFmAttrsEditor(): React.ReactNode {
+        return (<>
+            {super.getFmAttrsEditor()}
+            {this.fmOrb.rank.getEditableView()}
+            {this.fmOrb.categories.getEditableView()}
+            {this.fmOrb.aliases.getEditableView()}
+            {this.fmOrb.aspect.getEditableView()}
+            {this.fmOrb.roleKind.getEditableView()}
+            {this.fmOrb.roleHub.getEditableView()}
+        </>)
+    }
+
+    getTopSection(): React.ReactNode {
+        return (<>
+            <div>
+                {super.getTopSection()}
+            </div>
+            < div style={{ margin: "10px", display: "flex", alignItems: "center", gap: "0.2em" }}>
+                create:
+                <div style={{ margin: "10px", display: "flex", alignItems: "center", gap: "0.0em" }}>
+                    <CreateMyNoteButton rootNote={this.note} label="my" />
+                    <div>
+                        <span>（</span>
+                        <CreateRoleNodeButton rootNote={this.note} label="role-node" />
+                        <span>）</span>
+                    </div>
+                </div>
+                <CreateLogNoteButton rootNote={this.note} label="log" />
+            </div >
+            {this.fmOrb.tags.getView()}
+            {this.fmOrb.categories.getView()}
+            {this.getLinkedStdNoteList()}
+            <h1>Note</h1>
+        </>)
     }
     getRoleHub(): ReactNode {
         const hub = this.fmOrb.roleHub.value;
@@ -59,39 +92,39 @@ export class MyNoteViewer<
         />
     }
 
-    getFmEditBox(): ReactNode {
-        return (<>
-            <FmEditBox editor={this.editor} >
-                {this.fmViewers.map(viewer => (
-                    <div key={viewer.fmKey}>
-                        {
-                            (!viewer.isImmutable && !["roleHub", "roleKind"].includes(viewer.fmKey))
-                            && viewer.getEditBox()
-                        }
-                    </div>
-                ))}
-            </FmEditBox>
-        </>)
-    }
+    // getFmEditBox(): ReactNode {
+    //     return (<>
+    //         <FmEditBox editor={this.editor} >
+    //             {this.fmViewers.map(viewer => (
+    //                 <div key={viewer.fmKey}>
+    //                     {
+    //                         (!viewer.isImmutable && !["roleHub", "roleKind"].includes(viewer.fmKey))
+    //                         && viewer.getEditBox()
+    //                     }
+    //                 </div>
+    //             ))}
+    //         </FmEditBox>
+    //     </>)
+    // }
     protected _getTopSectionDefault(): ReactNode {
         return (<>
-            {super.getTopSection()}
+            {/* {super.getTopSection()}
             <div style={{ margin: "3px" }}>
                 <MyNoteTopSection
                     viewer={this}
                 />
             </div>
-            <h1>Note</h1>
+            <h1>Note</h1> */}
         </>)
     }
     protected _getTopSectionIndex(): ReactNode {
         return (<>
-            <div style={{ margin: "3px" }}>
+            {/* <div style={{ margin: "3px" }}>
                 <AspectIndexTopSection
                     viewer={this}
                 />
             </div>
-            <hr />
+            <hr /> */}
         </>)
     }
 }

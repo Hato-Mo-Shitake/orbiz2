@@ -1,5 +1,6 @@
 import { LogNote } from "src/core/domain/LogNote";
-import { LogNoteTopSection } from "src/looks/components/note-top-section/LogNoteTopSection";
+import { CreateLogNoteButton } from "src/looks/components/common-orbiz/CreateLogNoteButton";
+import { CreateMyNoteButton } from "src/looks/components/common-orbiz/CreateMyNoteButton";
 import { LogFm } from "src/orbits/schema/frontmatters/fm";
 import { LogNoteState } from "src/orbits/schema/NoteState";
 import { StoreApi } from "zustand";
@@ -23,16 +24,40 @@ export class LogNoteViewer<
         super(note, fmOrb, reader, editor, store);
     }
 
+    getFmAttrs(): React.ReactNode {
+        return (<>
+            {super.getFmAttrs()}
+            {this.fmOrb.status.getView()}
+            {this.fmOrb.due.getView()}
+            {this.fmOrb.resolved.getView()}
+            {this.fmOrb.context.getView()}
+        </>)
+    }
+    getFmAttrsEditor(): React.ReactNode {
+        return (<>
+            {super.getFmAttrsEditor()}
+            {this.fmOrb.status.getEditableView()}
+            {this.fmOrb.due.getEditableView()}
+            {this.fmOrb.resolved.getEditableView()}
+            {this.fmOrb.context.getEditableView()}
+        </>)
+    }
+
     getTopSection(): React.ReactNode {
         return (<>
-            {super.getTopSection()}
-            <div style={{ margin: "3px" }}>
-                <LogNoteTopSection
-                    viewer={this}
-                />
+            <div>
+                {super.getTopSection()}
             </div>
-
+            < div style={{ margin: "10px", display: "flex", alignItems: "center", gap: "0.2em" }}>
+                create:
+                <CreateMyNoteButton rootNote={this.note} label="my" />
+                <CreateLogNoteButton rootNote={this.note} label="log" />
+            </div >
+            {this.fmOrb.status.getView()}
+            {this.fmOrb.due.getView()}
+            {this.fmOrb.resolved.getView()}
+            {this.fmOrb.context.getView()}
             <h1>Note</h1>
-        </>);
+        </>)
     }
 }

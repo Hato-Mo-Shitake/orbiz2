@@ -2,12 +2,20 @@ import { TFile } from "obsidian";
 import { ReactNode } from "react";
 import { dateFormat } from "src/assistance/utils/date";
 import { isValidDate } from "src/assistance/utils/validation";
-import { FmDateEditBox } from "src/looks/components/fm-edit/sub/FmDateEditBoc";
+import { FmAttrTheDayEditor } from "src/looks/components/note-metadata-edit/daily/FmAttrTheDayEditor";
+import { FmAttrDueEditor } from "src/looks/components/note-metadata-edit/log/FmAttrDueEditor";
+import { FmAttrResolvedEditor } from "src/looks/components/note-metadata-edit/log/FmAttrResolvedEditor";
+import { FmDateEditBox } from "src/looks/components/note-metadata-edit/sub/FmDateEditBoc";
+import { FmAttrTheDayDisplay } from "src/looks/components/note-metadata-view/daily/FmAttrTheDayDisplay";
+import { FmAttrDueDisplay } from "src/looks/components/note-metadata-view/log/FmAttrDueDisplay";
+import { FmAttrResolvedDisplay } from "src/looks/components/note-metadata-view/log/FmAttrResolvedDisplay";
 import { FmKey } from "src/orbits/contracts/fmKey";
+import { DailyNoteState, LogNoteState } from "src/orbits/schema/NoteState";
 import { ODM } from "src/orbiz/managers/OrbizDiaryManager";
 import { OEM } from "src/orbiz/managers/OrbizErrorManager";
 import { ONM } from "src/orbiz/managers/OrbizNoteManager";
 import { ORM } from "src/orbiz/managers/OrbizRepositoryManager";
+import { StoreApi } from "zustand";
 import { FmAttr } from "./FmAttr";
 
 abstract class FmAttrDate extends FmAttr<Date | null> {
@@ -74,6 +82,7 @@ abstract class FmAttrDate extends FmAttr<Date | null> {
 }
 
 export class FmAttrDue extends FmAttrDate {
+    protected _store: StoreApi<LogNoteState> | null;
     constructor(
         tFile: TFile,
         timestamp: number | null | undefined,
@@ -84,9 +93,39 @@ export class FmAttrDue extends FmAttrDate {
             timestamp,
         );
     }
+
+    setStore(store: StoreApi<LogNoteState>): void {
+        this._store = store;
+        const state = store.getState();
+        this._storeGetter = () => state.fmAttrDue;
+        this._storeSetter = (value: Date) => state.setFmAttrDue(value);
+
+        if (this._value) {
+            this._storeSetter(this._value);
+        }
+    }
+
+    getView(): ReactNode {
+        if (!this._store) return null;
+        return (<>
+            <FmAttrDueDisplay
+                store={this._store}
+            />
+        </>)
+    }
+    getEditableView(): ReactNode {
+        if (!this._store) return null;
+        return (<>
+            <FmAttrDueEditor
+                store={this._store}
+                fmAttr={this}
+            />
+        </>)
+    }
 }
 
 export class FmAttrResolved extends FmAttrDate {
+    protected _store: StoreApi<LogNoteState> | null;
     constructor(
         tFile: TFile,
         timestamp: number | null | undefined,
@@ -101,6 +140,35 @@ export class FmAttrResolved extends FmAttrDate {
         );
     }
 
+    setStore(store: StoreApi<LogNoteState>): void {
+        this._store = store;
+        const state = store.getState();
+        this._storeGetter = () => state.fmAttrDue;
+        this._storeSetter = (value: Date) => state.setFmAttrDue(value);
+
+        if (this._value) {
+            this._storeSetter(this._value);
+        }
+    }
+
+    getView(): ReactNode {
+        if (!this._store) return null;
+        return (<>
+            <FmAttrResolvedDisplay
+                store={this._store}
+            />
+        </>)
+    }
+    getEditableView(): ReactNode {
+        if (!this._store) return null;
+        return (<>
+            <FmAttrResolvedEditor
+                store={this._store}
+                fmAttr={this}
+            />
+        </>)
+    }
+
     protected afterCommit(): void {
         super.afterCommit();
         const id = ONM().getNoteIdByTFile(this.tFile);
@@ -110,6 +178,7 @@ export class FmAttrResolved extends FmAttrDate {
 }
 
 export class FmAttrTheDay extends FmAttrDate {
+    protected _store: StoreApi<DailyNoteState> | null;
     constructor(
         tFile: TFile,
         timestamp: number | null | undefined,
@@ -119,5 +188,34 @@ export class FmAttrTheDay extends FmAttrDate {
             "theDay",
             timestamp,
         );
+    }
+
+    setStore(store: StoreApi<DailyNoteState>): void {
+        this._store = store;
+        const state = store.getState();
+        this._storeGetter = () => state.fmAttrTheDay;
+        this._storeSetter = (value: Date) => state.setFmAttrTheDay(value);
+
+        if (this._value) {
+            this._storeSetter(this._value);
+        }
+    }
+
+    getView(): ReactNode {
+        if (!this._store) return null;
+        return (<>
+            <FmAttrTheDayDisplay
+                store={this._store}
+            />
+        </>)
+    }
+    getEditableView(): ReactNode {
+        if (!this._store) return null;
+        return (<>
+            <FmAttrTheDayEditor
+                store={this._store}
+                fmAttr={this}
+            />
+        </>)
     }
 }

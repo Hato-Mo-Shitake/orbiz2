@@ -3,32 +3,47 @@ import { ReactNode } from "react";
 import { FmAttrEditor, FmAttrViewer } from "src/orbits/contracts/fmAttr";
 import { FmKey } from "src/orbits/contracts/fmKey";
 import { Listener } from "src/orbits/contracts/observer";
+import { BaseNoteState } from "src/orbits/schema/NoteState";
 import { ORM } from "src/orbiz/managers/OrbizRepositoryManager";
+import { StoreApi } from "zustand";
 
-export abstract class FmAttr<TValue = any> implements FmAttrEditor<TValue>, FmAttrViewer<TValue> {
+export abstract class FmAttr<TValue = any, TNoteState extends BaseNoteState = BaseNoteState> implements FmAttrEditor<TValue>, FmAttrViewer<TValue> {
     protected _newValue: TValue | undefined = undefined;
 
     protected _listeners = new Set<Listener<TValue | null>>();
     protected _caches: Partial<Record<string, any>> = {};
+
+    protected _store: StoreApi<TNoteState> | null = null;
+    protected _storeGetter: (() => TValue | null) | null = null;
+    protected _storeSetter: ((value: TValue) => void) | null = null;
 
     constructor(
         readonly tFile: TFile,
         readonly fmKey: FmKey,
         readonly isImmutable: boolean,
         protected _value: TValue | null,
+        // protected _store?: StoreApi<NoteMetadataState<TValue>>,
     ) {
         if ((_value !== null) && !this.validate(_value)) {
             throw Error(`validation error. in FmAttr constructor. fmKey is ${fmKey}`);
         }
+
     }
 
     get value(): TValue | null {
+        // if (this._storeGetter) {
+        //     return this._storeGetter();
+        // }
         return this._value;
     }
 
     get newValue(): TValue | undefined {
         return this._newValue;
     }
+
+    abstract setStore(store: StoreApi<TNoteState>): void;
+    abstract getView(): ReactNode;
+    abstract getEditableView(): ReactNode;
 
     abstract validate(value: TValue): boolean;
     abstract filter(value: TValue): TValue | null;
@@ -55,15 +70,25 @@ export abstract class FmAttr<TValue = any> implements FmAttrEditor<TValue>, FmAt
         }
 
         await ORM().noteR.updateFmAttr(this.tFile, this.fmKey, filteredValue);
-        this._value = this._newValue || null;
+        this._value = structuredClone(this._newValue) || null;
         this.afterCommit();
     }
 
-    getLooks(): ReactNode {
-        // NOTE: 結局、メタデータの更新時は全部リロードすることにする。inLinksの感知が難しいため。
-        return <div>{this.fmKey}: {String(this.value)}</div>;
-    }
-    abstract getEditBox(): ReactNode;
+    // getLooks(): ReactNode {
+    //     // NOTE: 結局、メタデータの更新時は全部リロードすることにする。inLinksの感知が難しいため。
+
+
+    //     // ここでstoreがあればstoreを使う。
+
+    //     // TODO: もうFmAttrにLooksを持たせるのはやめようか。
+    //     // storeを持たないといけなくなるけど、fmAttr自身は,stdとかmyとか知らないから管理しづらい。
+
+    //     return <div>{this.fmKey}: {String(this.value)}</div>;
+
+
+
+    // }
+    // abstract getEditBox(): ReactNode;
 
     addListener(listener: Listener<TValue>): void {
         this._listeners.add(listener);
@@ -79,6 +104,10 @@ export abstract class FmAttr<TValue = any> implements FmAttrEditor<TValue>, FmAt
 
     protected afterCommit() {
         // this._value = this._newValue || null;
+        if (this._newValue) {
+            this._storeSetter?.(this._newValue);
+            // this._store?.setState(this._newValue);
+        }
         this._newValue = undefined;
         this.notify();
         this._caches = {};

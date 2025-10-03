@@ -1,8 +1,9 @@
 import { ReactNode } from "react";
 import { BaseNote } from "src/core/domain/Note";
+import { OpenFmDisplayButton } from "src/looks/components/common-orbiz/OpenFmDisplayButton";
 import { OpenFmEditButton } from "src/looks/components/common-orbiz/OpenFmEditButton";
 import { OpenMainMenuButton } from "src/looks/components/common-orbiz/OpenMainMenuButton";
-import { FmEditBox } from "src/looks/components/fm-edit/main/FmEditBox";
+import { DateDisplay } from "src/looks/components/common/DateDisplay";
 import { FmAttrViewer } from "src/orbits/contracts/fmAttr";
 import { BaseFm } from "src/orbits/schema/frontmatters/fm";
 import { BaseNoteState } from "src/orbits/schema/NoteState";
@@ -29,40 +30,69 @@ export abstract class BaseNoteViewer<
         })
     }
 
+    getFmAttrs(): ReactNode {
+        return (<>
+            {this.fmOrb.id.getView()}
+            {this.fmOrb.type.getView()}
+            {this.fmOrb.tags.getView()}
+        </>)
+    }
+
+    getFmAttrsEditor(): ReactNode {
+        return (<>
+            {this.fmOrb.tags.getEditableView()}
+        </>)
+    }
+
     getTopSection(): ReactNode {
+
         return (<>
             <div
                 style={{ display: "flex", gap: "1em" }}
             >
                 <OpenMainMenuButton />
+                <OpenFmDisplayButton
+                    viewer={this}
+                />
                 <OpenFmEditButton
                     viewer={this}
+                />
+            </div>
+            <div>
+                c:
+                <DateDisplay
+                    date={this.note.created}
+                />
+                |
+                m:
+                <DateDisplay
+                    date={this.note.modified}
                 />
             </div>
         </>)
     }
 
-    getFmLooks(): ReactNode {
-        return (
-            <ul>
-                {this.fmViewers.map(viewer => (
-                    <li key={viewer.fmKey}>
-                        {viewer.getLooks()}
-                    </li>
-                ))}
-            </ul>
-        );
-    }
+    // getFmLooks(): ReactNode {
+    //     return (
+    //         <ul>
+    //             {this.fmViewers.map(viewer => (
+    //                 <li key={viewer.fmKey}>
+    //                     {viewer.getLooks()}
+    //                 </li>
+    //             ))}
+    //         </ul>
+    //     );
+    // }
 
-    getFmEditBox(): ReactNode {
-        return (<>
-            <FmEditBox editor={this.editor} >
-                {this.fmViewers.map(viewer => (
-                    <div key={viewer.fmKey}>
-                        {!viewer.isImmutable && viewer.getEditBox()}
-                    </div>
-                ))}
-            </FmEditBox>
-        </>)
-    }
+    // getFmEditBox(): ReactNode {
+    //     return (<>
+    //         <FmEditBox editor={this.editor} >
+    //             {this.fmViewers.map(viewer => (
+    //                 <div key={viewer.fmKey}>
+    //                     {!viewer.isImmutable && viewer.getEditBox()}
+    //                 </div>
+    //             ))}
+    //         </FmEditBox>
+    //     </>)
+    // }
 }

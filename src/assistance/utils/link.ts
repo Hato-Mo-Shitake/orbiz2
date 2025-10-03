@@ -1,5 +1,5 @@
 export function extractNoteNameFromInternalLink(link: string): string | null {
-    const match = link.match(/\[\[(?:.*\/)?([^\/|\]]+)(?:\|.*)?\]\]/);
+    const match = link.match(/\[\[(?:.*\/)?([^/|\]]+)(?:\|.*)?\]\]/);
     if (!match) return null;
 
     const fileName = match[1];

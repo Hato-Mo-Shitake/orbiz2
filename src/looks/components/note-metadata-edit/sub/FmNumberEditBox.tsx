@@ -21,7 +21,7 @@ export function FmNumberEditBox({
             </h5>
             <input
                 type="number"
-                placeholder={fmEditor.value.toString()}
+                // placeholder={fmEditor.value.toString()}
                 onChange={_handleChange}
                 value={newValue || ""}
                 style={{ width: "80%", padding: "8px", boxSizing: "border-box" }}

@@ -2,16 +2,24 @@ import { TFile } from "obsidian";
 import { ReactNode } from "react";
 import { arraysEqual } from "src/assistance/utils/array";
 import { StdNote } from "src/core/domain/StdNote";
-import { FmLinkedNoteListEditBox } from "src/looks/components/fm-edit/sub/FmLinkedNoteListEditBox";
+import { FmAttrDailyLinkedNoteListEditor } from "src/looks/components/note-metadata-edit/daily/FmAttrDailyLinkedNoteListEditor";
+import { FmAttrLinkedNoteListEditor } from "src/looks/components/note-metadata-edit/std/FmAttrLinkedNoteListEditor";
+import { FmLinkedNoteListEditBox } from "src/looks/components/note-metadata-edit/sub/FmLinkedNoteListEditBox";
+import { FmAttrDailyLinkedNoteListDisplay } from "src/looks/components/note-metadata-view/daily/FmAttrDailyLinkedNoteListDisplay";
+import { FmAttrLinkedNoteListDisplay } from "src/looks/components/note-metadata-view/std/FmAttrLinkedNoteListDisplay";
 import { FmAttrList } from "src/orbits/contracts/fmAttr";
 import { FmKey } from "src/orbits/contracts/fmKey";
+import { DailyNoteState, StdNoteState } from "src/orbits/schema/NoteState";
 import { OEM } from "src/orbiz/managers/OrbizErrorManager";
 import { ONM } from "src/orbiz/managers/OrbizNoteManager";
 import { ORM } from "src/orbiz/managers/OrbizRepositoryManager";
+import { StoreApi } from "zustand";
 import { FmAttr } from "./FmAttr";
 
 type RawFmValueForLinkedNote = "noteId" | "internalLink";
 export abstract class FmAttrLinkedNoteList extends FmAttr<StdNote[]> implements FmAttrList<StdNote> {
+
+    // protected _store: StoreApi<StdNoteState> | null;
     constructor(
         tFile: TFile,
         fmKey: FmKey<"linkedNoteList">,
@@ -50,6 +58,9 @@ export abstract class FmAttrLinkedNoteList extends FmAttr<StdNote[]> implements 
     }
 
     get value(): StdNote[] {
+        // if (this._storeGetter) {
+        //     return this._storeGetter() || [];
+        // }
         return this._value || [];
     }
 
@@ -135,6 +146,7 @@ export abstract class FmAttrLinkedNoteList extends FmAttr<StdNote[]> implements 
 }
 
 export class FmAttrBelongsTo extends FmAttrLinkedNoteList {
+    protected _store: StoreApi<StdNoteState> | null;
     constructor(
         tFile: TFile,
         _value: string[] | null | undefined,
@@ -146,9 +158,42 @@ export class FmAttrBelongsTo extends FmAttrLinkedNoteList {
             "internalLink"
         )
     }
+
+    setStore(store: StoreApi<StdNoteState>): void {
+        this._store = store;
+        const state = store.getState();
+        this._storeGetter = () => state.fmAttrBelongsTo;
+        this._storeSetter = (value: StdNote[]) => state.setFmAttrBelongsTo(value);
+        if (this._value) {
+            this._storeSetter(this._value);
+        }
+    }
+
+    getView(): ReactNode {
+        if (!this._store) return null;
+        return (<>
+            <FmAttrLinkedNoteListDisplay
+                store={this._store}
+                selector={(state) => state.fmAttrBelongsTo}
+                header={this.fmKey}
+            />
+        </>)
+    }
+
+    getEditableView(): ReactNode {
+        if (!this._store) return null;
+        return (<>
+            <FmAttrLinkedNoteListEditor
+                store={this._store}
+                selector={(s) => s.fmAttrBelongsTo}
+                fmAttr={this}
+            />
+        </>)
+    }
 }
 
 export class FmAttrRelatesTo extends FmAttrLinkedNoteList {
+    protected _store: StoreApi<StdNoteState> | null;
     constructor(
         tFile: TFile,
         _value: string[] | undefined | null,
@@ -160,9 +205,39 @@ export class FmAttrRelatesTo extends FmAttrLinkedNoteList {
             "internalLink"
         )
     }
+
+    setStore(store: StoreApi<StdNoteState>): void {
+        this._store = store;
+        const state = store.getState();
+        this._storeGetter = () => state.fmAttrRelatesTo;
+        this._storeSetter = (value: StdNote[]) => state.setFmAttrRelatesTo(value);
+        this._storeSetter(this.value);
+    }
+
+    getView(): ReactNode {
+        if (!this._store) return null;
+        return (<>
+            <FmAttrLinkedNoteListDisplay
+                store={this._store}
+                selector={(state) => state.fmAttrRelatesTo}
+                header={this.fmKey}
+            />
+        </>)
+    }
+    getEditableView(): ReactNode {
+        if (!this._store) return null;
+        return (<>
+            <FmAttrLinkedNoteListEditor
+                store={this._store}
+                selector={(s) => s.fmAttrRelatesTo}
+                fmAttr={this}
+            />
+        </>)
+    }
 }
 
 export class FmAttrReferences extends FmAttrLinkedNoteList {
+    protected _store: StoreApi<StdNoteState> | null;
     constructor(
         tFile: TFile,
         _value: string[] | null | undefined,
@@ -174,46 +249,165 @@ export class FmAttrReferences extends FmAttrLinkedNoteList {
             "internalLink"
         )
     }
+
+    setStore(store: StoreApi<StdNoteState>): void {
+        this._store = store;
+        const state = store.getState();
+        this._storeGetter = () => state.fmAttrReferences;
+        this._storeSetter = (value: StdNote[]) => state.setFmAttrReferences(value);
+        this._storeSetter(this.value);
+    }
+
+    getView(): ReactNode {
+        if (!this._store) return null;
+        return (<>
+            <FmAttrLinkedNoteListDisplay
+                store={this._store}
+                selector={(state) => state.fmAttrReferences}
+                header={this.fmKey}
+            />
+        </>)
+    }
+    getEditableView(): ReactNode {
+        if (!this._store) return null;
+        return (<>
+            <FmAttrLinkedNoteListEditor
+                store={this._store}
+                selector={(s) => s.fmAttrReferences}
+                fmAttr={this}
+            />
+        </>)
+    }
 }
 
-export class FmAttrCreatedNoteIds extends FmAttrLinkedNoteList {
+export class FmAttrCreatedNotes extends FmAttrLinkedNoteList {
+    protected _store: StoreApi<DailyNoteState> | null;
     constructor(
         tFile: TFile,
         _value: string[] | null | undefined,
     ) {
         super(
             tFile,
-            "createdNoteIds",
+            "createdNotes",
             _value || [],
             "noteId"
         )
     }
+
+    setStore(store: StoreApi<DailyNoteState>): void {
+        this._store = store;
+        const state = store.getState();
+        this._storeGetter = () => state.fmAttrCreatedNotes;
+        this._storeSetter = (value: StdNote[]) => state.setFmAttrCreatedNotes(value);
+        this._storeSetter(this.value);
+    }
+
+    getView(): ReactNode {
+        if (!this._store) return null;
+        return (<>
+            <FmAttrDailyLinkedNoteListDisplay
+                store={this._store}
+                selector={(state) => state.fmAttrCreatedNotes}
+                header={this.fmKey}
+            />
+        </>)
+    }
+    getEditableView(): ReactNode {
+        if (!this._store) return null;
+        return (<>
+            <FmAttrDailyLinkedNoteListEditor
+                store={this._store}
+                selector={(s) => s.fmAttrCreatedNotes}
+                fmAttr={this}
+            />
+        </>)
+    }
 }
 
-export class FmAttrModifiedNoteIds extends FmAttrLinkedNoteList {
+export class FmAttrModifiedNotes extends FmAttrLinkedNoteList {
+    protected _store: StoreApi<DailyNoteState> | null;
     constructor(
         tFile: TFile,
         _value: string[] | null | undefined,
     ) {
         super(
             tFile,
-            "modifiedNoteIds",
+            "modifiedNotes",
             _value || [],
             "noteId"
         )
     }
+
+    setStore(store: StoreApi<DailyNoteState>): void {
+        this._store = store;
+        const state = store.getState();
+        this._storeGetter = () => state.fmAttrModifiedNotes;
+        this._storeSetter = (value: StdNote[]) => state.setFmAttrModifiedNotes(value);
+        this._storeSetter(this.value);
+    }
+
+    getView(): ReactNode {
+        if (!this._store) return null;
+        return (<>
+            <FmAttrDailyLinkedNoteListDisplay
+                store={this._store}
+                selector={(state) => state.fmAttrModifiedNotes}
+                header={this.fmKey}
+            />
+        </>)
+    }
+    getEditableView(): ReactNode {
+        if (!this._store) return null;
+        return (<>
+            <FmAttrDailyLinkedNoteListEditor
+                store={this._store}
+                selector={(s) => s.fmAttrModifiedNotes}
+                fmAttr={this}
+            />
+        </>)
+    }
 }
 
-export class FmAttrResolvedNoteIds extends FmAttrLinkedNoteList {
+export class FmAttrResolvedNotes extends FmAttrLinkedNoteList {
+    protected _store: StoreApi<DailyNoteState> | null;
     constructor(
         tFile: TFile,
         _value: string[] | null | undefined,
     ) {
         super(
             tFile,
-            "resolvedNoteIds",
+            "resolvedNotes",
             _value || [],
             "noteId"
         )
+    }
+
+    setStore(store: StoreApi<DailyNoteState>): void {
+        this._store = store;
+        const state = store.getState();
+        this._storeGetter = () => state.fmAttrResolvedNotes;
+        this._storeSetter = (value: StdNote[]) => state.setFmAttrResolvedNotes(value);
+        this._storeSetter(this.value);
+    }
+
+    getView(): ReactNode {
+        if (!this._store) return null;
+        return (<>
+            <FmAttrDailyLinkedNoteListDisplay
+                store={this._store}
+                selector={(state) => state.fmAttrResolvedNotes}
+                header={this.fmKey}
+            />
+        </>)
+    }
+    getEditableView(): ReactNode {
+        if (!this._store) return null;
+        return (<>
+            <FmAttrDailyLinkedNoteListEditor
+                store={this._store}
+                selector={(s) => s.fmAttrResolvedNotes}
+                fmAttr={this}
+            />
+        </>)
     }
 }

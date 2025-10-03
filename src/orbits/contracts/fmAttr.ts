@@ -38,8 +38,10 @@ export function isFmAttrEditor(editor: unknown): editor is FmAttrEditor<any> {
 }
 
 export interface FmAttrViewer<TValue = any> extends FmAttrReader<TValue>, Observer<TValue> {
-    getLooks(): ReactNode;
-    getEditBox(): ReactNode;
+    // getLooks(): ReactNode;
+    // getEditBox(): ReactNode;
+    getView(): ReactNode;
+    getEditableView(): ReactNode;
 }
 export function isFmAttrViewer(viewer: unknown): viewer is FmAttrViewer {
     return (

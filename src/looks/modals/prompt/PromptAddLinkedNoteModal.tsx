@@ -1,7 +1,7 @@
 import { Modal } from "obsidian";
 import { createRoot, Root } from "react-dom/client";
 import { StdNoteOrb } from "src/core/orb-system/orbs/NoteOrb";
-import { AddLinkedNoteListBox } from "src/looks/components/fm-edit/main/AddLinkedNoteListBox";
+import { AddLinkedNoteListBox } from "src/looks/components/note-metadata-edit/main/AddLinkedNoteListBox";
 import { OAM } from "src/orbiz/managers/OrbizAppManager";
 
 

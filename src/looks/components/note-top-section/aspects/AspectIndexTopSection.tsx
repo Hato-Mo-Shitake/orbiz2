@@ -1,9 +1,8 @@
 import { MyNoteViewer } from "src/core/orb-system/services/viewers/MyNoteViewer";
-import { FoldingElement } from "../../common/FoldingElement";
 
 export function AspectIndexTopSection({ viewer }: { viewer: MyNoteViewer }) {
     return (<>
-        <FoldingElement header="parent" hLevel={3}>
+        {/* <FoldingElement header="parent" hLevel={3}>
             {viewer.getOutLinkTree("belongsTo")}
         </FoldingElement>
         <div>
@@ -21,6 +20,6 @@ export function AspectIndexTopSection({ viewer }: { viewer: MyNoteViewer }) {
             {viewer.getInLinkTree("references")}
             <h3>references</h3>
             {viewer.getOutLinkTree("references")}
-        </FoldingElement>
+        </FoldingElement> */}
     </>);
 }

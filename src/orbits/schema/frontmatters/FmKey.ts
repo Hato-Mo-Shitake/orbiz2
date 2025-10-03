@@ -77,16 +77,16 @@ export const fmKeysForDiaryNote = [
 export type FmKeyForDiaryNote = typeof fmKeysForDiaryNote[number];
 
 const theDay = "theDay" as const;
-const createdNoteIds = "createdNoteIds" as const;
-const modifiedNoteIds = "modifiedNoteIds" as const;
-const resolvedNoteIds = "resolvedNoteIds" as const;
+const createdNotes = "createdNotes" as const;
+const modifiedNotes = "modifiedNotes" as const;
+const resolvedNotes = "resolvedNotes" as const;
 const amountSpent = "amountSpent" as const;
 const templateDone = "templateDone" as const;
 export const fmKeysForJustDailyNote = [
     theDay,
-    createdNoteIds,
-    modifiedNoteIds,
-    resolvedNoteIds,
+    createdNotes,
+    modifiedNotes,
+    resolvedNotes,
     amountSpent,
     templateDone
 ] as const;
@@ -174,9 +174,9 @@ export type FmKeyForStdLinkedNoteList = typeof fmKeysForStdLinkedNoteList[number
 export type FmKeyForRoleHub = typeof roleHub;
 
 export const fmKeysForDailyLinkedNoteList = [
-    createdNoteIds,
-    modifiedNoteIds,
-    resolvedNoteIds
+    createdNotes,
+    modifiedNotes,
+    resolvedNotes
 ] as const;
 export type FmKeyForDailyLinkedNoteList = typeof fmKeysForDailyLinkedNoteList[number];
 

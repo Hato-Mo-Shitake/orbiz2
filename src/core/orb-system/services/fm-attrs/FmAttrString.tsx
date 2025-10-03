@@ -1,12 +1,26 @@
 import { TFile } from "obsidian";
 import { ReactNode } from "react";
-import { FmAttrSelectBox } from "src/looks/components/fm-edit/sub/FmAttrSelectBox";
-import { FmStringEditBox } from "src/looks/components/fm-edit/sub/FmStringEditBox";
+import { FmAttrContextEditor } from "src/looks/components/note-metadata-edit/log/FmAttrContextEditor";
+import { FmAttrStatusEditor } from "src/looks/components/note-metadata-edit/log/FmAttrStatusEditor";
+import { FmAttrAspectEditor } from "src/looks/components/note-metadata-edit/my/FmAttrAspectEditor";
+import { FmAttrRoleKindEditor } from "src/looks/components/note-metadata-edit/my/FmAttrRoleKindEditor";
+import { FmAttrSelectBox } from "src/looks/components/note-metadata-edit/sub/FmAttrSelectBox";
+import { FmStringEditBox } from "src/looks/components/note-metadata-edit/sub/FmStringEditBox";
+import { FmAttrIdDisplay } from "src/looks/components/note-metadata-view/base/FmAttrIdDisplay";
+import { FmAttrTypeDisplay } from "src/looks/components/note-metadata-view/base/FmAttrTypeDisplay";
+import { FmAttrContextDisplay } from "src/looks/components/note-metadata-view/log/FmAttrContextDisplay";
+import { FmAttrStatusDisplay } from "src/looks/components/note-metadata-view/log/FmAttrStatusDisplay";
+import { FmAttrAspectDisplay } from "src/looks/components/note-metadata-view/my/FmAttrAspectDisplay";
+import { FmAttrRoleKindDisplay } from "src/looks/components/note-metadata-view/my/FmAttrRoleKindDisplay";
+import { FmAttrSubTypeDisplay } from "src/looks/components/note-metadata-view/std/FmAttrSubTypeDisplay";
 import { FmKey } from "src/orbits/contracts/fmKey";
 import { MyNoteAspect, myNoteAspectList } from "src/orbits/schema/frontmatters/Aspect";
 import { DiaryNoteType, LogNoteType, MyNoteType, NoteType } from "src/orbits/schema/frontmatters/NoteType";
 import { LogNoteStatus, logNoteStatusList } from "src/orbits/schema/frontmatters/Status";
+import { LogNoteState, MyNoteState } from "src/orbits/schema/NoteState";
+import { OEM } from "src/orbiz/managers/OrbizErrorManager";
 import { OSM } from "src/orbiz/managers/OrbizSettingManager";
+import { StoreApi } from "zustand";
 import { FmAttrSimpleValue } from "./FmAttrSimpleValue";
 
 export abstract class FmAttrString<TValue extends string = string> extends FmAttrSimpleValue<TValue> {
@@ -49,6 +63,17 @@ export class FmAttrId extends FmAttrString {
             }
         )
     }
+
+    setStore(store: StoreApi<any>): void {
+        OEM.throwUnexpectedError();
+    }
+    getView(): ReactNode {
+        return (<>
+            <FmAttrIdDisplay
+                fmAttr={this}
+            />
+        </>)
+    }
 }
 
 export class FmAttrType<TType extends NoteType = NoteType> extends FmAttrString {
@@ -66,6 +91,16 @@ export class FmAttrType<TType extends NoteType = NoteType> extends FmAttrString 
             }
         )
     }
+    setStore(store: StoreApi<any>): void {
+        OEM.throwUnexpectedError();
+    }
+    getView(): ReactNode {
+        return (<>
+            <FmAttrTypeDisplay
+                fmAttr={this}
+            />
+        </>)
+    }
 }
 
 export class FmAttrSubType<TSubType extends MyNoteType | LogNoteType | DiaryNoteType = MyNoteType | LogNoteType | DiaryNoteType> extends FmAttrString<TSubType> {
@@ -82,9 +117,20 @@ export class FmAttrSubType<TSubType extends MyNoteType | LogNoteType | DiaryNote
             }
         )
     }
+    setStore(store: StoreApi<any>): void {
+        OEM.throwUnexpectedError();
+    }
+    getView(): ReactNode {
+        return (<>
+            <FmAttrSubTypeDisplay
+                fmAttr={this}
+            />
+        </>)
+    }
 }
 
 export class FmAttrRoleKind extends FmAttrString {
+    protected _store: StoreApi<MyNoteState> | null;
     constructor(
         tFile: TFile,
         _value: string | null | undefined,
@@ -94,6 +140,17 @@ export class FmAttrRoleKind extends FmAttrString {
             "roleKind",
             _value || "",
         )
+    }
+
+    setStore(store: StoreApi<MyNoteState>): void {
+        this._store = store;
+        const state = store.getState();
+        this._storeGetter = () => state.fmAttrRoleKind;
+        this._storeSetter = (value: string) => state.setFmAttrRoleKind(value);
+
+        if (this._value) {
+            this._storeSetter(this._value);
+        }
     }
 
     filter(value: string): string {
@@ -107,6 +164,24 @@ export class FmAttrRoleKind extends FmAttrString {
         return OSM().roleKinds.includes(value) || value == "";
     }
 
+    getView(): ReactNode {
+        if (!this._store) return null;
+        return (<>
+            <FmAttrRoleKindDisplay
+                store={this._store}
+            />
+        </>)
+    }
+    getEditableView(): ReactNode {
+        if (!this._store) return null;
+        return (<>
+            <FmAttrRoleKindEditor
+                store={this._store}
+                fmAttr={this}
+            />
+        </>)
+    }
+
     getEditBox(): ReactNode {
         return <FmAttrSelectBox
             fmEditor={this}
@@ -116,6 +191,7 @@ export class FmAttrRoleKind extends FmAttrString {
 }
 
 export class FmAttrAspect extends FmAttrString<MyNoteAspect> {
+    protected _store: StoreApi<MyNoteState> | null;
     constructor(
         tFile: TFile,
         _value: MyNoteAspect | null | undefined,
@@ -125,6 +201,35 @@ export class FmAttrAspect extends FmAttrString<MyNoteAspect> {
             "aspect",
             _value || "default",
         )
+    }
+
+    setStore(store: StoreApi<MyNoteState>): void {
+        this._store = store;
+        const state = store.getState();
+        this._storeGetter = () => state.fmAttrAspect;
+        this._storeSetter = (value: MyNoteAspect) => state.setFmAttrAspect(value);
+
+        if (this._value) {
+            this._storeSetter(this._value);
+        }
+    }
+
+    getView(): ReactNode {
+        if (!this._store) return null;
+        return (<>
+            <FmAttrAspectDisplay
+                store={this._store}
+            />
+        </>)
+    }
+    getEditableView(): ReactNode {
+        if (!this._store) return null;
+        return (<>
+            <FmAttrAspectEditor
+                store={this._store}
+                fmAttr={this}
+            />
+        </>)
     }
 
     getEditBox(): ReactNode {
@@ -142,6 +247,7 @@ export class FmAttrAspect extends FmAttrString<MyNoteAspect> {
 }
 
 export class FmAttrStatus extends FmAttrString<LogNoteStatus> {
+    protected _store: StoreApi<LogNoteState> | null;
     constructor(
         tFile: TFile,
         _value: LogNoteStatus | null | undefined,
@@ -151,6 +257,35 @@ export class FmAttrStatus extends FmAttrString<LogNoteStatus> {
             "status",
             _value || "default",
         )
+    }
+
+    setStore(store: StoreApi<LogNoteState>): void {
+        this._store = store;
+        const state = store.getState();
+        this._storeGetter = () => state.fmAttrStatus;
+        this._storeSetter = (value: LogNoteStatus) => state.setFmAttrStatus(value);
+
+        if (this._value) {
+            this._storeSetter(this._value);
+        }
+    }
+
+    getView(): ReactNode {
+        if (!this._store) return null;
+        return (<>
+            <FmAttrStatusDisplay
+                store={this._store}
+            />
+        </>)
+    }
+    getEditableView(): ReactNode {
+        if (!this._store) return null;
+        return (<>
+            <FmAttrStatusEditor
+                store={this._store}
+                fmAttr={this}
+            />
+        </>)
     }
 
     getEditBox(): ReactNode {
@@ -168,6 +303,7 @@ export class FmAttrStatus extends FmAttrString<LogNoteStatus> {
 }
 
 export class FmAttrContext extends FmAttrString {
+    protected _store: StoreApi<LogNoteState> | null;
     constructor(
         tFile: TFile,
         _value: string | null | undefined,
@@ -178,4 +314,34 @@ export class FmAttrContext extends FmAttrString {
             _value || "",
         )
     }
+
+    setStore(store: StoreApi<LogNoteState>): void {
+        this._store = store;
+        const state = store.getState();
+        this._storeGetter = () => state.fmAttrStatus;
+        this._storeSetter = (value: LogNoteStatus) => state.setFmAttrContext(value);
+
+        if (this._value) {
+            this._storeSetter(this._value);
+        }
+    }
+
+    getView(): ReactNode {
+        if (!this._store) return null;
+        return (<>
+            <FmAttrContextDisplay
+                store={this._store}
+            />
+        </>)
+    }
+    getEditableView(): ReactNode {
+        if (!this._store) return null;
+        return (<>
+            <FmAttrContextEditor
+                store={this._store}
+                fmAttr={this}
+            />
+        </>)
+    }
+
 }

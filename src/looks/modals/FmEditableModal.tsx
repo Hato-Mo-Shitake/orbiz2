@@ -24,7 +24,7 @@ export class FmEditableModal extends Modal {
         this.root!.render(
             // <StrictMode>
             <>
-                {this._viewer.getFmEditBox()}
+                {this._viewer.getFmAttrsEditor()}
             </>
 
             // </StrictMode>

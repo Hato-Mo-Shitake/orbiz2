@@ -1,13 +1,16 @@
 import { TFile } from "obsidian";
 import { ReactNode } from "react";
-import { debugConsole } from "src/assistance/utils/debug";
 import { isMyNote, MyNote } from "src/core/domain/MyNote";
 import { StdNote } from "src/core/domain/StdNote";
-import { FmLinkedNoteEditBox } from "src/looks/components/fm-edit/sub/FmLinkedNoteEditBox";
+import { FmAttrRoleHubEditor } from "src/looks/components/note-metadata-edit/my/FmAttrRoleHubEditor";
+import { FmLinkedNoteEditBox } from "src/looks/components/note-metadata-edit/sub/FmLinkedNoteEditBox";
+import { FmAttrRoleHubDisplay } from "src/looks/components/note-metadata-view/my/FmAttrRoleHubDisplay";
 import { FmKey } from "src/orbits/contracts/fmKey";
+import { MyNoteState } from "src/orbits/schema/NoteState";
 import { OEM } from "src/orbiz/managers/OrbizErrorManager";
 import { ONM } from "src/orbiz/managers/OrbizNoteManager";
 import { ORM } from "src/orbiz/managers/OrbizRepositoryManager";
+import { StoreApi } from "zustand";
 import { FmAttr } from "./FmAttr";
 
 type RawFmValueForLinkedNote = "noteId" | "internalLink";
@@ -29,13 +32,11 @@ export abstract class FmAttrLinkedNote<TNote extends StdNote = StdNote> extends 
         } else if (_rawFmValueType === "internalLink") {
             note = ONM().getStdNote({ internalLink: rawFmValue });
             if (!isNote(note)) {
-                debugConsole("????", note);
                 OEM.throwUnexpectedError();
             }
         } else if (_rawFmValueType === "noteId") {
             note = ONM().getStdNote({ noteId: rawFmValue });
             if (!isNote(note)) {
-                debugConsole("????", note);
                 OEM.throwUnexpectedError();
             }
         } else {
@@ -96,6 +97,7 @@ export abstract class FmAttrLinkedNote<TNote extends StdNote = StdNote> extends 
 }
 
 export class FmAttrRoleHub extends FmAttrLinkedNote<MyNote> {
+    protected _store: StoreApi<MyNoteState> | null;
     constructor(
         tFile: TFile,
         _value: string | null | undefined,
@@ -107,5 +109,34 @@ export class FmAttrRoleHub extends FmAttrLinkedNote<MyNote> {
             "internalLink",
             isMyNote
         )
+    }
+
+    setStore(store: StoreApi<MyNoteState>): void {
+        this._store = store;
+        const state = store.getState();
+        this._storeGetter = () => state.fmAttrRoleHub;
+        this._storeSetter = (value: MyNote) => state.setFmAttrRoleHub(value);
+
+        if (this._value) {
+            this._storeSetter(this._value);
+        }
+    }
+
+    getView(): ReactNode {
+        if (!this._store) return null;
+        return (<>
+            <FmAttrRoleHubDisplay
+                store={this._store}
+            />
+        </>)
+    }
+    getEditableView(): ReactNode {
+        if (!this._store) return null;
+        return (<>
+            <FmAttrRoleHubEditor
+                store={this._store}
+                fmAttr={this}
+            />
+        </>)
     }
 }

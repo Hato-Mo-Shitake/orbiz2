@@ -8,6 +8,7 @@ interface MyPluginSettings {
     spaceType: OrbizSpaceType;
     categories: string[];
     roleKinds: string[];
+    templateDone: string[];
 }
 
 export class OrbizSettingManager {
@@ -29,6 +30,7 @@ export class OrbizSettingManager {
         spaceType: "my",
         categories: [],
         roleKinds: [],
+        templateDone: [],
     }
     private _unsavedSettings: MyPluginSettings;
     private _savedSettings: MyPluginSettings;
@@ -52,6 +54,9 @@ export class OrbizSettingManager {
     get roleKinds(): string[] {
         return this._savedSettings.roleKinds;
     }
+    get templateDone(): string[] {
+        return this._savedSettings.templateDone;
+    }
 
     setSampleSetting(setting: string) {
         const newSettings = structuredClone(this._savedSettings);
@@ -72,6 +77,11 @@ export class OrbizSettingManager {
     setRoleKinds(roleKinds: string[]) {
         const newSettings = structuredClone(this._savedSettings);
         newSettings.roleKinds = [...roleKinds];
+        this._unsavedSettings = newSettings;
+    }
+    setTemplateDone(templateDone: string[]) {
+        const newSettings = structuredClone(this._savedSettings);
+        newSettings.templateDone = [...templateDone];
         this._unsavedSettings = newSettings;
     }
 

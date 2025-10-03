@@ -71,7 +71,7 @@ const TestScript = {
     openFmDisplayModal: () => {
         const noteOrb = OOM().getActiveStdNoteOrb();
         if (!noteOrb) return;
-        FmDisplayModal.openNew(noteOrb);
+        FmDisplayModal.openNew(noteOrb.viewer);
     },
     openTodayNote: () => {
         const orb = ODM().todayNoteOrb;
@@ -112,7 +112,7 @@ const TestScript = {
             ...myNoteTypeList
         ];
         const subType = getRandomFromArray(list);
-        const orb = await OUM().noteCreator.createMyNote({
+        await OUM().noteCreator.createMyNote({
             baseName: sanitizeFileName(generateCurrentIsoDatetime()),
             subType: MyNoteTypeZEnum.parse(subType)
         });
@@ -129,7 +129,7 @@ const TestScript = {
         ];
         const status = getRandomFromArray(statusList);
 
-        const orb = await OUM().noteCreator.createLogNote({
+        await OUM().noteCreator.createLogNote({
             baseName: sanitizeFileName(generateCurrentIsoDatetime()),
             subType: LogNoteTypeZEnum.parse(subType),
             status: LogNoteStatusZEnum.parse(status)
@@ -152,6 +152,7 @@ const TestScript = {
     }
 }
 
+// eslint-disable-next-line @typescript-eslint/ban-types
 function makeTestCommands(scripts: Record<string, Function>): Record<string, { isEnabled: boolean, command: Command }> {
     const result: Record<string, { isEnabled: boolean, command: Command }> = {};
 

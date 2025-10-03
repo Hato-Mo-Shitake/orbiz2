@@ -21,4 +21,40 @@ export class DailyNoteViewer<
     ) {
         super(note, fmOrb, reader, editor, store);
     }
+
+    getFmAttrs(): React.ReactNode {
+        return (<>
+            {super.getFmAttrs()}
+            {this.fmOrb.theDay.getView()}
+            {this.fmOrb.createdNotes.getView()}
+            {this.fmOrb.modifiedNotes.getView()}
+            {this.fmOrb.resolvedNotes.getView()}
+            {this.fmOrb.amountSpent.getView()}
+            {this.fmOrb.templateDone.getView()}
+        </>)
+    }
+    getFmAttrsEditor(): React.ReactNode {
+        return (<>
+            {super.getFmAttrsEditor()}
+            {this.fmOrb.theDay.getEditableView()}
+            {this.fmOrb.createdNotes.getEditableView()}
+            {this.fmOrb.modifiedNotes.getEditableView()}
+            {this.fmOrb.resolvedNotes.getEditableView()}
+            {this.fmOrb.amountSpent.getEditableView()}
+            {this.fmOrb.templateDone.getEditableView()}
+        </>)
+    }
+    getTopSection(): React.ReactNode {
+        return (<>
+            <div>
+                {super.getTopSection()}
+            </div>
+            {this.fmOrb.createdNotes.getView()}
+            {this.fmOrb.modifiedNotes.getView()}
+            {this.fmOrb.resolvedNotes.getView()}
+            {this.fmOrb.amountSpent.getView()}
+            {this.fmOrb.templateDone.getView()}
+            <h1>Note</h1>
+        </>)
+    }
 }

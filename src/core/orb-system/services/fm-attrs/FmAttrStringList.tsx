@@ -1,14 +1,23 @@
 import { TFile } from "obsidian";
 import { ReactNode } from "react";
 import { arraysEqual } from "src/assistance/utils/array";
-import { FmAttrSelectableList } from "src/looks/components/fm-edit/sub/FmAttrSelectableList";
-import { FmStringListEditBox } from "src/looks/components/fm-edit/sub/FmStringListEditBox";
+import { FmAttrTagsEditor } from "src/looks/components/note-metadata-edit/base/FmAttrTagsEditor";
+import { FmAttrTemplateDoneEditor } from "src/looks/components/note-metadata-edit/daily/FmAttrTemplateDoneEditor";
+import { FmAttrAliasesEditor } from "src/looks/components/note-metadata-edit/my/FmAttrAliasesEditor";
+import { FmAttrCategoriesEditor } from "src/looks/components/note-metadata-edit/my/FmAttrCategoriesEditor";
+import { FmAttrSelectableList } from "src/looks/components/note-metadata-edit/sub/FmAttrSelectableList";
+import { FmStringListEditBox } from "src/looks/components/note-metadata-edit/sub/FmStringListEditBox";
+import { FmAttrTagsDisplay } from "src/looks/components/note-metadata-view/base/FmAttrTagsDisplay";
+import { FmAttrTemplateDoneDisplay } from "src/looks/components/note-metadata-view/daily/FmAttrTemplateDoneDisplay";
+import { FmAttrAliasesDisplay } from "src/looks/components/note-metadata-view/my/FmAttrAliasesDisplay";
+import { FmAttrCategoriesDisplay } from "src/looks/components/note-metadata-view/my/FmAttrCategoriesDisplay";
 import { CategorySearchlightModal } from "src/looks/modals/searchlights/CategorySearchlightModal";
-import { TagSearchlightModal } from "src/looks/modals/searchlights/TagSearchlightModal";
 import { FmAttrList } from "src/orbits/contracts/fmAttr";
 import { FmKey } from "src/orbits/contracts/fmKey";
+import { BaseNoteState, DailyNoteState, MyNoteState } from "src/orbits/schema/NoteState";
 import { ORM } from "src/orbiz/managers/OrbizRepositoryManager";
 import { OSM } from "src/orbiz/managers/OrbizSettingManager";
+import { StoreApi } from "zustand";
 import { FmAttr } from "./FmAttr";
 
 export abstract class FmAttrStringList<TAVal extends string = string> extends FmAttr<TAVal[]> implements FmAttrList<TAVal> {
@@ -29,6 +38,9 @@ export abstract class FmAttrStringList<TAVal extends string = string> extends Fm
     }
 
     get value(): TAVal[] {
+        // if (this._storeGetter) {
+        //     return this._storeGetter() || [];
+        // }
         return this._value || [];
     }
 
@@ -54,7 +66,7 @@ export abstract class FmAttrStringList<TAVal extends string = string> extends Fm
 
     validateAVal(aVal: TAVal): boolean {
         return true;
-    };
+    }
     validate(value: TAVal[]): boolean {
         for (const aVal of value) {
             if (!this.validateAVal(aVal)) return false;
@@ -99,25 +111,53 @@ export class FmAttrTags extends FmAttrStringList {
         );
     }
 
-    getLooks(): ReactNode {
-        return (
-            <div>
-                <a onClick={() => {
-                    TagSearchlightModal.open()
-                }}>tags: </a>
+    setStore(store: StoreApi<BaseNoteState>): void {
+        this._store = store;
+        const state = store.getState();
+        this._storeGetter = () => state.fmAttrTags;
+        this._storeSetter = (value: string[]) => state.setFmAttrTags(value);
 
-                {String(this.value)}
-            </div>
-        );
+        if (this._value) {
+            this._storeSetter(this._value);
+        }
     }
+
+    getView(): ReactNode {
+        if (!this._store) return null;
+        return (<>
+            <FmAttrTagsDisplay
+                store={this._store}
+            />
+        </>)
+    }
+    getEditableView(): ReactNode {
+        if (!this._store) return null;
+        return (<>
+            <FmAttrTagsEditor
+                store={this._store}
+                fmAttr={this}
+            />
+        </>)
+    }
+
+    // getLooks(): ReactNode {
+    //     return (
+    //         <div>
+    //             <a onClick={() => {
+    //                 TagSearchlightModal.open()
+    //             }}>tags: </a>
+
+    //             {String(this.value)}
+    //         </div>
+    //     );
+    // }
 }
 
 export class FmAttrAliases extends FmAttrStringList {
+    protected _store: StoreApi<MyNoteState> | null;
     constructor(
         tFile: TFile,
         _value: string[] | null | undefined,
-        options?: {
-        }
     ) {
         super(
             tFile,
@@ -127,9 +167,39 @@ export class FmAttrAliases extends FmAttrStringList {
             }
         );
     }
+
+    setStore(store: StoreApi<MyNoteState>): void {
+        this._store = store;
+        const state = store.getState();
+        this._storeGetter = () => state.fmAttrAliases;
+        this._storeSetter = (value: string[]) => state.setFmAttrAliases(value);
+
+        if (this._value) {
+            this._storeSetter(this._value);
+        }
+    }
+
+    getView(): ReactNode {
+        if (!this._store) return null;
+        return (<>
+            <FmAttrAliasesDisplay
+                store={this._store}
+            />
+        </>)
+    }
+    getEditableView(): ReactNode {
+        if (!this._store) return null;
+        return (<>
+            <FmAttrAliasesEditor
+                store={this._store}
+                fmAttr={this}
+            />
+        </>)
+    }
 }
 
 export class FmAttrCategories extends FmAttrStringList {
+    protected _store: StoreApi<MyNoteState> | null;
     constructor(
         tFile: TFile,
         _value: string[] | null | undefined,
@@ -141,6 +211,17 @@ export class FmAttrCategories extends FmAttrStringList {
         );
     }
 
+    setStore(store: StoreApi<MyNoteState>): void {
+        this._store = store;
+        const state = store.getState();
+        this._storeGetter = () => state.fmAttrCategories;
+        this._storeSetter = (value: string[]) => state.setFmAttrCategories(value);
+
+        if (this._value) {
+            this._storeSetter(this._value);
+        }
+    }
+
     filterAVal(aVal: string): string {
         if (!OSM().categories.includes(aVal)) {
             return "";
@@ -150,6 +231,24 @@ export class FmAttrCategories extends FmAttrStringList {
 
     validateAVal(aVal: string): boolean {
         return OSM().categories.includes(aVal) || aVal == "";
+    }
+
+    getView(): ReactNode {
+        if (!this._store) return null;
+        return (<>
+            <FmAttrCategoriesDisplay
+                store={this._store}
+            />
+        </>)
+    }
+    getEditableView(): ReactNode {
+        if (!this._store) return null;
+        return (<>
+            <FmAttrCategoriesEditor
+                store={this._store}
+                fmAttr={this}
+            />
+        </>)
     }
 
     getLooks(): ReactNode {
@@ -173,6 +272,7 @@ export class FmAttrCategories extends FmAttrStringList {
 }
 
 export class FmAttrTemplateDone extends FmAttrStringList {
+    protected _store: StoreApi<DailyNoteState> | null;
     constructor(
         tFile: TFile,
         _value: string[] | null | undefined,
@@ -182,5 +282,45 @@ export class FmAttrTemplateDone extends FmAttrStringList {
             "templateDone",
             _value || [],
         );
+    }
+
+    filterAVal(aVal: string): string {
+        if (!OSM().templateDone.includes(aVal)) {
+            return "";
+        }
+        return aVal;
+    }
+
+    validateAVal(aVal: string): boolean {
+        return OSM().templateDone.includes(aVal) || aVal == "";
+    }
+
+    setStore(store: StoreApi<DailyNoteState>): void {
+        this._store = store;
+        const state = store.getState();
+        this._storeGetter = () => state.fmAttrTemplateDone;
+        this._storeSetter = (value: string[]) => state.setFmAttrTemplateDone(value);
+
+        if (this._value) {
+            this._storeSetter(this._value);
+        }
+    }
+
+    getView(): ReactNode {
+        if (!this._store) return null;
+        return (<>
+            <FmAttrTemplateDoneDisplay
+                store={this._store}
+            />
+        </>)
+    }
+    getEditableView(): ReactNode {
+        if (!this._store) return null;
+        return (<>
+            <FmAttrTemplateDoneEditor
+                store={this._store}
+                fmAttr={this}
+            />
+        </>)
     }
 }

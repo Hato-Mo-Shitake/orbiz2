@@ -57,9 +57,9 @@ export function isDiaryFm(fm: any): fm is DiaryFm {
 
 export const DailyFmZObj = DiaryFmZObj.extend({
     theDay: z.number().nullable(), // タイムスタンプ（ms）
-    createdNoteIds: z.array(z.string()).nullable(),
-    modifiedNoteIds: z.array(z.string()).nullable(),
-    resolvedNoteIds: z.array(z.string()).nullable(),
+    createdNotes: z.array(z.string()).nullable(),
+    modifiedNotes: z.array(z.string()).nullable(),
+    resolvedNotes: z.array(z.string()).nullable(),
     amountSpent: z.number().nullable(),
     templateDone: z.array(z.string()).nullable(),
 });

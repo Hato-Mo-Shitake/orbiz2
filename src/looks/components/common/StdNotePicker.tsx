@@ -36,6 +36,7 @@ export function StdNotePicker({
             suggestions={options?.suggestions || ONM().allStdNoteNames}
             onSelect={handleChange}
             onEnter={handleChange}
+            placeholder={options?.defaultNote?.baseName}
         />
     );
-};
+}

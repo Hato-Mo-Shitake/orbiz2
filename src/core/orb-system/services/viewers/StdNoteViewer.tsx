@@ -1,15 +1,11 @@
 import * as React from "react";
-import { dateFormat } from "src/assistance/utils/date";
-import { isMyNote } from "src/core/domain/MyNote";
 import { StdNote } from "src/core/domain/StdNote";
-import { NoteLink } from "src/looks/components/common/NoteLink";
-import { LinkedNoteLinks, LinkedNoteLinkTree } from "src/looks/components/fm-view/DisplayLinkedNoteLinks";
-import { TestLooks } from "src/looks/components/note-metadata/TestLooks";
+import { LinkedStdNoteDisplay } from "src/looks/components/note-metadata-view/std/LinkedStdNoteDisplay";
+import { LinkedNoteDirection, linkedNoteDirectionList } from "src/orbits/contracts/create-note";
 import { FmKey } from "src/orbits/contracts/fmKey";
 import { StdFm } from "src/orbits/schema/frontmatters/fm";
+import { fmKeysForStdLinkedNoteList } from "src/orbits/schema/frontmatters/FmKey";
 import { StdNoteState } from "src/orbits/schema/NoteState";
-import { OTM } from "src/orbiz/managers/OrbizTFileManager";
-import { OUM } from "src/orbiz/managers/OrbizUseCaseManager";
 import { StoreApi } from "zustand";
 import { StdFmOrb } from "../../orbs/FmOrb";
 import { StdNoteEditor } from "../editors/StdNoteEditor";
@@ -32,104 +28,103 @@ export abstract class StdNoteViewer<
     }
 
     getTestLooks(): React.ReactNode {
-        return <TestLooks store={this.store} />
+        return (<>
+            {this.getFmAttrs()}
+            {this.getFmAttrsEditor()}
+            <div>以下tree</div>
+            {fmKeysForStdLinkedNoteList.map(key => {
+                return linkedNoteDirectionList.map(d =>
+                    <div key={`${key}-${d}`}>
+                        {`${key}-${d}`}
+                        {this.getLinkedStdNote(key, d)}
+                    </div>
+
+                )
+            })}
+        </>
+        );
     }
 
-    getTopSection(): React.ReactNode {
-        const created = this.note.created;
-        const modified = this.note.modified;
-        const cTFile = OTM().getDailyNoteTFile(created);
-        const mTFile = OTM().getDailyNoteTFile(modified);
+    getFmAttrs(): React.ReactNode {
         return (<>
-            <div style={{ marginBottom: "5px" }}>
-                {super.getTopSection()}
-                <div style={{ margin: "10px", display: "flex", alignItems: "center", gap: "0.2em" }}>
-                    create:
-                    <div style={{ margin: "10px", display: "flex", alignItems: "center", gap: "0.0em" }}>
-                        <button style={{ backgroundColor: "skyblue" }} onClick={() => {
-                            OUM().prompt.createMyNote({ rootNote: this.note });
-                        }}>my</button>
-                        {/* あとでなんとかします。。。。。 */}
-                        {isMyNote(this.note) && <div>
-                            <span>（</span>
-                            <button style={{ backgroundColor: "skyblue", width: "6.1em", height: "1.5em" }} onClick={() => {
-                                OUM().prompt.createRoleNode(this.note);
-                            }}>role-node</button>
-                            <span>）</span>
-                        </div>}
-                    </div>
-                    <button
-                        style={{ backgroundColor: "skyblue" }}
-                        onClick={() => {
-                            OUM().prompt.createLogNote({ rootNote: this.note });
-                        }}>
-                        log
-                    </button>
-                </div>
-            </div>
-            <hr />
-            <div style={{ margin: "10px" }}>
-                <span>
-                    {"c: "}
-                    {!cTFile ? <b>not found</b> :
-                        <NoteLink
-                            linkText={cTFile.path}
-                            beginningPath={this.note.path}
-                        >
-                            {dateFormat(created, "Y-m-d_D")}
-                        </NoteLink>
-                    }
-                </span>
-                <span>{"　"}</span>
-                <span>
-                    {"m: "}
-                    {!mTFile ? "not found" :
-                        <NoteLink
-                            linkText={mTFile.path}
-                            beginningPath={this.note.path}
-                        >
-                            {dateFormat(modified, "Y-m-d_D")}
-                        </NoteLink>
-                    }
-                </span>
-            </div>
+            {super.getFmAttrs()}
+            {this.fmOrb.subType.getView()}
+            {this.fmOrb.belongsTo.getView()}
+            {this.fmOrb.relatesTo.getView()}
+            {this.fmOrb.references.getView()}
+        </>)
+    }
+    getFmAttrsEditor(): React.ReactNode {
+        return (<>
+            {super.getFmAttrsEditor()}
+            {this.fmOrb.belongsTo.getEditableView()}
+            {this.fmOrb.relatesTo.getEditableView()}
+            {this.fmOrb.references.getEditableView()}
         </>)
     }
 
-    getOutLinks(key: FmKey<"stdLinkedNoteList">): React.ReactNode {
-        const ids = this.reader.getOutLinkIds(key);
-        if (ids.length === 0) return null;
-
-        return <LinkedNoteLinks
-            ids={ids}
-            rootNotePath={this.note.path}
+    getLinkedStdNote(fmKey: FmKey<"stdLinkedNoteList">, direction: LinkedNoteDirection): React.ReactNode {
+        return <LinkedStdNoteDisplay
+            store={this.store}
+            rootNote={this.note}
+            fmKey={fmKey}
+            direction={direction}
         />
     }
-    getInLinks(key: FmKey<"stdLinkedNoteList">): React.ReactNode {
-        const ids = this.reader.getInLinkIds(key);
-        if (ids.length === 0) return null;
+    getLinkedStdNoteList() {
+        return (<>
+            {fmKeysForStdLinkedNoteList.map(key => {
+                return linkedNoteDirectionList.map(d =>
+                    <div key={`${key}-${d}`}>
+                        {`${key}-${d}`}
+                        {this.getLinkedStdNote(key, d)}
+                    </div>
 
-        return <LinkedNoteLinks
-            ids={ids}
-            rootNotePath={this.note.path}
-        />
+                )
+            })}
+        </>)
     }
-    getOutLinkTree(key: FmKey<"stdLinkedNoteList">): React.ReactNode {
-        const idTrees = this.reader.getOutLinkTree(key);
-        if (idTrees.length === 0) return null;
 
-        return <LinkedNoteLinkTree
-            idTrees={idTrees}
-            rootNotePath={this.note.path}
-        />
+    getTopSection(): React.ReactNode {
+        return (
+            super.getTopSection()
+        );
     }
-    getInLinkTree(key: FmKey<"stdLinkedNoteList">): React.ReactNode {
-        const idTrees = this.reader.getInLinkTree(key);
-        if (idTrees.length === 0) return null;
 
-        return <LinkedNoteLinkTree
-            idTrees={idTrees}
-            rootNotePath={this.note.path}
-        />
-    }
+    // getOutLinks(key: FmKey<"stdLinkedNoteList">): React.ReactNode {
+    //     const ids = this.reader.getOutLinkIds(key);
+    //     if (ids.length === 0) return null;
+
+    //     return <LinkedNoteLinks
+    //         ids={ids}
+    //         rootNotePath={this.note.path}
+    //     />
+    // }
+    // getInLinks(key: FmKey<"stdLinkedNoteList">): React.ReactNode {
+    //     const ids = this.reader.getInLinkIds(key);
+    //     if (ids.length === 0) return null;
+
+    //     return <LinkedNoteLinks
+    //         ids={ids}
+    //         rootNotePath={this.note.path}
+    //     />
+    // }
+    // getOutLinkTree(key: FmKey<"stdLinkedNoteList">): React.ReactNode {
+    //     const idTrees = this.reader.getOutLinkTree(key);
+    //     if (idTrees.length === 0) return null;
+
+    //     return <LinkedNoteLinkTree
+    //         idTrees={idTrees}
+    //         rootNotePath={this.note.path}
+    //     />
+    // }
+    // getInLinkTree(key: FmKey<"stdLinkedNoteList">): React.ReactNode {
+    //     const idTrees = this.reader.getInLinkTree(key);
+    //     if (idTrees.length === 0) return null;
+
+    //     return <LinkedNoteLinkTree
+    //         idTrees={idTrees}
+    //         rootNotePath={this.note.path}
+    //     />
+    // }
 }

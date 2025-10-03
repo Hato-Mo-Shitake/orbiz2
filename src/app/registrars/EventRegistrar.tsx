@@ -31,9 +31,9 @@ export class EventRegistrar {
         });
 
         OAM().app.workspace.on("file-open", (tFile) => {
-            debugConsole("file-open");
+            // debugConsole("file-open");
             if (!tFile) return;
-            debugConsole(tFile.basename);
+            // debugConsole(tFile.basename);
 
 
             const leaves = OAM().app.workspace.getLeavesOfType("markdown");
@@ -45,7 +45,7 @@ export class EventRegistrar {
 
                 OVM().mountOrUpdateNoteTopSection(mdView);
             });
-            debugConsole("file-open-process end.");
+            // debugConsole("file-open-process end.");
         })
 
         /** vault */

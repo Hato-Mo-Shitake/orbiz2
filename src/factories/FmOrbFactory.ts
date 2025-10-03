@@ -4,7 +4,7 @@ import { DailyFmOrb, LogFmOrb, MyFmOrb } from "src/core/orb-system/orbs/FmOrb";
 import { FmAttrIsClosed } from "src/core/orb-system/services/fm-attrs/FmAttrBoolean";
 import { FmAttrDue, FmAttrResolved, FmAttrTheDay } from "src/core/orb-system/services/fm-attrs/FmAttrDate";
 import { FmAttrRoleHub } from "src/core/orb-system/services/fm-attrs/FmAttrLinkedNote";
-import { FmAttrBelongsTo, FmAttrCreatedNoteIds, FmAttrModifiedNoteIds, FmAttrReferences, FmAttrRelatesTo, FmAttrResolvedNoteIds } from "src/core/orb-system/services/fm-attrs/FmAttrLinkedNoteList";
+import { FmAttrBelongsTo, FmAttrCreatedNotes, FmAttrModifiedNotes, FmAttrReferences, FmAttrRelatesTo, FmAttrResolvedNotes } from "src/core/orb-system/services/fm-attrs/FmAttrLinkedNoteList";
 
 import { FmAttrAmountSpent, FmAttrRank, FmAttrScore } from "src/core/orb-system/services/fm-attrs/FmAttrNumber";
 import { FmAttrAspect, FmAttrContext, FmAttrId, FmAttrRoleKind, FmAttrStatus, FmAttrSubType, FmAttrType } from "src/core/orb-system/services/fm-attrs/FmAttrString";
@@ -39,7 +39,7 @@ export class FmOrbFactory {
             aspect = "default";
         }
 
-        return new MyFmOrb(
+        const fmOrb = new MyFmOrb(
             new FmAttrType<"myNote">(tFile, type),
             new FmAttrId(tFile, fm["id"]),
             new FmAttrTags(tFile, fm["tags"]),
@@ -54,6 +54,8 @@ export class FmOrbFactory {
             new FmAttrRoleKind(tFile, fm["roleKind"]),
             new FmAttrRoleHub(tFile, fm["roleHub"]),
         );
+
+        return fmOrb;
     }
 
     forLog(tFile: TFile, options?: { fm?: LogFm }): LogFmOrb | null {
@@ -118,9 +120,9 @@ export class FmOrbFactory {
             new FmAttrScore(tFile, fm["score"]),
             new FmAttrIsClosed(tFile, fm["isClosed"]),
             new FmAttrTheDay(tFile, fm["theDay"]),
-            new FmAttrCreatedNoteIds(tFile, fm["createdNoteIds"]),
-            new FmAttrModifiedNoteIds(tFile, fm["modifiedNoteIds"]),
-            new FmAttrResolvedNoteIds(tFile, fm["resolvedNoteIds"]),
+            new FmAttrCreatedNotes(tFile, fm["createdNotes"]),
+            new FmAttrModifiedNotes(tFile, fm["modifiedNotes"]),
+            new FmAttrResolvedNotes(tFile, fm["resolvedNotes"]),
             new FmAttrAmountSpent(tFile, fm["amountSpent"]),
             new FmAttrTemplateDone(tFile, fm["templateDone"]),
         );

@@ -1,5 +1,4 @@
 import { CachedMetadata, FrontMatterCache, TFile } from "obsidian";
-import { debugConsole } from "src/assistance/utils/debug";
 import { getBasenameFromPath } from "src/assistance/utils/path";
 import { BaseFm } from "src/orbits/schema/frontmatters/fm";
 import { OAM } from "src/orbiz/managers/OrbizAppManager";
@@ -49,17 +48,9 @@ export abstract class BaseNote<TFm extends BaseFm = BaseFm> {
     }
 
     get tFile(): TFile {
-        debugConsole(this.path);
         // NOTE: 常に最新のものを取得。
         const _tFile = OTM().getMdTFileByPath(this.path);
-
-
-
         if (!_tFile) OEM.throwUnexpectedError();
-
-
-
-
         return _tFile;
     }
 
