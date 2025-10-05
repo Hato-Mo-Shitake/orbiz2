@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { Fragment, ReactNode } from "react";
 import { BaseNote } from "src/core/domain/Note";
 import { OpenFmDisplayButton } from "src/looks/components/common-orbiz/OpenFmDisplayButton";
 import { OpenFmEditButton } from "src/looks/components/common-orbiz/OpenFmEditButton";
@@ -32,15 +32,27 @@ export abstract class BaseNoteViewer<
 
     getFmAttrs(): ReactNode {
         return (<>
-            {this.fmOrb.id.getView()}
+            {this.fmViewers.map(v => {
+                if (!v.getView) return;
+                return (<Fragment key={v.fmKey}>
+                    {v.getView()}
+                </Fragment>)
+            })}
+            {/* {this.fmOrb.id.getView()}
             {this.fmOrb.type.getView()}
-            {this.fmOrb.tags.getView()}
+            {this.fmOrb.tags.getView()} */}
         </>)
     }
 
     getFmAttrsEditor(): ReactNode {
         return (<>
-            {this.fmOrb.tags.getEditableView()}
+            {this.fmViewers.map(v => {
+                if (v.isImmutable || !v.getEditableView) return;
+
+                return (<Fragment key={v.fmKey}>
+                    {v.getEditableView()}
+                </Fragment>)
+            })}
         </>)
     }
 

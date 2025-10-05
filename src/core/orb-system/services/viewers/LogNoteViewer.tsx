@@ -38,7 +38,8 @@ export class LogNoteViewer<
             {super.getFmAttrsEditor()}
             {this.fmOrb.status.getEditableView()}
             {this.fmOrb.due.getEditableView()}
-            {this.fmOrb.resolved.getEditableView()}
+            {/* TODO:  ここもっと綺麗にループ処理でまとめるように */}
+            {!this.fmOrb.resolved.isImmutable && this.fmOrb.resolved.getEditableView()}
             {this.fmOrb.context.getEditableView()}
         </>)
     }

@@ -3,7 +3,6 @@ import { ReactNode } from "react";
 import { FmAttrAmountSpentEditor } from "src/looks/components/note-metadata-edit/daily/FmAttrAmountSpentEditor";
 import { FmAttrScoreEditor } from "src/looks/components/note-metadata-edit/diary/FmAttrScoreEditor";
 import { FmAttrRankEditor } from "src/looks/components/note-metadata-edit/my/FmAttrRankEditor";
-import { FmNumberEditBox } from "src/looks/components/note-metadata-edit/sub/FmNumberEditBox";
 import { FmAttrAmountSpentDisplay } from "src/looks/components/note-metadata-view/daily/FmAttrAmountSpentDisplay";
 import { FmAttrScoreDisplay } from "src/looks/components/note-metadata-view/diary/FmAttrScoreDisplay";
 import { FmAttrRankDisplay } from "src/looks/components/note-metadata-view/my/FmAttrRankDisplay";
@@ -12,11 +11,11 @@ import { StoreApi } from "zustand";
 import { FmAttrSimpleValue } from "./FmAttrSimpleValue";
 
 export abstract class FmAttrNumber<TValue extends number = number> extends FmAttrSimpleValue<TValue> {
-    getEditBox(): ReactNode {
-        return <FmNumberEditBox
-            fmEditor={this}
-        />
-    }
+    // getEditBox(): ReactNode {
+    //     return <FmNumberEditBox
+    //         fmEditor={this}
+    //     />
+    // }
 }
 
 export class FmAttrRank extends FmAttrNumber {

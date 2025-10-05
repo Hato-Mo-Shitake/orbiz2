@@ -8,3 +8,15 @@ export function extractNoteNameFromInternalLink(link: string): string | null {
     }
     return fileName;
 }
+
+export function extractInternalLinks(text: string): string[] {
+    const pattern = /\[\[[^\]]+\]\]/g;
+    const matches = [];
+    let match;
+
+    while ((match = pattern.exec(text)) !== null) {
+        matches.push(match[0]);
+    }
+
+    return matches;
+}

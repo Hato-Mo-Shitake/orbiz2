@@ -1,6 +1,5 @@
 import { Editor, EventRef, MarkdownFileInfo, MarkdownView, TAbstractFile, TFile } from "obsidian";
 import { debugConsole } from "src/assistance/utils/debug";
-import { OrbizMdView } from "src/looks/views/OrbizMdView";
 import { OAM } from "src/orbiz/managers/OrbizAppManager";
 import { ODM } from "src/orbiz/managers/OrbizDiaryManager";
 import { OEwM } from "src/orbiz/managers/OrbizEventWatchManager";
@@ -30,6 +29,7 @@ export class EventRegistrar {
             OEwM().workspaceWatcher.watchOnLayoutChange(handle);
         });
 
+
         OAM().app.workspace.on("file-open", (tFile) => {
             // debugConsole("file-open");
             if (!tFile) return;
@@ -44,6 +44,7 @@ export class EventRegistrar {
                 if (tFile.path !== mdView.file?.path) return;
 
                 OVM().mountOrUpdateNoteTopSection(mdView);
+
             });
             // debugConsole("file-open-process end.");
         })
@@ -60,8 +61,10 @@ export class EventRegistrar {
 
         myPlugin.registerEvent(
             OAM().app.workspace.on("editor-change", (editor: Editor, info: MarkdownView | MarkdownFileInfo) => {
-                if (info instanceof OrbizMdView) {
-                    const noteId = info?.noteOrb?.note.id || null;
+                if (info instanceof MarkdownView) {
+                    const tFile = info?.file || null;
+                    if (!tFile) return;
+                    const noteId = ONM().getNoteIdByTFile(tFile);
                     if (!noteId) return;
                     OEwM().userEditWatcher.userEdit(noteId, editor, info);
 
@@ -86,6 +89,8 @@ export class EventRegistrar {
         // myPlugin.registerDomEvent(document, 'click', (evt: MouseEvent) => {
         //     console.log('click!!', evt);
         // });
+
+        // myPlugin.registerDomEvent("document", "paste")
 
         // myPlugin.registerInterval(window.setInterval(() => console.log('setInterval'), 5 * 60 * 1000));
         myPlugin.registerInterval(

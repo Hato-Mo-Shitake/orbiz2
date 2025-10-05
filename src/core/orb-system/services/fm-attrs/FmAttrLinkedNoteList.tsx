@@ -4,7 +4,6 @@ import { arraysEqual } from "src/assistance/utils/array";
 import { StdNote } from "src/core/domain/StdNote";
 import { FmAttrDailyLinkedNoteListEditor } from "src/looks/components/note-metadata-edit/daily/FmAttrDailyLinkedNoteListEditor";
 import { FmAttrLinkedNoteListEditor } from "src/looks/components/note-metadata-edit/std/FmAttrLinkedNoteListEditor";
-import { FmLinkedNoteListEditBox } from "src/looks/components/note-metadata-edit/sub/FmLinkedNoteListEditBox";
 import { FmAttrDailyLinkedNoteListDisplay } from "src/looks/components/note-metadata-view/daily/FmAttrDailyLinkedNoteListDisplay";
 import { FmAttrLinkedNoteListDisplay } from "src/looks/components/note-metadata-view/std/FmAttrLinkedNoteListDisplay";
 import { FmAttrList } from "src/orbits/contracts/fmAttr";
@@ -138,11 +137,11 @@ export abstract class FmAttrLinkedNoteList extends FmAttr<StdNote[]> implements 
         return this.value.map(note => note.id);
     }
 
-    getEditBox(): ReactNode {
-        return <FmLinkedNoteListEditBox
-            fmAttr={this}
-        />
-    }
+    // getEditBox(): ReactNode {
+    //     return <FmLinkedNoteListEditBox
+    //         fmAttr={this}
+    //     />
+    // }
 }
 
 export class FmAttrBelongsTo extends FmAttrLinkedNoteList {

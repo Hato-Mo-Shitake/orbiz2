@@ -143,7 +143,7 @@ function buildLogNoteState<T extends LogNoteState>(
         fmAttrDue: null,
         setFmAttrDue: (due: Date) => set({ fmAttrDue: due } as Partial<T>),
         fmAttrResolved: null,
-        setFmAttrResolved: (resolved: Date) => set({ fmAttrDue: resolved } as Partial<T>),
+        setFmAttrResolved: (resolved: Date) => set({ fmAttrResolved: resolved } as Partial<T>),
         fmAttrContext: null,
         setFmAttrContext: (context: string) => set({ fmAttrContext: context } as Partial<T>),
     };

@@ -25,8 +25,9 @@ export abstract class BaseNoteEditor<TFm extends BaseFm = BaseFm> {
         const failedFmKeys: string[] = [];
         await this.fmEditors.forEach(editor => {
             try {
+                if (!editor.commitNewValue) return;
                 editor.commitNewValue();
-            } catch {
+            } catch (e) {
                 failedFmKeys.push(editor.fmKey);
             }
         });

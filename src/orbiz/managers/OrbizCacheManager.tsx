@@ -1,9 +1,9 @@
-import { CachedMetadata, debounce, FrontMatterCache, FrontmatterLinkCache, LinkCache, MarkdownView, TFile } from "obsidian";
+import { CachedMetadata, debounce, Editor, FrontMatterCache, FrontmatterLinkCache, LinkCache, MarkdownView, TFile } from "obsidian";
 import { generateCurrentIsoDatetime } from "src/assistance/utils/date";
 import { debugConsole } from "src/assistance/utils/debug";
+import { iterateNoteLines } from "src/assistance/utils/editor";
 import { getBasenameFromPath } from "src/assistance/utils/path";
 import { DiaryNoteOrb, isDiaryNoteOrb, isStdNoteOrb, StdNoteOrb } from "src/core/orb-system/orbs/NoteOrb";
-import { PromptAddLinkedNoteModal } from "src/looks/modals/prompt/PromptAddLinkedNoteModal";
 import { PromptNewLogNoteConfModal } from "src/looks/modals/prompt/PromptNewLogNoteConfModal";
 import { PromptNewMyNoteConfModal } from "src/looks/modals/prompt/PromptNewMyNoteConfModal";
 import { PromptSelectModal } from "src/looks/modals/prompt/PromptSelectModal";
@@ -167,59 +167,6 @@ export class OrbizCacheManager {
                 this._deletedCacheNoteIdList.add(id);
             }
         }
-
-
-
-        // console.log("orbキャッシュ更新前", this._stdNoteOrbMapById);
-        // const aliveViews = OVM().aliveOrbizMdView;
-        // const aliveNoteIds = new Set<string>();
-        // const stdCacheMap = this._stdNoteOrbMapById;
-        // const diaryCacheMap = this._diaryNoteOrbMapById;
-
-        // aliveViews.forEach(view => {
-        //     const orb = view.noteOrb;
-
-        //     // if (!orb) OEM.throwUnexpectedError();
-        //     if (!orb) return;
-        //     const noteId = orb.note.id;
-
-        //     if (isStdNoteOrb(orb)) {
-        //         if (!stdCacheMap.has(noteId)) {
-        //             stdCacheMap.set(noteId, orb);
-        //         }
-        //     } else if (isDiaryNoteOrb(orb)) {
-        //         if (!diaryCacheMap.has(noteId)) {
-        //             diaryCacheMap.set(noteId, orb);
-        //         }
-        //     } else {
-        //         OEM.throwUnexpectedError();
-        //     }
-
-        //     aliveNoteIds.add(noteId);
-        // });
-
-        // for (const id of stdCacheMap.keys()) {
-        //     if (!aliveNoteIds.has(id)) {
-        //         // Note: 二回削除候補に上がったら消す的な。
-        //         // 一旦これで、新規作成先のノートに、実在する親ノートがTopSectionに表示されない問題は解決したけど、まだ色々とTopSection表示周りは不安定な気がする。ルートノートの子ノート表示が、新規作成先のものしか表示されない時あるし。
-        //         if (this._deletedCacheNoteIdList.has(id)) {
-        //             stdCacheMap.delete(id);
-        //             this._deletedCacheNoteIdList.delete(id);
-        //         } else {
-        //             this._deletedCacheNoteIdList.add(id);
-        //         }
-        //     }
-        // }
-        // for (const id of diaryCacheMap.keys()) {
-        //     if (this._deletedCacheNoteIdList.has(id)) {
-        //         diaryCacheMap.delete(id);
-        //         this._deletedCacheNoteIdList.delete(id);
-        //     } else {
-        //         this._deletedCacheNoteIdList.add(id);
-        //     }
-        // }
-
-        // console.log("orbキャッシュ更新後", this._stdNoteOrbMapById);
     }
 
     initialize(): void {
@@ -324,16 +271,9 @@ export class OrbizCacheManager {
         this._stdNoteIdMapByName.set(newName, id);
 
         for (const orb of this._stdNoteOrbMapById.values()) {
-            // TODO: でバウンスとか考えたほうがいいかも？
             orb.resetStoreInLinkIds();
-            orb.resetStoreoutLinkIds();
+            orb.resetStoreOutLinkIds();
         }
-
-
-        // TODO: inLinks変更の感知が厳しいので、結局こうする。
-        // OVM().reloadStdNoteViews();
-
-
     }
 
     private _preMetadataChangedId: string | null = null;
@@ -352,56 +292,24 @@ export class OrbizCacheManager {
 
         const editWatcher = OEwM().userEditWatcher;
         if (editWatcher.editedNoteIds.includes(currentNoteId)) {
-            editWatcher.watchOnceAfterEdit(currentNoteId, () => {
-                this._updateCacheWhenMetadataChanged(currentNoteId, tFile);
+            editWatcher.watchOnceAfterEdit(currentNoteId, (editor: Editor) => {
+                this._updateCacheWhenMetadataChanged(currentNoteId, tFile, editor);
             })
             return;
         }
 
-
-
-
-
-
-
-        // よくよく考えると、特定のファイルに紐づいている、topSectionの表示に必要なメタ情報って
-        // path
-        // inIds, outIds,
-        // metadataCacheくらい？
-        // NoteSourceの変更さえ検知できれば、inLinksの変更感知もできるだろ。
-        // なんか上手いことやれそうな気がするな。
-        // NoteTopSectionに渡す値を参照値じゃなくて実体値にすれば、効率よく、最新情報の反映できるかも
-        // useEffectとobserverパターンを活用する案もいけるかも
-
-        // noteOrbにfrontmatterとnoteSourceを持たせる？
-        // この二つが変わったときに、通知を送れば、、、、
-        // noteSourceとfrontmatterが変わるタイミングは別
-        // frontmatterの変更のタイミングは、fmAttrEditorでわかる。
-
-
-        // ここのNoteSourceを更新するタイミングで、Orbに通知を送って,inLinkIds, outLinkIdsを更新するような仕様にすればいいかもね。
-        // 多分ここで監視するのは、inLinkIdsとPathだけでいい
-        //     -> path（ノート名が変わったとき）、それを参照しているノートのView表示も変えないといけないから注意だna
-        // これ＋Editorの変更時の通知をReaderあたりに集めて、これを元にView表示で、差分があったところだけ更新するようにすれば、うまくいく気がする
-
-
-
-
-
-
+        if (!this._preMetadataChangedId || this._preMetadataChangedId === currentNoteId) {
+            this._debouncedUpdateCacheWhenMetadataChanged(currentNoteId, tFile);
+        } else {
+            this._prePathChangedId = currentNoteId;
+            this._updateCacheWhenMetadataChanged(currentNoteId, tFile);
+        }
 
         this._updateCacheWhenMetadataChanged(currentNoteId, tFile);
-
-        // if (!this._preMetadataChangedId || this._preMetadataChangedId === currentNoteId) {
-        //     this._debouncedUpdateCacheWhenMetadataChanged(currentNoteId, tFile);
-        // } else {
-        //     this._preMetadataChangedId = currentNoteId;
-        //     this._updateCacheWhenMetadataChanged(currentNoteId, tFile);
-        // }
     }
 
-    // private _debouncedUpdateCacheWhenMetadataChanged = debounce(this._updateCacheWhenMetadataChanged, 1500, true);
-    private async _updateCacheWhenMetadataChanged(noteId: string, tFile: TFile) {
+    private _debouncedUpdateCacheWhenMetadataChanged = debounce(this._updateCacheWhenMetadataChanged, 1500, true);
+    private async _updateCacheWhenMetadataChanged(noteId: string, tFile: TFile, editor?: Editor) {
         const cache = OAM().app.metadataCache.getFileCache(tFile);
         if (!cache) OEM.throwUnexpectedError();
         const fmCache = cache?.frontmatter;
@@ -429,43 +337,184 @@ export class OrbizCacheManager {
         const { newOutLinkIds, notHasIdLinks } = this._getNewOutLinkIds(cache);
         this._updateNoteSource(currentSource, newOutLinkIds);
 
-        // ノート内にリンク先の存在しない内部リンクが作成されたとき。
-        if (newOutLinkIds.size) {
-            await this._promptCreateNewNoteForUnresolvedLinks(notHasIdLinks, noteOrb);
+
+
+        if (editor) {
+            // ノート内にリンク先の存在しない内部リンクが作成されたとき。
+            if (newOutLinkIds.size) {
+                // ここでトリガーを引きたいが、そのためにはeditorが必要？
+                // alert("ノート内にリンク先の存在しない内部リンクが作成されました。consoleを確認してね。");
+
+                // await this._promptCreateNewNoteForUnresolvedLinks(notHasIdLinks, noteOrb, editor);
+            }
+
+            // ノート内にfmのlinkedNoteに存在しない内部リンクが置かれた時。
+            const linkedNoteIds = noteOrb.reader.linkedNoteIds;
+            const unlinkedStdNoteIds: Set<string> = new Set();
+            currentSource.outLinkIds.forEach(id => {
+                if (!linkedNoteIds.includes(id)) {
+                    unlinkedStdNoteIds.add(id);
+                }
+            });
+            if (unlinkedStdNoteIds.size) {
+                // await this._promptAddLinkedNotes([...unlinkedStdNoteIds], noteOrb, editor);
+
+                // alert("ノート内に関連ノート外のstd内部リンクが作成されたよ。consoleを確認してね。");
+                // debugConsole(editor.getValue());
+            }
         }
 
-        // ノート内にfmのlinkedNoteに存在しない内部リンクが置かれた時。
-        const linkedNoteIds = noteOrb.reader.linkedNoteIds;
-        const addLinkedNoteIds: Set<string> = new Set();
-        currentSource.outLinkIds.forEach(id => {
-            if (!linkedNoteIds.includes(id)) {
-                addLinkedNoteIds.add(id);
-            }
-        });
-        if (addLinkedNoteIds.size) {
-            await this._promptAddLinkedNotes([...addLinkedNoteIds], noteOrb);
-        }
+
+
+
 
         for (const orb of this._stdNoteOrbMapById.values()) {
-            // TODO: でバウンスとか考えたほうがいいかも？
             orb.resetStoreInLinkIds();
-            orb.resetStoreoutLinkIds();
+            orb.resetStoreOutLinkIds();
         }
         debugConsole(tFile.path, "キャッシュ更新");
-        // reload();
-        // TODO: inLinks変更の感知が厳しいので、結局こうする。
-        // OVM().reloadStdNoteViews();
     }
 
-    private async _promptAddLinkedNotes(addLinkedNoteIds: string[], noteOrb: StdNoteOrb) {
-        await PromptAddLinkedNoteModal.get(addLinkedNoteIds, noteOrb);
+    private async _promptAddLinkedNotes(unlinkedStdNoteIds: string[], rootNoteOrb: StdNoteOrb, editor: Editor) {
+        for (const unlinkedStdNoteId of unlinkedStdNoteIds) {
+            iterateNoteLines(editor, (line, lineText) => {
+                if (!lineText) return;
+                const unlinkedStdNoteSource = OCM().getStdNoteSourceById(unlinkedStdNoteId);
+                if (!unlinkedStdNoteSource) return;
+
+                const linkedNoteName = getBasenameFromPath(unlinkedStdNoteSource.path);
+                // debugConsole(line, lineText);
+                if (!lineText.includes(`[[${linkedNoteName}]]`)) return;
+
+                // debugConsole("置換");
+                const escapedLink = `[[${linkedNoteName}]]`.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+                // debugConsole("escapedLink", escapedLink)
+                const regex = new RegExp(escapedLink, "g");
+                // debugConsole("regex", regex)
+                const newLine = lineText.replace(
+                    regex,
+                    `【@ `
+                    + `[[${unlinkedStdNoteSource.path}|${linkedNoteName}]] `
+                    + `<button class="add-unlinked-std-note" data-unlinked-note-id="${unlinkedStdNoteId}" data-root-note-id="${rootNoteOrb.note.id}">うしボタン</button>`
+                    + ` @】`
+                )
+
+                // debugConsole("newLine", newLine);
+
+                const from = { line: line, ch: 0 };
+                const to = { line: line, ch: lineText.length };
+                editor.blur();
+                editor.replaceRange(newLine, from, to)
+            });
+        }
+
+
+        // await PromptAddLinkedNoteModal.get(addLinkedNoteIds, noteOrb);
     }
 
-    private async _promptCreateNewNoteForUnresolvedLinks(notHasIdLinks: Set<string>, rootNoteOrb: StdNoteOrb): Promise<StdNoteOrb[]> {
+    private async _promptCreateNewNoteForUnresolvedLinks(notHasIdLinks: Set<string>, rootNoteOrb: StdNoteOrb, editor: Editor): Promise<StdNoteOrb[]> {
         const newNoteOrbList: StdNoteOrb[] = [];
+
+        // if (editor.hasFocus()) return [];
+        debugConsole(editor.getValue());
+
+        if (!notHasIdLinks.size) return [];
+
+        for (const link of notHasIdLinks) {
+            // debugConsole("link:", link);
+            iterateNoteLines(editor, (line, lineText) => {
+                if (!lineText) return;
+                // debugConsole(line, lineText);
+                if (!lineText.includes(`[[${link}]]`)) return;
+
+                // debugConsole("置換");
+                const escapedLink = `[[${link}]]`.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+                // debugConsole("escapedLink", escapedLink)
+                const regex = new RegExp(escapedLink, "g");
+                // debugConsole("regex", regex)
+
+
+
+                // 未関連ノートの判定とぶつかって管理が面倒すぎるから、やっぱり新規ノートは、
+                // 未解決リンクをクリックして、新規ノート作成したときに、ボタンとかを設置するのが一番良い気がする。。。。
+                // 問題は、クリックしたときに、解決元の前ノートの情報を取得するのが面倒すぎること、かなぁ
+
+
+                // file-openとかを使って、開いた順のノートの履歴情報を持っておくのが良いかも。
+
+
+
+
+                const newLine = lineText.replace(
+                    regex,
+                    `【@ <span>`
+                    + `<input class="unresolved-link-note-name" value="${link}"> `
+                    + `<button class="create-unresolved-link-note" data-root-note-id="${rootNoteOrb.note.id}">せみボタン</button>`
+                    + ` </span>@】`
+                )
+
+                // debugConsole("newLine", newLine);
+
+                const from = { line: line, ch: 0 };
+                const to = { line: line, ch: lineText.length };
+                editor.blur();
+                editor.replaceRange(newLine, from, to)
+            });
+        }
+        return [];
+
+
+
+
+
+        // ここで探索
+        // editor.processLines<string>(
+        //     (line: number, lineText: string) => {
+        //         return lineText;
+
+        //         // debugConsole("processLines: line", line);
+        //         // debugConsole("processLines: lineText", lineText);
+
+
+        //         // let hasTarget = false;
+        //         // for (const link of notHasIdLinks) {
+        //         //     if (lineText.includes(link)) {
+        //         //         debugConsole("link", link)
+        //         //         hasTarget = true;
+        //         //         break;
+        //         //     }
+        //         // }
+
+
+        //         // return hasTarget;
+        //     },
+        //     (line: number, lineText: string, value: string) => {
+        //         debugConsole(line, lineText, value);
+        //         // debugConsole("processLines", value);
+        //         // if (!value) return;
+        //         // return {
+        //         //     from: { line: line, ch: 0 },
+        //         //     // to: { line: line, ch: 0 },
+        //         //     text: `${line}: ${link}: かにだぜ〜！`
+        //         // }
+        //     },
+        //     false
+        // )
+
+
+
         for (const link of notHasIdLinks) {
             const tFile = OAM().app.metadataCache.getFirstLinkpathDest(link, rootNoteOrb.note.path);
             if (tFile) continue;
+
+
+
+
+
+
+
+
+            return [];
 
             const noteType = await PromptSelectModal.get(
                 "Unresolved link has been created. You create new note?",
@@ -494,6 +543,8 @@ export class OrbizCacheManager {
 
             newNoteOrbList.push(orb);
         }
+
+        // ここで、内部リンクの文字列の置き換えをしないといけない。
         return newNoteOrbList;
     }
 
@@ -578,47 +629,3 @@ export class OrbizCacheManager {
 export const OCM = () => {
     return OrbizCacheManager.getInstance();
 }
-
-// function reload() {
-//     const leaves = OAM().app.workspace.getLeavesOfType("markdown");
-//     leaves.forEach(leaf => {
-//         debugConsole("リロード発火中");
-//         if (!(leaf.view instanceof MarkdownView)) return;
-
-//         const mdView = leaf.view;
-//         // if (tFile.path !== mdView.file?.path) {
-//         //     return;
-//         // }
-//         const tFile = mdView.file;
-//         if (!tFile) return;
-
-//         const orb = OOM().getNoteOrb({ tFile: tFile });
-//         if (!orb) return;
-
-//         let root: Root;
-//         let topSectionContainer = mdView.containerEl.querySelector(".orbiz-note-top-section") as HTMLElement;
-//         if (!topSectionContainer) {
-//             const metadataContainer = mdView.containerEl.querySelector(".metadata-container") as HTMLElement;
-//             if (!metadataContainer) OEM.throwUnexpectedError();
-//             const tmpEl = document.createElement("div");
-//             tmpEl.classList.add("orbiz-note-top-section");
-//             metadataContainer.insertAdjacentElement("afterend", tmpEl);
-
-//             topSectionContainer = tmpEl;
-//             root = createRoot(topSectionContainer);
-
-//             topSectionContainer.__reactRoot = root;
-//         } else {
-//             const tmpRoot = topSectionContainer.__reactRoot;
-//             if (!tmpRoot) OEM.throwUnexpectedError();
-//             root = tmpRoot;
-//         }
-
-//         root.render(
-//             <>
-//                 {orb.viewer.getTopSection()}
-//                 < div > テスト中8 </div>
-//             </>
-//         );
-//     });
-// }

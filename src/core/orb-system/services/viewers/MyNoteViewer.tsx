@@ -28,28 +28,28 @@ export class MyNoteViewer<
         super(note, fmOrb, reader, editor, store);
     }
 
-    getFmAttrs(): React.ReactNode {
-        return (<>
-            {super.getFmAttrs()}
-            {this.fmOrb.rank.getView()}
-            {this.fmOrb.categories.getView()}
-            {this.fmOrb.aliases.getView()}
-            {this.fmOrb.aspect.getView()}
-            {this.fmOrb.roleKind.getView()}
-            {this.fmOrb.roleHub.getView()}
-        </>)
-    }
-    getFmAttrsEditor(): React.ReactNode {
-        return (<>
-            {super.getFmAttrsEditor()}
-            {this.fmOrb.rank.getEditableView()}
-            {this.fmOrb.categories.getEditableView()}
-            {this.fmOrb.aliases.getEditableView()}
-            {this.fmOrb.aspect.getEditableView()}
-            {this.fmOrb.roleKind.getEditableView()}
-            {this.fmOrb.roleHub.getEditableView()}
-        </>)
-    }
+    // getFmAttrs(): React.ReactNode {
+    //     return (<>
+    //         {super.getFmAttrs()}
+    //         {this.fmOrb.rank.getView()}
+    //         {this.fmOrb.categories.getView()}
+    //         {this.fmOrb.aliases.getView()}
+    //         {this.fmOrb.aspect.getView()}
+    //         {this.fmOrb.roleKind.getView()}
+    //         {this.fmOrb.roleHub.getView()}
+    //     </>)
+    // }
+    // getFmAttrsEditor(): React.ReactNode {
+    //     return (<>
+    //         {super.getFmAttrsEditor()}
+    //         {this.fmOrb.rank.getEditableView()}
+    //         {this.fmOrb.categories.getEditableView()}
+    //         {this.fmOrb.aliases.getEditableView()}
+    //         {this.fmOrb.aspect.getEditableView()}
+    //         {this.fmOrb.roleKind.getEditableView()}
+    //         {this.fmOrb.roleHub.getEditableView()}
+    //     </>)
+    // }
 
     getTopSection(): React.ReactNode {
         return (<>

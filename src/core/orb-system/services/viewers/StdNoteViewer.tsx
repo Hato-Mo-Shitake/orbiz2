@@ -45,23 +45,23 @@ export abstract class StdNoteViewer<
         );
     }
 
-    getFmAttrs(): React.ReactNode {
-        return (<>
-            {super.getFmAttrs()}
-            {this.fmOrb.subType.getView()}
-            {this.fmOrb.belongsTo.getView()}
-            {this.fmOrb.relatesTo.getView()}
-            {this.fmOrb.references.getView()}
-        </>)
-    }
-    getFmAttrsEditor(): React.ReactNode {
-        return (<>
-            {super.getFmAttrsEditor()}
-            {this.fmOrb.belongsTo.getEditableView()}
-            {this.fmOrb.relatesTo.getEditableView()}
-            {this.fmOrb.references.getEditableView()}
-        </>)
-    }
+    // getFmAttrs(): React.ReactNode {
+    //     return (<>
+    //         {super.getFmAttrs()}
+    //         {this.fmOrb.subType.getView()}
+    //         {this.fmOrb.belongsTo.getView()}
+    //         {this.fmOrb.relatesTo.getView()}
+    //         {this.fmOrb.references.getView()}
+    //     </>)
+    // }
+    // getFmAttrsEditor(): React.ReactNode {
+    //     return (<>
+    //         {super.getFmAttrsEditor()}
+    //         {this.fmOrb.belongsTo.getEditableView()}
+    //         {this.fmOrb.relatesTo.getEditableView()}
+    //         {this.fmOrb.references.getEditableView()}
+    //     </>)
+    // }
 
     getLinkedStdNote(fmKey: FmKey<"stdLinkedNoteList">, direction: LinkedNoteDirection): React.ReactNode {
         const headerMap: Record<FmKey<"stdLinkedNoteList">, Record<LinkedNoteDirection, string>> = {

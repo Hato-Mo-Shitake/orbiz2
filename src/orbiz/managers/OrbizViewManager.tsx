@@ -3,6 +3,7 @@ import { createRoot, Root } from "react-dom/client";
 import { Note } from "src/orbits/contracts/note-orb";
 import { OAM } from "./OrbizAppManager";
 import { OEM } from "./OrbizErrorManager";
+import { ONhistoryM } from "./OrbizNoteHistoryManager";
 import { OOM } from "./OrbizOrbManager";
 
 interface RootEntry {
@@ -35,12 +36,20 @@ export class OrbizViewManager {
     }
 
     mountOrUpdateNoteTopSection(mdView: MarkdownView) {
+        console.log("このタイミングで、開いたノート順の履歴管理", mdView.file!.name);
+
+        // debugConsole("このタイミングで、開いたノート順の履歴管理", mdView.file!.name);
+
         const metadataContainer = mdView.containerEl.querySelector(".metadata-container");
         if (!(metadataContainer instanceof HTMLElement)) return;
         const tFile = mdView.file;
         if (!tFile) return;
         const orb = OOM().getNoteOrb({ tFile });
         if (!orb) return;
+
+
+        // あとでidにかえます。
+        ONhistoryM().setNoteHistory(orb.note.baseName);
 
         const entry = this.containerRootMap.get(metadataContainer);
 

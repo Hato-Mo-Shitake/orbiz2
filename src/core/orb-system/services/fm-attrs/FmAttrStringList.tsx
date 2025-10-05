@@ -5,13 +5,10 @@ import { FmAttrTagsEditor } from "src/looks/components/note-metadata-edit/base/F
 import { FmAttrTemplateDoneEditor } from "src/looks/components/note-metadata-edit/daily/FmAttrTemplateDoneEditor";
 import { FmAttrAliasesEditor } from "src/looks/components/note-metadata-edit/my/FmAttrAliasesEditor";
 import { FmAttrCategoriesEditor } from "src/looks/components/note-metadata-edit/my/FmAttrCategoriesEditor";
-import { FmAttrSelectableList } from "src/looks/components/note-metadata-edit/sub/FmAttrSelectableList";
-import { FmStringListEditBox } from "src/looks/components/note-metadata-edit/sub/FmStringListEditBox";
 import { FmAttrTagsDisplay } from "src/looks/components/note-metadata-view/base/FmAttrTagsDisplay";
 import { FmAttrTemplateDoneDisplay } from "src/looks/components/note-metadata-view/daily/FmAttrTemplateDoneDisplay";
 import { FmAttrAliasesDisplay } from "src/looks/components/note-metadata-view/my/FmAttrAliasesDisplay";
 import { FmAttrCategoriesDisplay } from "src/looks/components/note-metadata-view/my/FmAttrCategoriesDisplay";
-import { CategorySearchlightModal } from "src/looks/modals/searchlights/CategorySearchlightModal";
 import { FmAttrList } from "src/orbits/contracts/fmAttr";
 import { FmKey } from "src/orbits/contracts/fmKey";
 import { BaseNoteState, DailyNoteState, MyNoteState } from "src/orbits/schema/NoteState";
@@ -92,11 +89,11 @@ export abstract class FmAttrStringList<TAVal extends string = string> extends Fm
         this.afterCommit();
     }
 
-    getEditBox(): ReactNode {
-        return <FmStringListEditBox
-            fmEditor={this}
-        />
-    }
+    // getEditBox(): ReactNode {
+    //     return <FmStringListEditBox
+    //         fmEditor={this}
+    //     />
+    // }
 }
 
 export class FmAttrTags extends FmAttrStringList {
@@ -251,24 +248,24 @@ export class FmAttrCategories extends FmAttrStringList {
         </>)
     }
 
-    getLooks(): ReactNode {
-        return (
-            <div>
-                <a onClick={() => {
-                    CategorySearchlightModal.open()
-                }}>categories: </a>
+    // getLooks(): ReactNode {
+    //     return (
+    //         <div>
+    //             <a onClick={() => {
+    //                 CategorySearchlightModal.open()
+    //             }}>categories: </a>
 
-                {String(this.value)}
-            </div>
-        );
-    }
+    //             {String(this.value)}
+    //         </div>
+    //     );
+    // }
 
-    getEditBox(): ReactNode {
-        return <FmAttrSelectableList
-            fmEditor={this}
-            selections={OSM().categories}
-        />
-    }
+    // getEditBox(): ReactNode {
+    //     return <FmAttrSelectableList
+    //         fmEditor={this}
+    //         selections={OSM().categories}
+    //     />
+    // }
 }
 
 export class FmAttrTemplateDone extends FmAttrStringList {

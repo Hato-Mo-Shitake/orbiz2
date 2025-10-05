@@ -14,6 +14,7 @@ import { logNoteStatusList, LogNoteStatusZEnum } from "src/orbits/schema/frontma
 import { OAM } from "src/orbiz/managers/OrbizAppManager";
 import { OCM } from "src/orbiz/managers/OrbizCacheManager";
 import { ODM } from "src/orbiz/managers/OrbizDiaryManager";
+import { ONhistoryM } from "src/orbiz/managers/OrbizNoteHistoryManager";
 import { OOM } from "src/orbiz/managers/OrbizOrbManager";
 import { OSM } from "src/orbiz/managers/OrbizSettingManager";
 import { OTM } from "src/orbiz/managers/OrbizTFileManager";
@@ -38,6 +39,9 @@ const TestScript = {
     checkSettings: () => {
         // @ts-ignore NOTE: テスト用
         console.log(OSM()._settings);
+    },
+    checkNoteIdHistory() {
+        console.log(ONhistoryM().getAllDesc());
     },
     setTagsAndInLinks: () => {
         const tFile = OTM().activeTFile;

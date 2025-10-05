@@ -179,5 +179,4 @@ export class NoteCreator {
             OEM.throwUnexpectedError();
         }
     }
-
 }

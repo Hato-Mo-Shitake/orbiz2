@@ -1,18 +1,17 @@
 import { TFile } from "obsidian";
 import { ReactNode } from "react";
 import { FmAttrIsClosedEditor } from "src/looks/components/note-metadata-edit/diary/FmAttrIsClosedEditor";
-import { FmBoolEditBox } from "src/looks/components/note-metadata-edit/sub/FmBoolEditBox";
 import { FmAttrIsClosedDisplay } from "src/looks/components/note-metadata-view/diary/FmAttrIsClosedDisplay";
 import { DiaryNoteState } from "src/orbits/schema/NoteState";
 import { StoreApi } from "zustand";
 import { FmAttrSimpleValue } from "./FmAttrSimpleValue";
 
 export abstract class FmAttrBoolean<TValue extends boolean = boolean> extends FmAttrSimpleValue<TValue> {
-    getEditBox(): ReactNode {
-        return <FmBoolEditBox
-            fmEditor={this}
-        />
-    }
+    // getEditBox(): ReactNode {
+    //     return <FmBoolEditBox
+    //         fmEditor={this}
+    //     />
+    // }
 }
 
 export class FmAttrIsClosed extends FmAttrBoolean {

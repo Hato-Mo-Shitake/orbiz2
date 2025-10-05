@@ -1,3 +1,4 @@
+import { debounce } from "obsidian";
 import { DailyNote } from "src/core/domain/DailyNote";
 import { DiaryNote } from "src/core/domain/DiaryNote";
 import { LogNote } from "src/core/domain/LogNote";
@@ -55,10 +56,14 @@ export abstract class StdNoteOrb<TFm extends StdFm = StdFm> extends BaseNoteOrb<
         super(note, fmOrb, reader, editor, viewer, store);
     }
 
-    resetStoreInLinkIds() {
+
+    resetStoreInLinkIds = debounce(this._resetStoreInLinkIds, 1000, true);
+    private _resetStoreInLinkIds() {
+
         this.store.getState().setInLinkIds([...this.note.source.inLinkIds]);
     }
-    resetStoreoutLinkIds() {
+    resetStoreOutLinkIds = debounce(this._resetStoreOutLinkIds, 1000, true);
+    private _resetStoreOutLinkIds() {
         this.store.getState().setOutLinkIds([...this.note.source.outLinkIds]);
     }
 }

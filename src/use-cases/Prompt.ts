@@ -1,4 +1,4 @@
-import { PaneType } from "obsidian";
+import { PaneType, Platform } from "obsidian";
 import { MyNote } from "src/core/domain/MyNote";
 import { StdNote } from "src/core/domain/StdNote";
 import { PromptNewLogNoteConfModal } from "src/looks/modals/prompt/PromptNewLogNoteConfModal";
@@ -16,7 +16,11 @@ export class Prompt {
         if (!conf) return;
 
         const orb = await OUM().noteCreator.createMyNote(conf);
-        await OVM().openNote(orb.note, options?.newLeaf || "split");
+        if (Platform.isMobileApp) {
+            await OVM().openNote(orb.note);
+        } else {
+            await OVM().openNote(orb.note, options?.newLeaf || "split");
+        }
     }
 
     async createRoleNode(

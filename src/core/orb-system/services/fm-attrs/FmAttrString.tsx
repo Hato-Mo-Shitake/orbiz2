@@ -4,8 +4,6 @@ import { FmAttrContextEditor } from "src/looks/components/note-metadata-edit/log
 import { FmAttrStatusEditor } from "src/looks/components/note-metadata-edit/log/FmAttrStatusEditor";
 import { FmAttrAspectEditor } from "src/looks/components/note-metadata-edit/my/FmAttrAspectEditor";
 import { FmAttrRoleKindEditor } from "src/looks/components/note-metadata-edit/my/FmAttrRoleKindEditor";
-import { FmAttrSelectBox } from "src/looks/components/note-metadata-edit/sub/FmAttrSelectBox";
-import { FmStringEditBox } from "src/looks/components/note-metadata-edit/sub/FmStringEditBox";
 import { FmAttrIdDisplay } from "src/looks/components/note-metadata-view/base/FmAttrIdDisplay";
 import { FmAttrTypeDisplay } from "src/looks/components/note-metadata-view/base/FmAttrTypeDisplay";
 import { FmAttrContextDisplay } from "src/looks/components/note-metadata-view/log/FmAttrContextDisplay";
@@ -14,9 +12,9 @@ import { FmAttrAspectDisplay } from "src/looks/components/note-metadata-view/my/
 import { FmAttrRoleKindDisplay } from "src/looks/components/note-metadata-view/my/FmAttrRoleKindDisplay";
 import { FmAttrSubTypeDisplay } from "src/looks/components/note-metadata-view/std/FmAttrSubTypeDisplay";
 import { FmKey } from "src/orbits/contracts/fmKey";
-import { MyNoteAspect, myNoteAspectList } from "src/orbits/schema/frontmatters/Aspect";
+import { MyNoteAspect } from "src/orbits/schema/frontmatters/Aspect";
 import { DiaryNoteType, LogNoteType, MyNoteType, NoteType } from "src/orbits/schema/frontmatters/NoteType";
-import { LogNoteStatus, logNoteStatusList } from "src/orbits/schema/frontmatters/Status";
+import { LogNoteStatus } from "src/orbits/schema/frontmatters/Status";
 import { LogNoteState, MyNoteState } from "src/orbits/schema/NoteState";
 import { OEM } from "src/orbiz/managers/OrbizErrorManager";
 import { OSM } from "src/orbiz/managers/OrbizSettingManager";
@@ -42,11 +40,11 @@ export abstract class FmAttrString<TValue extends string = string> extends FmAtt
         );
     }
 
-    getEditBox(): ReactNode {
-        return <FmStringEditBox
-            fmEditor={this}
-        />
-    }
+    // getEditBox(): ReactNode {
+    //     return <FmStringEditBox
+    //         fmEditor={this}
+    //     />
+    // }
 }
 
 export class FmAttrId extends FmAttrString {
@@ -73,6 +71,9 @@ export class FmAttrId extends FmAttrString {
                 fmAttr={this}
             />
         </>)
+    }
+    getEditableView(): ReactNode {
+        return <></>
     }
 }
 
@@ -101,6 +102,9 @@ export class FmAttrType<TType extends NoteType = NoteType> extends FmAttrString 
             />
         </>)
     }
+    getEditableView(): ReactNode {
+        return <></>
+    }
 }
 
 export class FmAttrSubType<TSubType extends MyNoteType | LogNoteType | DiaryNoteType = MyNoteType | LogNoteType | DiaryNoteType> extends FmAttrString<TSubType> {
@@ -126,6 +130,9 @@ export class FmAttrSubType<TSubType extends MyNoteType | LogNoteType | DiaryNote
                 fmAttr={this}
             />
         </>)
+    }
+    getEditableView(): ReactNode {
+        return <></>
     }
 }
 
@@ -182,12 +189,12 @@ export class FmAttrRoleKind extends FmAttrString {
         </>)
     }
 
-    getEditBox(): ReactNode {
-        return <FmAttrSelectBox
-            fmEditor={this}
-            options={OSM().roleKinds}
-        />
-    }
+    // getEditBox(): ReactNode {
+    //     return <FmAttrSelectBox
+    //         fmEditor={this}
+    //         options={OSM().roleKinds}
+    //     />
+    // }
 }
 
 export class FmAttrAspect extends FmAttrString<MyNoteAspect> {
@@ -232,18 +239,18 @@ export class FmAttrAspect extends FmAttrString<MyNoteAspect> {
         </>)
     }
 
-    getEditBox(): ReactNode {
-        const options = myNoteAspectList.map(a => {
-            return {
-                label: a,
-                value: a,
-            }
-        })
-        return <FmAttrSelectBox
-            fmEditor={this}
-            options={options}
-        />
-    }
+    // getEditBox(): ReactNode {
+    //     const options = myNoteAspectList.map(a => {
+    //         return {
+    //             label: a,
+    //             value: a,
+    //         }
+    //     })
+    //     return <FmAttrSelectBox
+    //         fmEditor={this}
+    //         options={options}
+    //     />
+    // }
 }
 
 export class FmAttrStatus extends FmAttrString<LogNoteStatus> {
@@ -288,18 +295,18 @@ export class FmAttrStatus extends FmAttrString<LogNoteStatus> {
         </>)
     }
 
-    getEditBox(): ReactNode {
-        const options = logNoteStatusList.map(a => {
-            return {
-                label: a,
-                value: a,
-            }
-        })
-        return <FmAttrSelectBox
-            fmEditor={this}
-            options={options}
-        />
-    }
+    // getEditBox(): ReactNode {
+    //     const options = logNoteStatusList.map(a => {
+    //         return {
+    //             label: a,
+    //             value: a,
+    //         }
+    //     })
+    //     return <FmAttrSelectBox
+    //         fmEditor={this}
+    //         options={options}
+    //     />
+    // }
 }
 
 export class FmAttrContext extends FmAttrString {
@@ -343,5 +350,4 @@ export class FmAttrContext extends FmAttrString {
             />
         </>)
     }
-
 }

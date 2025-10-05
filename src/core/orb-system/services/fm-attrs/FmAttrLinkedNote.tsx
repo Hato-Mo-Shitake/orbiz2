@@ -3,7 +3,6 @@ import { ReactNode } from "react";
 import { isMyNote, MyNote } from "src/core/domain/MyNote";
 import { StdNote } from "src/core/domain/StdNote";
 import { FmAttrRoleHubEditor } from "src/looks/components/note-metadata-edit/my/FmAttrRoleHubEditor";
-import { FmLinkedNoteEditBox } from "src/looks/components/note-metadata-edit/sub/FmLinkedNoteEditBox";
 import { FmAttrRoleHubDisplay } from "src/looks/components/note-metadata-view/my/FmAttrRoleHubDisplay";
 import { FmKey } from "src/orbits/contracts/fmKey";
 import { MyNoteState } from "src/orbits/schema/NoteState";
@@ -85,15 +84,15 @@ export abstract class FmAttrLinkedNote<TNote extends StdNote = StdNote> extends 
         this.afterCommit();
     }
 
-    getLooks(): ReactNode {
-        return <div>{this.fmKey}: {this.value?.internalLink || ""}</div>;
-    }
+    // getLooks(): ReactNode {
+    //     return <div>{this.fmKey}: {this.value?.internalLink || ""}</div>;
+    // }
 
-    getEditBox(): ReactNode {
-        return <FmLinkedNoteEditBox
-            fmAttr={this}
-        />
-    }
+    // getEditBox(): ReactNode {
+    //     return <FmLinkedNoteEditBox
+    //         fmAttr={this}
+    //     />
+    // }
 }
 
 export class FmAttrRoleHub extends FmAttrLinkedNote<MyNote> {

@@ -1,11 +1,9 @@
 import { TFile } from "obsidian";
 import { ReactNode } from "react";
-import { dateFormat } from "src/assistance/utils/date";
 import { isValidDate } from "src/assistance/utils/validation";
 import { FmAttrTheDayEditor } from "src/looks/components/note-metadata-edit/daily/FmAttrTheDayEditor";
 import { FmAttrDueEditor } from "src/looks/components/note-metadata-edit/log/FmAttrDueEditor";
 import { FmAttrResolvedEditor } from "src/looks/components/note-metadata-edit/log/FmAttrResolvedEditor";
-import { FmDateEditBox } from "src/looks/components/note-metadata-edit/sub/FmDateEditBoc";
 import { FmAttrTheDayDisplay } from "src/looks/components/note-metadata-view/daily/FmAttrTheDayDisplay";
 import { FmAttrDueDisplay } from "src/looks/components/note-metadata-view/log/FmAttrDueDisplay";
 import { FmAttrResolvedDisplay } from "src/looks/components/note-metadata-view/log/FmAttrResolvedDisplay";
@@ -68,16 +66,6 @@ abstract class FmAttrDate extends FmAttr<Date | null> {
         await ORM().noteR.updateFmAttr(this.tFile, this.fmKey, newTimestamp);
         this._value = newTimestamp ? new Date(newTimestamp) : null;
         this.afterCommit();
-    }
-
-    getLooks(): ReactNode {
-        return <div>{this.fmKey}: {this.value ? dateFormat(this.value, "Y-m-d_H:i_D") : ""}</div>;
-    }
-
-    getEditBox(): ReactNode {
-        return <FmDateEditBox
-            fmEditor={this}
-        />
     }
 }
 
