@@ -1,13 +1,9 @@
-import { Editor, EditorPosition, MarkdownFileInfo, MarkdownView } from "obsidian";
-import { extractInternalLinks, extractNoteNameFromInternalLink } from "src/assistance/utils/link";
-import { findSubstringRange } from "src/assistance/utils/string";
-import { OCM } from "src/orbiz/managers/OrbizCacheManager";
-import { OOM } from "src/orbiz/managers/OrbizOrbManager";
+import { Editor, MarkdownFileInfo, MarkdownView } from "obsidian";
 
 type UserEditAfterHandler = (editor: Editor) => void;
 export class UserEditEventWatcher {
     private _editingTimers = new Map<string, number>();
-    private readonly _doneTypingInterval = 5000;
+    private readonly _doneTypingInterval = 1000;
 
     private readonly _callbackOnceAfterEdit = new Map<string, UserEditAfterHandler>();
 
@@ -82,62 +78,62 @@ export class UserEditEventWatcher {
     }
 }
 
-function createUnResolvedLinkNoteOrAddLinkedNoteAfterEditorChanged(noteId: string, editor: Editor) {
-    // debugConsole(editor.getValue(), editor.getLine(1), editor.getCursor());
-    const c = editor.getCursor();
-    // const cLine = c.line;
-    // const cCh = 
-    // debugConsole(c.line, c.ch);
-    const currentLine = editor.getLine(c.line);
-    // debugConsole(currentLine);
+// function createUnResolvedLinkNoteOrAddLinkedNoteAfterEditorChanged(noteId: string, editor: Editor) {
+//     // debugConsole(editor.getValue(), editor.getLine(1), editor.getCursor());
+//     const c = editor.getCursor();
+//     // const cLine = c.line;
+//     // const cCh = 
+//     // debugConsole(c.line, c.ch);
+//     const currentLine = editor.getLine(c.line);
+//     // debugConsole(currentLine);
 
-    if (currentLine.includes("<button>")) return;
+//     if (currentLine.includes("<button>")) return;
 
-    const iLinks = extractInternalLinks(currentLine);
-    if (!iLinks.length) return;
-    // debugConsole(iLinks);
-
-
-
-
-    iLinks.forEach(il => {
-        const result = findSubstringRange(currentLine, il);
-        if (!result) return;
-        const from: EditorPosition = { line: c.line, ch: result.start };
-        const to: EditorPosition = { line: c.line, ch: result.end };
-
-
-
-        const name = extractNoteNameFromInternalLink(il);
-        if (!name) return;
-        const targetId = OCM().getStdNoteIdByName(name);
-        if (targetId) {
-            const orb = OOM().getStdNoteOrb({ noteId: noteId });
-            if (orb?.reader.linkedNoteIds.includes(targetId)) return;
-
-            editor.replaceRange(`【@ ${il}  <button>かにボタン</button> @】`, from, to);
-            editor.blur();
-            // alert("関連ノートにない内部リンクが設置されました。:");
-        } else {
-            editor.replaceRange(`【@ ${il}  <button>かにボタン</button> @】`, from, to);
-            editor.blur();
-            // alert("未解決の内部リンクが設置されました。:");
+//     const iLinks = extractInternalLinks(currentLine);
+//     if (!iLinks.length) return;
+//     // debugConsole(iLinks);
 
 
 
 
-            // 未解決リンクだけどさ、
-            // Obsidianのデフォルト機能に則って、まっさらな新規作成ノートが作られた時に、そこに、メタ情報なりを設置したり、ディレクトリ移動するための、ボタンをおけばよくないか？
-            // 新規ノートの作成場所を、tmpディレクトリ何なりにして
-            // そっちの方が良くないか？？？
-            // いやでも新規作成ノート側からすると、どこからリンクされているのか、どこから作成されたのかを判断するのが難しい
+//     iLinks.forEach(il => {
+//         const result = findSubstringRange(currentLine, il);
+//         if (!result) return;
+//         const from: EditorPosition = { line: c.line, ch: result.start };
+//         const to: EditorPosition = { line: c.line, ch: result.end };
 
-            // やっぱり、メタデータの更新時に判定を行なって、リンクの横にボタンを設置するのが一番いいかもしれないな。
 
-            // 対象ノートのEditorを取得して、全文検索で、目的の[[ノート名]]文字列を見つける。
 
-            // 【@ [[note-name]] <button>新規作成or関連に追加ボタン</button> <button>X</button> @】
+//         const name = extractNoteNameFromInternalLink(il);
+//         if (!name) return;
+//         const targetId = OCM().getStdNoteIdByName(name);
+//         if (targetId) {
+//             const orb = OOM().getStdNoteOrb({ noteId: noteId });
+//             if (orb?.reader.linkedNoteIds.includes(targetId)) return;
 
-        }
-    });
-}
+//             editor.replaceRange(`【@ ${il}  <button>かにボタン</button> @】`, from, to);
+//             editor.blur();
+//             // alert("関連ノートにない内部リンクが設置されました。:");
+//         } else {
+//             editor.replaceRange(`【@ ${il}  <button>かにボタン</button> @】`, from, to);
+//             editor.blur();
+//             // alert("未解決の内部リンクが設置されました。:");
+
+
+
+
+//             // 未解決リンクだけどさ、
+//             // Obsidianのデフォルト機能に則って、まっさらな新規作成ノートが作られた時に、そこに、メタ情報なりを設置したり、ディレクトリ移動するための、ボタンをおけばよくないか？
+//             // 新規ノートの作成場所を、tmpディレクトリ何なりにして
+//             // そっちの方が良くないか？？？
+//             // いやでも新規作成ノート側からすると、どこからリンクされているのか、どこから作成されたのかを判断するのが難しい
+
+//             // やっぱり、メタデータの更新時に判定を行なって、リンクの横にボタンを設置するのが一番いいかもしれないな。
+
+//             // 対象ノートのEditorを取得して、全文検索で、目的の[[ノート名]]文字列を見つける。
+
+//             // 【@ [[note-name]] <button>新規作成or関連に追加ボタン</button> <button>X</button> @】
+
+//         }
+//     });
+// }

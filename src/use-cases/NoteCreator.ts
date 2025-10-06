@@ -1,4 +1,5 @@
 import { TFile } from "obsidian";
+import { createLogNotePath, createMyNotePath } from "src/assistance/utils/path";
 import { DailyFmBuilder, LogFmBuilder, MyFmBuilder, StdFmBuilder } from "src/builders/FmBuilder";
 import { DailyNoteOrb, LogNoteOrb, MyNoteOrb, StdNoteOrb } from "src/core/orb-system/orbs/NoteOrb";
 import { DuplicateStdNoteNameExistError } from "src/errors/DuplicateStdNoteNameExistError";
@@ -19,7 +20,7 @@ export class NoteCreator {
         return ORM().noteR;
     }
 
-    async createMyNote(conf: NewMyNoteConf): Promise<MyNoteOrb> {
+    async createMyNote(conf: NewMyNoteConf, options?: { tFile?: TFile }): Promise<MyNoteOrb> {
         let tFile: TFile;
 
         if (conf.roleNodeConf) {
@@ -33,20 +34,29 @@ export class NoteCreator {
             conf.subType = subType;
         }
 
-        try {
-            tFile = await this.noteR.createStdTFile(conf.baseName, conf.subType);
-        } catch (error) {
-            if (error instanceof DuplicateStdNoteNameExistError) {
-                const { newNoteName, alreadyNoteName } = await this.resolveMyNoteNameDuplicate(conf, error);
+        if (options?.tFile) {
+            tFile = options.tFile;
 
-                // TODO: 本当はトランザクションとかも考えたいけど。。。。
-                await error.duplicateStdNoteOrb.editor.rename(alreadyNoteName);
 
-                const newConf = { ...conf };
-                newConf.baseName = newNoteName;
-                return await this.createMyNote(newConf);
-            } else {
-                OEM.throwUnexpectedError();
+            const newPath = createMyNotePath(conf.baseName, conf.subType);
+
+            await ORM().noteR.changeTFilePath(tFile, newPath)
+        } else {
+            try {
+                tFile = await this.noteR.createStdTFile(conf.baseName, conf.subType);
+            } catch (error) {
+                if (error instanceof DuplicateStdNoteNameExistError) {
+                    const { newNoteName, alreadyNoteName } = await this.resolveMyNoteNameDuplicate(conf, error);
+
+                    // TODO: 本当はトランザクションとかも考えたいけど。。。。
+                    await error.duplicateStdNoteOrb.editor.rename(alreadyNoteName);
+
+                    const newConf = { ...conf };
+                    newConf.baseName = newNoteName;
+                    return await this.createMyNote(newConf);
+                } else {
+                    OEM.throwUnexpectedError();
+                }
             }
         }
 
@@ -85,9 +95,18 @@ export class NoteCreator {
         return newNoteOrb;
     }
 
-    async createLogNote(conf: NewLogNoteConf): Promise<LogNoteOrb> {
-        const tFile = await this.noteR.createStdTFile(conf.baseName + `〈-${conf.subType}-〉`, conf.subType);
+    async createLogNote(conf: NewLogNoteConf, options?: { tFile?: TFile }): Promise<LogNoteOrb> {
 
+        let tFile: TFile;
+        if (options?.tFile) {
+            tFile = options.tFile;
+
+            const newPath = createLogNotePath(conf.baseName, conf.subType);
+
+            await ORM().noteR.changeTFilePath(tFile, newPath)
+        } else {
+            tFile = await this.noteR.createStdTFile(conf.baseName + `〈-${conf.subType}-〉`, conf.subType);
+        }
         const fmB = new LogFmBuilder(conf.subType);
         const fm = await this.buildStdNote(conf.baseName, fmB, tFile);
 

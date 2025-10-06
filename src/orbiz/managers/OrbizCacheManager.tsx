@@ -4,10 +4,6 @@ import { debugConsole } from "src/assistance/utils/debug";
 import { iterateNoteLines } from "src/assistance/utils/editor";
 import { getBasenameFromPath } from "src/assistance/utils/path";
 import { DiaryNoteOrb, isDiaryNoteOrb, isStdNoteOrb, StdNoteOrb } from "src/core/orb-system/orbs/NoteOrb";
-import { PromptNewLogNoteConfModal } from "src/looks/modals/prompt/PromptNewLogNoteConfModal";
-import { PromptNewMyNoteConfModal } from "src/looks/modals/prompt/PromptNewMyNoteConfModal";
-import { PromptSelectModal } from "src/looks/modals/prompt/PromptSelectModal";
-import { isNewLogNoteConf, isNewMyNoteConf, NewStdNoteConf } from "src/orbits/contracts/create-note";
 import { BaseFm } from "src/orbits/schema/frontmatters/fm";
 import { FmValue } from "src/orbits/schema/frontmatters/FmKey";
 import { StdNoteSource } from "src/orbits/schema/NoteSource";
@@ -19,7 +15,6 @@ import { ONM } from "./OrbizNoteManager";
 import { OOM } from "./OrbizOrbManager";
 import { ORM } from "./OrbizRepositoryManager";
 import { OTM } from "./OrbizTFileManager";
-import { OUM } from "./OrbizUseCaseManager";
 
 export class OrbizCacheManager {
     private static _instance: OrbizCacheManager | null = null;
@@ -308,7 +303,7 @@ export class OrbizCacheManager {
         this._updateCacheWhenMetadataChanged(currentNoteId, tFile);
     }
 
-    private _debouncedUpdateCacheWhenMetadataChanged = debounce(this._updateCacheWhenMetadataChanged, 1500, true);
+    private _debouncedUpdateCacheWhenMetadataChanged = debounce(this._updateCacheWhenMetadataChanged, 500, true);
     private async _updateCacheWhenMetadataChanged(noteId: string, tFile: TFile, editor?: Editor) {
         const cache = OAM().app.metadataCache.getFileCache(tFile);
         if (!cache) OEM.throwUnexpectedError();
@@ -334,19 +329,26 @@ export class OrbizCacheManager {
             this._initializeNewNote(currentSource);
         }
 
-        const { newOutLinkIds, notHasIdLinks } = this._getNewOutLinkIds(cache);
+        const { newOutLinkIds } = this._getNewOutLinkIds(cache);
         this._updateNoteSource(currentSource, newOutLinkIds);
 
 
 
         if (editor) {
             // ノート内にリンク先の存在しない内部リンクが作成されたとき。
-            if (newOutLinkIds.size) {
-                // ここでトリガーを引きたいが、そのためにはeditorが必要？
-                // alert("ノート内にリンク先の存在しない内部リンクが作成されました。consoleを確認してね。");
+            // if (newOutLinkIds.size) {
+            // ここでトリガーを引きたいが、そのためにはeditorが必要？
+            // alert("ノート内にリンク先の存在しない内部リンクが作成されました。consoleを確認してね。");
 
-                // await this._promptCreateNewNoteForUnresolvedLinks(notHasIdLinks, noteOrb, editor);
-            }
+
+            // TODO: この機能は削除します。代わりに、createメソッド以外の経由、
+            // 特に、未解決リンクをクリックしてノート作成を行なった際に
+            // そのノートに、どこから開かれたかも踏まえた上の（履歴を活用）、メタ情報を保持させた、ノート作成ボタンを設置するようにする。
+
+            // vault on create メソッドを使って、pathをチェックして判定する。
+
+            // await this._promptCreateNewNoteForUnresolvedLinks(notHasIdLinks, noteOrb, editor);
+            // }
 
             // ノート内にfmのlinkedNoteに存在しない内部リンクが置かれた時。
             const linkedNoteIds = noteOrb.reader.linkedNoteIds;
@@ -356,16 +358,17 @@ export class OrbizCacheManager {
                     unlinkedStdNoteIds.add(id);
                 }
             });
+
             if (unlinkedStdNoteIds.size) {
-                // await this._promptAddLinkedNotes([...unlinkedStdNoteIds], noteOrb, editor);
+                await this._locateButtonAddLinkedNotes([...unlinkedStdNoteIds], noteOrb, editor);
+
+                // 未解決リンクのことは気にせずに、stdとして存在するが、現在ノートに関連していない内部リンクが置かれた時にだけ発火させる。
+                // 隣にボタンを設置する形式で、行こうかな。。。？
 
                 // alert("ノート内に関連ノート外のstd内部リンクが作成されたよ。consoleを確認してね。");
                 // debugConsole(editor.getValue());
             }
         }
-
-
-
 
 
         for (const orb of this._stdNoteOrbMapById.values()) {
@@ -375,7 +378,7 @@ export class OrbizCacheManager {
         debugConsole(tFile.path, "キャッシュ更新");
     }
 
-    private async _promptAddLinkedNotes(unlinkedStdNoteIds: string[], rootNoteOrb: StdNoteOrb, editor: Editor) {
+    private async _locateButtonAddLinkedNotes(unlinkedStdNoteIds: string[], rootNoteOrb: StdNoteOrb, editor: Editor) {
         for (const unlinkedStdNoteId of unlinkedStdNoteIds) {
             iterateNoteLines(editor, (line, lineText) => {
                 if (!lineText) return;
@@ -391,11 +394,13 @@ export class OrbizCacheManager {
                 // debugConsole("escapedLink", escapedLink)
                 const regex = new RegExp(escapedLink, "g");
                 // debugConsole("regex", regex)
+
+
                 const newLine = lineText.replace(
                     regex,
                     `【@ `
                     + `[[${unlinkedStdNoteSource.path}|${linkedNoteName}]] `
-                    + `<button class="add-unlinked-std-note" data-unlinked-note-id="${unlinkedStdNoteId}" data-root-note-id="${rootNoteOrb.note.id}">うしボタン</button>`
+                    + `<button class="add-unlinked-std-note-btn" data-unlinked-note-id="${unlinkedStdNoteId}" data-root-note-id="${rootNoteOrb.note.id}">added</button>`
                     + ` @】`
                 )
 
@@ -404,6 +409,8 @@ export class OrbizCacheManager {
                 const from = { line: line, ch: 0 };
                 const to = { line: line, ch: lineText.length };
                 editor.blur();
+
+                // debugConsole("未関連ノートを検知。ボタンを設置します。");
                 editor.replaceRange(newLine, from, to)
             });
         }
@@ -412,141 +419,141 @@ export class OrbizCacheManager {
         // await PromptAddLinkedNoteModal.get(addLinkedNoteIds, noteOrb);
     }
 
-    private async _promptCreateNewNoteForUnresolvedLinks(notHasIdLinks: Set<string>, rootNoteOrb: StdNoteOrb, editor: Editor): Promise<StdNoteOrb[]> {
-        const newNoteOrbList: StdNoteOrb[] = [];
+    // private async _promptCreateNewNoteForUnresolvedLinks(notHasIdLinks: Set<string>, rootNoteOrb: StdNoteOrb, editor: Editor): Promise<StdNoteOrb[]> {
+    //     const newNoteOrbList: StdNoteOrb[] = [];
 
-        // if (editor.hasFocus()) return [];
-        debugConsole(editor.getValue());
+    //     // if (editor.hasFocus()) return [];
+    //     debugConsole(editor.getValue());
 
-        if (!notHasIdLinks.size) return [];
+    //     if (!notHasIdLinks.size) return [];
 
-        for (const link of notHasIdLinks) {
-            // debugConsole("link:", link);
-            iterateNoteLines(editor, (line, lineText) => {
-                if (!lineText) return;
-                // debugConsole(line, lineText);
-                if (!lineText.includes(`[[${link}]]`)) return;
+    //     for (const link of notHasIdLinks) {
+    //         // debugConsole("link:", link);
+    //         iterateNoteLines(editor, (line, lineText) => {
+    //             if (!lineText) return;
+    //             // debugConsole(line, lineText);
+    //             if (!lineText.includes(`[[${link}]]`)) return;
 
-                // debugConsole("置換");
-                const escapedLink = `[[${link}]]`.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-                // debugConsole("escapedLink", escapedLink)
-                const regex = new RegExp(escapedLink, "g");
-                // debugConsole("regex", regex)
-
-
-
-                // 未関連ノートの判定とぶつかって管理が面倒すぎるから、やっぱり新規ノートは、
-                // 未解決リンクをクリックして、新規ノート作成したときに、ボタンとかを設置するのが一番良い気がする。。。。
-                // 問題は、クリックしたときに、解決元の前ノートの情報を取得するのが面倒すぎること、かなぁ
-
-
-                // file-openとかを使って、開いた順のノートの履歴情報を持っておくのが良いかも。
+    //             // debugConsole("置換");
+    //             const escapedLink = `[[${link}]]`.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    //             // debugConsole("escapedLink", escapedLink)
+    //             const regex = new RegExp(escapedLink, "g");
+    //             // debugConsole("regex", regex)
 
 
 
+    //             // 未関連ノートの判定とぶつかって管理が面倒すぎるから、やっぱり新規ノートは、
+    //             // 未解決リンクをクリックして、新規ノート作成したときに、ボタンとかを設置するのが一番良い気がする。。。。
+    //             // 問題は、クリックしたときに、解決元の前ノートの情報を取得するのが面倒すぎること、かなぁ
 
-                const newLine = lineText.replace(
-                    regex,
-                    `【@ <span>`
-                    + `<input class="unresolved-link-note-name" value="${link}"> `
-                    + `<button class="create-unresolved-link-note" data-root-note-id="${rootNoteOrb.note.id}">せみボタン</button>`
-                    + ` </span>@】`
-                )
 
-                // debugConsole("newLine", newLine);
-
-                const from = { line: line, ch: 0 };
-                const to = { line: line, ch: lineText.length };
-                editor.blur();
-                editor.replaceRange(newLine, from, to)
-            });
-        }
-        return [];
+    //             // file-openとかを使って、開いた順のノートの履歴情報を持っておくのが良いかも。
 
 
 
 
+    //             const newLine = lineText.replace(
+    //                 regex,
+    //                 `【@ <span>`
+    //                 + `<input class="unresolved-link-note-name" value="${link}"> `
+    //                 + `<button class="create-unresolved-link-note" data-root-note-id="${rootNoteOrb.note.id}">せみボタン</button>`
+    //                 + ` </span>@】`
+    //             )
 
-        // ここで探索
-        // editor.processLines<string>(
-        //     (line: number, lineText: string) => {
-        //         return lineText;
+    //             // debugConsole("newLine", newLine);
 
-        //         // debugConsole("processLines: line", line);
-        //         // debugConsole("processLines: lineText", lineText);
-
-
-        //         // let hasTarget = false;
-        //         // for (const link of notHasIdLinks) {
-        //         //     if (lineText.includes(link)) {
-        //         //         debugConsole("link", link)
-        //         //         hasTarget = true;
-        //         //         break;
-        //         //     }
-        //         // }
-
-
-        //         // return hasTarget;
-        //     },
-        //     (line: number, lineText: string, value: string) => {
-        //         debugConsole(line, lineText, value);
-        //         // debugConsole("processLines", value);
-        //         // if (!value) return;
-        //         // return {
-        //         //     from: { line: line, ch: 0 },
-        //         //     // to: { line: line, ch: 0 },
-        //         //     text: `${line}: ${link}: かにだぜ〜！`
-        //         // }
-        //     },
-        //     false
-        // )
+    //             const from = { line: line, ch: 0 };
+    //             const to = { line: line, ch: lineText.length };
+    //             editor.blur();
+    //             editor.replaceRange(newLine, from, to)
+    //         });
+    //     }
+    //     return [];
 
 
 
-        for (const link of notHasIdLinks) {
-            const tFile = OAM().app.metadataCache.getFirstLinkpathDest(link, rootNoteOrb.note.path);
-            if (tFile) continue;
 
 
+    //     // ここで探索
+    //     // editor.processLines<string>(
+    //     //     (line: number, lineText: string) => {
+    //     //         return lineText;
+
+    //     //         // debugConsole("processLines: line", line);
+    //     //         // debugConsole("processLines: lineText", lineText);
+
+
+    //     //         // let hasTarget = false;
+    //     //         // for (const link of notHasIdLinks) {
+    //     //         //     if (lineText.includes(link)) {
+    //     //         //         debugConsole("link", link)
+    //     //         //         hasTarget = true;
+    //     //         //         break;
+    //     //         //     }
+    //     //         // }
+
+
+    //     //         // return hasTarget;
+    //     //     },
+    //     //     (line: number, lineText: string, value: string) => {
+    //     //         debugConsole(line, lineText, value);
+    //     //         // debugConsole("processLines", value);
+    //     //         // if (!value) return;
+    //     //         // return {
+    //     //         //     from: { line: line, ch: 0 },
+    //     //         //     // to: { line: line, ch: 0 },
+    //     //         //     text: `${line}: ${link}: かにだぜ〜！`
+    //     //         // }
+    //     //     },
+    //     //     false
+    //     // )
+
+
+
+    //     for (const link of notHasIdLinks) {
+    //         const tFile = OAM().app.metadataCache.getFirstLinkpathDest(link, rootNoteOrb.note.path);
+    //         if (tFile) continue;
 
 
 
 
 
 
-            return [];
 
-            const noteType = await PromptSelectModal.get(
-                "Unresolved link has been created. You create new note?",
-                [
-                    { value: "my", label: "my note" },
-                    { value: "log", label: "log note" },
 
-                ]
-            )
-            let conf: NewStdNoteConf | null;
-            let orb: StdNoteOrb | null;
-            switch (noteType) {
-                case ("my"):
-                    conf = await PromptNewMyNoteConfModal.get({ baseName: link, rootNote: rootNoteOrb.note });
-                    if (!isNewMyNoteConf(conf)) continue;
-                    orb = await OUM().noteCreator.createMyNote(conf);
-                    break;
-                case ("log"):
-                    conf = await PromptNewLogNoteConfModal.get({ baseName: link, rootNote: rootNoteOrb.note });
-                    if (!isNewLogNoteConf(conf)) continue;
-                    orb = await OUM().noteCreator.createLogNote(conf);
-                    break;
-                default:
-                    continue;
-            }
+    //         return [];
 
-            newNoteOrbList.push(orb);
-        }
+    //         const noteType = await PromptSelectModal.get(
+    //             "Unresolved link has been created. You create new note?",
+    //             [
+    //                 { value: "my", label: "my note" },
+    //                 { value: "log", label: "log note" },
 
-        // ここで、内部リンクの文字列の置き換えをしないといけない。
-        return newNoteOrbList;
-    }
+    //             ]
+    //         )
+    //         let conf: NewStdNoteConf | null;
+    //         let orb: StdNoteOrb | null;
+    //         switch (noteType) {
+    //             case ("my"):
+    //                 conf = await PromptNewMyNoteConfModal.get({ baseName: link, rootNote: rootNoteOrb.note });
+    //                 if (!isNewMyNoteConf(conf)) continue;
+    //                 orb = await OUM().noteCreator.createMyNote(conf);
+    //                 break;
+    //             case ("log"):
+    //                 conf = await PromptNewLogNoteConfModal.get({ baseName: link, rootNote: rootNoteOrb.note });
+    //                 if (!isNewLogNoteConf(conf)) continue;
+    //                 orb = await OUM().noteCreator.createLogNote(conf);
+    //                 break;
+    //             default:
+    //                 continue;
+    //         }
+
+    //         newNoteOrbList.push(orb);
+    //     }
+
+    //     // ここで、内部リンクの文字列の置き換えをしないといけない。
+    //     return newNoteOrbList;
+    // }
 
     private _updateNoteSource(noteSource: StdNoteSource, newOutLinkIds: Set<string>) {
         // 差分計算

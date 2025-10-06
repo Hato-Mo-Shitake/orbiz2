@@ -1,18 +1,17 @@
 import { Editor, EventRef, MarkdownFileInfo, MarkdownView, TAbstractFile, TFile } from "obsidian";
 import { debugConsole } from "src/assistance/utils/debug";
+import { iterateNoteLines } from "src/assistance/utils/editor";
 import { OAM } from "src/orbiz/managers/OrbizAppManager";
 import { ODM } from "src/orbiz/managers/OrbizDiaryManager";
 import { OEwM } from "src/orbiz/managers/OrbizEventWatchManager";
+import { ONhistoryM } from "src/orbiz/managers/OrbizNoteHistoryManager";
 import { ONM } from "src/orbiz/managers/OrbizNoteManager";
+import { OUM } from "src/orbiz/managers/OrbizUseCaseManager";
 import { OVM } from "src/orbiz/managers/OrbizViewManager";
 import { handleListCacheChanged } from "../events/handlers/metadataCache";
 import { handleListTAbstractFileRename } from "../events/handlers/vault";
 import { handleListActiveLeafChange, handleListLayoutChange } from "../events/handlers/workspace";
 
-// ゴリ押し。。。。
-// interface HTMLElementWithOrbizNoteTopSectionRoot extends HTMLElement {
-//     __reactRoot?: Root;
-// }
 export class EventRegistrar {
     private readonly eventRefs: EventRef[] = [];
 
@@ -31,10 +30,7 @@ export class EventRegistrar {
 
 
         OAM().app.workspace.on("file-open", (tFile) => {
-            // debugConsole("file-open");
             if (!tFile) return;
-            // debugConsole(tFile.basename);
-
 
             const leaves = OAM().app.workspace.getLeavesOfType("markdown");
             leaves.forEach(leaf => {
@@ -44,9 +40,7 @@ export class EventRegistrar {
                 if (tFile.path !== mdView.file?.path) return;
 
                 OVM().mountOrUpdateNoteTopSection(mdView);
-
             });
-            // debugConsole("file-open-process end.");
         })
 
         /** vault */
@@ -67,14 +61,17 @@ export class EventRegistrar {
                     const noteId = ONM().getNoteIdByTFile(tFile);
                     if (!noteId) return;
                     OEwM().userEditWatcher.userEdit(noteId, editor, info);
-
-                    // if (Platform.isIosApp) {
-                    //     new Notice("発動はしている。");
-                    //     setTimeout(() => scrollCursorToCenter(editor), 3000);
-                    // }
                 }
             })
         );
+
+        myPlugin.registerEvent(OAM().app.vault.on("create", async (file: TAbstractFile) => {
+            if (file instanceof TFile) {
+                if (!file.path.startsWith("tmp/")) return;
+                const rootNote = ONM().getStdNote({ noteId: ONhistoryM().latestId! })!;
+                OUM().prompt.adaptTFileToNote(file, rootNote);
+            }
+        }));
 
         myPlugin.registerEvent(OAM().app.vault.on("modify", (file: TAbstractFile) => {
             if (file instanceof TFile) {
@@ -85,10 +82,61 @@ export class EventRegistrar {
             }
         }));
 
+
         // TODO: うるさいのでコメントアウト
         // myPlugin.registerDomEvent(document, 'click', (evt: MouseEvent) => {
         //     console.log('click!!', evt);
         // });
+        myPlugin.registerDomEvent(document, 'click', async (evt: MouseEvent) => {
+            const target = evt.target;
+            if (!(target instanceof HTMLElement)) return;
+            const btn = target.closest<HTMLButtonElement>(".add-unlinked-std-note-btn");
+            if (!btn) return;
+            const unlinkedNoteId = btn?.dataset.unlinkedNoteId;
+            const rootNoteId = btn?.dataset.rootNoteId;
+            // debugConsole("未関連ノート追加ボタンが押されたよ。", "unlinked-note", unlinkedNoteId, "roo-note", rootNoteId);
+            if (!unlinkedNoteId || !rootNoteId) return;
+            const unlinkedNote = ONM().getStdNote({ noteId: unlinkedNoteId })!;
+            const rootNote = ONM().getStdNote({ noteId: rootNoteId })!;
+            const success = await OUM().prompt.addLinkedNote(unlinkedNote, rootNote);
+
+            if (!success) return;
+
+            const mdView = OAM().app.workspace.getActiveViewOfType(MarkdownView);
+            const tFile = mdView?.file;
+
+            if (rootNote.path != tFile?.path || !mdView?.editor) {
+                alert("想定外のエラーです。手動で対象の「added」ボタンを除去して。");
+                return;
+            }
+
+            const editor = mdView.editor;
+            const deleteBtnText = `<button class="add-unlinked-std-note-btn" data-unlinked-note-id="${unlinkedNoteId}" data-root-note-id="${rootNoteId}">added</button>`;
+
+            let deleteSuccess = false;
+            iterateNoteLines(editor, (line, lineText) => {
+                if (!lineText.includes(deleteBtnText)) return;
+                const newLine = lineText
+                    .replace("【@ ", "")
+                    .replace(" @】", "")
+                    .replace(deleteBtnText, "");
+
+
+                const from = { line: line, ch: 0 };
+                const to = { line: line, ch: lineText.length };
+                editor.blur();
+
+                // debugConsole("未関連ノートを検知。ボタンを設置します。");
+                editor.replaceRange(newLine, from, to);
+                deleteSuccess = true;
+            });
+
+            // if (rootNote.path != tFile?.path || !mdView?.editor) {
+            if (!deleteSuccess) {
+                alert("想定外のエラーです。手動で対象の「added」ボタンを除去して。");
+            }
+            // }
+        });
 
         // myPlugin.registerDomEvent("document", "paste")
 

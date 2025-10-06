@@ -5,10 +5,10 @@ import { AddLinkedNoteListBox } from "src/looks/components/note-metadata-edit/ma
 import { OAM } from "src/orbiz/managers/OrbizAppManager";
 
 
-export class PromptAddLinkedNoteModal extends Modal {
+export class PromptAddLinkedListNoteModal extends Modal {
     static get(addLinkedNoteIds: string[], noteOrb: StdNoteOrb): Promise<boolean> {
         return new Promise<boolean>((resolve) => {
-            const modal = new PromptAddLinkedNoteModal(resolve, addLinkedNoteIds, noteOrb);
+            const modal = new PromptAddLinkedListNoteModal(resolve, addLinkedNoteIds, noteOrb);
             modal.open();
         });
     }

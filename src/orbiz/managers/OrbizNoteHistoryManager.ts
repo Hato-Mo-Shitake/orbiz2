@@ -40,7 +40,7 @@ export class OrbizNoteHistoryManager {
     }
 
     /** 最新のノートを取得 */
-    getLatest(): string | null {
+    get latestId(): string | null {
         return this.idHistory[0] ?? null;
     }
 

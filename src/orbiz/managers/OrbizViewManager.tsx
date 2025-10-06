@@ -48,8 +48,8 @@ export class OrbizViewManager {
         if (!orb) return;
 
 
-        // あとでidにかえます。
-        ONhistoryM().setNoteHistory(orb.note.baseName);
+        // 履歴管理。
+        ONhistoryM().setNoteHistory(orb.note.id);
 
         const entry = this.containerRootMap.get(metadataContainer);
 

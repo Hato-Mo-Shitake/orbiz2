@@ -1,4 +1,5 @@
 import { TFile } from "obsidian";
+import { StdNote } from "src/core/domain/StdNote";
 import { DiaryNoteOrb, isLogNoteOrb, isMyNoteOrb, LogNoteOrb, MyNoteOrb, StdNoteOrb } from "src/core/orb-system/orbs/NoteOrb";
 import { NoteOrb } from "src/orbits/contracts/note-orb";
 import { OAM } from "./OrbizAppManager";
@@ -52,10 +53,15 @@ export class OrbizOrbManager {
         }
     }
 
-    getStdNoteOrb(src: { tFile?: TFile, noteId?: string, noteName?: string }): StdNoteOrb | null {
+    getStdNoteOrb(src: { note?: StdNote, tFile?: TFile, noteId?: string, noteName?: string }): StdNoteOrb | null {
         let tFile: TFile;
         let noteId: string;
-        if (src.tFile) {
+
+        if (src.note) {
+            tFile = src.note.tFile;
+            noteId = src.note.id;
+        }
+        else if (src.tFile) {
             tFile = src.tFile;
             const tmp = ONM().getNoteIdByTFile(tFile);
             if (!tmp) return null;

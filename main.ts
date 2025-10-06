@@ -37,7 +37,15 @@ export default class MyPlugin extends Plugin {
 		const mdView = this.app.workspace.getActiveViewOfType(MarkdownView);
 		if (!mdView) return;
 		debugConsole("最初のマウント");
-		OVM().mountOrUpdateNoteTopSection(mdView);
+		const leaves = this.app.workspace.getLeavesOfType("markdown");
+		leaves.forEach(leaf => {
+			if (!(leaf.view instanceof MarkdownView)) return;
+
+			const mdView = leaf.view;
+			// if (tFile.path !== mdView.file?.path) return;
+
+			OVM().mountOrUpdateNoteTopSection(mdView);
+		});
 		debugConsole("最初のマウント完了");
 		// debugConsole("最初に開かれているノート！", activeFile?.path);
 	}

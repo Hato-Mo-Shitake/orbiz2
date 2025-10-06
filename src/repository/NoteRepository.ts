@@ -88,7 +88,19 @@ export class NoteRepository {
         return newPath;
     }
 
-    async createStdTFile(baseName: string, subType: SubNoteType, data: string = "", options?: DataWriteOptions): Promise<TFile> {
+    async changeTFilePath(tFile: TFile, newPath: string): Promise<string> {
+        await this.getOrCreateTFolder(getParentPath(newPath));
+        try {
+            await OAM().app.fileManager.renameFile(tFile, newPath);
+        } catch (e) {
+            console.error(e);
+            OEM.throwUnexpectedError();
+        }
+
+        return newPath;
+    }
+
+    async createStdTFile(baseName: string, subType: SubNoteType, data = "", options?: DataWriteOptions): Promise<TFile> {
         const existingId = OCM().getStdNoteIdByName(baseName);
         if (existingId) {
             const orb = OOM().getStdNoteOrb({ noteId: existingId });
@@ -113,7 +125,7 @@ export class NoteRepository {
         return this.vault.create(path, data, options);
     }
 
-    async createDailyTFile(date?: Date, data: string = "", options?: DataWriteOptions): Promise<TFile> {
+    async createDailyTFile(date?: Date, data = "", options?: DataWriteOptions): Promise<TFile> {
         const path = createDailyNotePath(date);
         const folderPath = getParentPath(path);
         await this.getOrCreateTFolder(folderPath);

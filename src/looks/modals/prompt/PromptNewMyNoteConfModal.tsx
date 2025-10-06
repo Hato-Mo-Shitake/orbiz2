@@ -10,7 +10,7 @@ import { NewMyNoteConfBox } from "../../components/note-create/main/NewMyNoteCon
 export class PromptNewMyNoteConfModal extends Modal {
     static get(options?: {
         baseName?: string,
-        rootNote?: StdNote
+        rootNote?: StdNote,
     }): Promise<NewMyNoteConf | null> {
         return new Promise<NewMyNoteConf | null>((resolve) => {
             const modal = new PromptNewMyNoteConfModal(resolve, options);
@@ -22,11 +22,12 @@ export class PromptNewMyNoteConfModal extends Modal {
 
     private readonly _baseName: string | null;
     private readonly _rootNote: StdNote | null;
+    private readonly _defaultNoteName: string | null;
     constructor(
         private resolve: (conf: NewMyNoteConf | null) => void,
         options?: {
             baseName?: string,
-            rootNote?: StdNote
+            rootNote?: StdNote,
         }
     ) {
         super(OAM().app);
@@ -49,7 +50,7 @@ export class PromptNewMyNoteConfModal extends Modal {
                     resolve={resolve}
                     options={{
                         baseName: this._baseName || undefined,
-                        rootNote: this._rootNote || ONM().activeStdNote || undefined
+                        rootNote: this._rootNote || ONM().activeStdNote || undefined,
                     }}
                 />
             </StrictMode>
