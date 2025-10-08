@@ -3,11 +3,30 @@ import { MyNote } from "src/core/domain/MyNote";
 import { FmKey } from "src/orbits/contracts/fmKey";
 import { MyFm } from "src/orbits/schema/frontmatters/fm";
 import { OCM } from "src/orbiz/managers/OrbizCacheManager";
+import { OEM } from "src/orbiz/managers/OrbizErrorManager";
 import { ONM } from "src/orbiz/managers/OrbizNoteManager";
 import { MyFmOrb } from "../../orbs/FmOrb";
 import { StdNoteReader } from "./StdNoteReader";
 
 export class MyNoteReader<TFm extends MyFm = MyFm> extends StdNoteReader<TFm> {
+    static getRoleNodeNoteList(rootNote: MyNote, inLinkIds: string[]): MyNote[] {
+        const targetIds: string[] = [];
+        inLinkIds.forEach(id => {
+            const source = OCM().getStdNoteSourceById(id);
+            if (!source) return;
+
+            const fm = ONM().getFmCacheByPath(source.path);
+            if (!fm) OEM.throwUnexpectedError();
+
+            const iLink = String(fm["roleHub"]);
+            if (rootNote.baseName == extractNoteNameFromInternalLink(iLink)) {
+                targetIds.push(id);
+            }
+        });
+
+        return targetIds.map(id => ONM().getMyNote({ noteId: id })!);
+    }
+
     constructor(
         public readonly note: MyNote<TFm>,
         public readonly fmOrb: MyFmOrb,
@@ -36,23 +55,7 @@ export class MyNoteReader<TFm extends MyFm = MyFm> extends StdNoteReader<TFm> {
     }
 
     getRoleNodeIds(): string[] {
-        const results: string[] = [];
-        const thisNoteName = this.note.baseName;
-        this.note.source.inLinkIds.forEach(id => {
-            const source = OCM().getStdNoteSourceById(id);
-            if (!source) throw new Error("sourceがない: getInLinkIds()")
-
-            const fm = ONM().getFmCacheByPath(source.path);
-            if (!fm) throw new Error("fm cacheがない: getInLinkIds()")
-
-            const iLink = fm["roleHub"];
-            if (!iLink) return;
-            if (thisNoteName == extractNoteNameFromInternalLink(iLink)) {
-                results.push(id);
-            }
-        });
-
-        return results;
+        return MyNoteReader.getRoleNodeNoteList(this.note, [...this.note.source.inLinkIds]).map(n => n.id);
     }
 
     getInLinkIds(key: FmKey<"stdLinkedNoteList"> | FmKey<"roleHub">): string[] {
@@ -60,23 +63,5 @@ export class MyNoteReader<TFm extends MyFm = MyFm> extends StdNoteReader<TFm> {
             return super.getInLinkIds(key);
         }
         return this.getRoleNodeIds();
-
-        // const results: string[] = [];
-        // const thisNoteName = this.note.baseName;
-        // this.note.source.inLinkIds.forEach(id => {
-        //     const source = OCM().getStdNoteSourceById(id);
-        //     if (!source) throw new Error("sourceがない: getInLinkIds()")
-
-        //     const fm = ONM().getFmCacheByPath(source.path);
-        //     if (!fm) throw new Error("fm cacheがない: getInLinkIds()")
-
-        //     const iLink = fm["roleHub"];
-        //     if (!iLink) return;
-        //     if (thisNoteName == extractNoteNameFromInternalLink(iLink)) {
-        //         results.push(id);
-        //     }
-        // });
-
-        // return results;
     }
 }

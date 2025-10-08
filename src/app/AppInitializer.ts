@@ -5,10 +5,9 @@ import { OCM, OrbizCacheManager } from "src/orbiz/managers/OrbizCacheManager";
 import { ODM, OrbizDiaryManager } from "src/orbiz/managers/OrbizDiaryManager";
 import { OrbizEventWatchManager } from "src/orbiz/managers/OrbizEventWatchManager";
 import { OrbizFactoryManager } from "src/orbiz/managers/OrbizFactoryManager";
+import { OrbizNoteHistoryManager } from "src/orbiz/managers/OrbizNoteHistoryManager";
 import { OrbizNoteManager } from "src/orbiz/managers/OrbizNoteManager";
 import { OrbizOrbManager } from "src/orbiz/managers/OrbizOrbManager";
-// import { OrbizReactManager } from "src/orbiz/managers/OrbizReactManager";
-import { OrbizNoteHistoryManager } from "src/orbiz/managers/OrbizNoteHistoryManager";
 import { OrbizRepositoryManager } from "src/orbiz/managers/OrbizRepositoryManager";
 import { OrbizSettingManager, OSM } from "src/orbiz/managers/OrbizSettingManager";
 import { OrbizTFileManager } from "src/orbiz/managers/OrbizTFileManager";
@@ -68,6 +67,5 @@ export class AppInitializer {
         OrbizEventWatchManager.setInstance();
 
         OrbizNoteHistoryManager.setInstance();
-        // OrbizReactManager.setInstance();
     }
 }

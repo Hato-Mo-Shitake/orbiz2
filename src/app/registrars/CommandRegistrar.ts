@@ -20,7 +20,7 @@ export class CommandRegister {
     }
 
     register(): void {
-        const { app, myPlugin } = OAM();
+        const { myPlugin } = OAM();
         this.commands.forEach(command => {
             myPlugin.addCommand(command);
         });

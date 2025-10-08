@@ -9,8 +9,6 @@ export class FmAttrFilter {
         if (OAM().isVaultPath(link)) return `[[${link}]]`;
         if (!link.includes("/")) {
 
-            // const map = OCM().fileNameToIdMap;
-            // const noteId = map.get(link);
             const noteId = OCM().getStdNoteIdByName(link);
 
             if (!noteId) return null;

@@ -1,12 +1,25 @@
 import { CachedMetadata, TFile } from "obsidian";
 import { OCM } from "src/orbiz/managers/OrbizCacheManager";
 
-export type CacheChangedHandler = (file: TFile, data: string, cache: CachedMetadata) => any;
+type EventHandlerForMetadataCacheMap = {
+    changed: (file: TFile, data: string, cache: CachedMetadata) => any,
+}
+export type EventHandlerForMetadataCache<K extends keyof EventHandlerForMetadataCacheMap> = EventHandlerForMetadataCacheMap[K];
 
-export const handleUpdateCacheWhenMetadataChanged: CacheChangedHandler = (file: TFile, data: string, cache: CachedMetadata) => {
+/*-------------------------------*/
+
+const handleUpdateCacheWhenMetadataChanged: EventHandlerForMetadataCache<"changed"> = (file: TFile, data: string, cache: CachedMetadata) => {
     OCM().updateCacheWhenMetadataChanged(file, cache);
 }
 
-export const handleListCacheChanged: CacheChangedHandler[] = [
+/*-------------------------------*/
+
+const handleListCacheChanged: EventHandlerForMetadataCache<"changed">[] = [
     handleUpdateCacheWhenMetadataChanged
 ];
+
+/*-------------------------------*/
+
+export const EventHandlersForMetadataCache = {
+    "changed": handleListCacheChanged,
+}

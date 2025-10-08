@@ -1,6 +1,6 @@
 import { MyNoteViewer } from "src/core/orb-system/services/viewers/MyNoteViewer";
 
-export function AspectIndexTopSection({ viewer }: { viewer: MyNoteViewer }) {
+export function MyNoteTopSectionIndex({ viewer }: { viewer: MyNoteViewer }) {
     return (<>
         {/* <FoldingElement header="parent" hLevel={3}>
             {viewer.getOutLinkTree("belongsTo")}

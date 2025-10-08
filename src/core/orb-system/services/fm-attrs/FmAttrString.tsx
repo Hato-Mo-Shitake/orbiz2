@@ -65,10 +65,12 @@ export class FmAttrId extends FmAttrString {
     setStore(store: StoreApi<any>): void {
         OEM.throwUnexpectedError();
     }
-    getView(): ReactNode {
+    getView(options?: { header?: string, headerWidth?: number }): ReactNode {
         return (<>
             <FmAttrIdDisplay
                 fmAttr={this}
+                header={options?.header}
+                headerWidth={options?.headerWidth}
             />
         </>)
     }
@@ -95,10 +97,12 @@ export class FmAttrType<TType extends NoteType = NoteType> extends FmAttrString 
     setStore(store: StoreApi<any>): void {
         OEM.throwUnexpectedError();
     }
-    getView(): ReactNode {
+    getView(options?: { header?: string, headerWidth?: number }): ReactNode {
         return (<>
             <FmAttrTypeDisplay
                 fmAttr={this}
+                header={options?.header}
+                headerWidth={options?.headerWidth}
             />
         </>)
     }
@@ -124,10 +128,12 @@ export class FmAttrSubType<TSubType extends MyNoteType | LogNoteType | DiaryNote
     setStore(store: StoreApi<any>): void {
         OEM.throwUnexpectedError();
     }
-    getView(): ReactNode {
+    getView(options?: { header?: string, headerWidth?: number }): ReactNode {
         return (<>
             <FmAttrSubTypeDisplay
                 fmAttr={this}
+                header={options?.header}
+                headerWidth={options?.headerWidth}
             />
         </>)
     }
@@ -146,6 +152,9 @@ export class FmAttrRoleKind extends FmAttrString {
             tFile,
             "roleKind",
             _value || "",
+            {
+                isImmutable: true,
+            }
         )
     }
 
@@ -171,11 +180,13 @@ export class FmAttrRoleKind extends FmAttrString {
         return OSM().roleKinds.includes(value) || value == "";
     }
 
-    getView(): ReactNode {
+    getView(options?: { header?: string, headerWidth?: number }): ReactNode {
         if (!this._store) return null;
         return (<>
             <FmAttrRoleKindDisplay
                 store={this._store}
+                header={options?.header}
+                headerWidth={options?.headerWidth}
             />
         </>)
     }
@@ -221,11 +232,13 @@ export class FmAttrAspect extends FmAttrString<MyNoteAspect> {
         }
     }
 
-    getView(): ReactNode {
+    getView(options?: { header?: string, headerWidth?: number }): ReactNode {
         if (!this._store) return null;
         return (<>
             <FmAttrAspectDisplay
                 store={this._store}
+                header={options?.header}
+                headerWidth={options?.headerWidth}
             />
         </>)
     }

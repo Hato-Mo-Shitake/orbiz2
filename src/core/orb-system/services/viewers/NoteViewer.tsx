@@ -1,9 +1,5 @@
 import { Fragment, ReactNode } from "react";
 import { BaseNote } from "src/core/domain/Note";
-import { OpenFmDisplayButton } from "src/looks/components/common-orbiz/OpenFmDisplayButton";
-import { OpenFmEditButton } from "src/looks/components/common-orbiz/OpenFmEditButton";
-import { OpenMainMenuButton } from "src/looks/components/common-orbiz/OpenMainMenuButton";
-import { DateDisplay } from "src/looks/components/common/DateDisplay";
 import { FmAttrViewer } from "src/orbits/contracts/fmAttr";
 import { BaseFm } from "src/orbits/schema/frontmatters/fm";
 import { BaseNoteState } from "src/orbits/schema/NoteState";
@@ -35,12 +31,12 @@ export abstract class BaseNoteViewer<
             {this.fmViewers.map(v => {
                 if (!v.getView) return;
                 return (<Fragment key={v.fmKey}>
-                    {v.getView()}
+                    <div style={{ marginTop: "0.6rem" }}>
+                        {v.getView({ header: v.fmKey, headerWidth: 8 })}
+                        {/* <hr /> */}
+                    </div>
                 </Fragment>)
             })}
-            {/* {this.fmOrb.id.getView()}
-            {this.fmOrb.type.getView()}
-            {this.fmOrb.tags.getView()} */}
         </>)
     }
 
@@ -51,39 +47,41 @@ export abstract class BaseNoteViewer<
 
                 return (<Fragment key={v.fmKey}>
                     {v.getEditableView()}
+                    <hr />
                 </Fragment>)
             })}
         </>)
     }
 
-    getTopSection(): ReactNode {
-        return (<>
-            <div
-                style={{ margin: "0.8em", display: "flex", gap: "1em" }}
-            >
-                <OpenMainMenuButton />
-                <OpenFmDisplayButton
-                    viewer={this}
-                />
-                <OpenFmEditButton
-                    viewer={this}
-                />
-            </div>
-            <div
-                style={{ marginTop: "0.9em", display: "flex", gap: "0.3em" }}
-            >
-                <span>
-                    c:
-                    <DateDisplay date={this.note.created} />
-                </span>
-                <span>{"|"}</span>
-                <span>
-                    m:
-                    <DateDisplay date={this.note.modified} />
-                </span>
-            </div>
-        </>)
-    }
+    abstract getTopSection(): ReactNode
+    // {
+    //     return (<>
+    //         <div
+    //             style={{ margin: "0.8em", display: "flex", gap: "1em" }}
+    //         >
+    //             <OpenMainMenuButton />
+    //             <OpenFmDisplayButton
+    //                 viewer={this}
+    //             />
+    //             <OpenFmEditButton
+    //                 viewer={this}
+    //             />
+    //         </div>
+    //         <div
+    //             style={{ marginTop: "0.9em", display: "flex", gap: "0.3em" }}
+    //         >
+    //             <span>
+    //                 c:
+    //                 <DateDisplay date={this.note.created} />
+    //             </span>
+    //             <span>{"|"}</span>
+    //             <span>
+    //                 m:
+    //                 <DateDisplay date={this.note.modified} />
+    //             </span>
+    //         </div>
+    //     </>)
+    // }
 
     // getFmLooks(): ReactNode {
     //     return (

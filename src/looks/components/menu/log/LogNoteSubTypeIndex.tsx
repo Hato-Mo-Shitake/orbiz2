@@ -16,39 +16,20 @@ export function LogNoteSubTypeIndex({
     subType: LogNoteType,
     closeModal?: () => void;
 }) {
-    const _handleOpenModal = (modal: { open: () => void }): () => void => {
-        return () => {
-            closeModal?.();
-            modal.open();
+    const [currentStatus, setCurrentStatus] = useState<LogNoteStatus | null>(null);
+
+    const filter = (t: TFile): boolean => {
+        if (currentStatus === null) return true;
+
+        const fmCache = OAM().app.metadataCache.getFileCache(t)?.frontmatter;
+        if (!fmCache) return false;
+
+        if (currentStatus === "default") {
+            if (!fmCache["status"] || fmCache["status"] == "default") return true;
+        } else {
+            if (fmCache["status"] == currentStatus) return true;
         }
-    }
-
-    const [filter, setFilter] = useState<(t: TFile) => boolean>(() => {
-        return () => true;
-    })
-    const mc = OAM().app.metadataCache;
-
-    const handleChangeFilter = (selectedStatus: LogNoteStatus | null) => {
-        if (!selectedStatus) {
-            setFilter(() => {
-                return () => true;
-            });
-            return;
-        }
-
-        setFilter(() => {
-            return (t: TFile): boolean => {
-                const fmCache = mc.getFileCache(t)?.frontmatter;
-                if (!fmCache) return false;
-
-                if (selectedStatus === "default") {
-                    if (!fmCache["status"] || fmCache["status"] == "default") return true;
-                } else {
-                    if (fmCache["status"] == selectedStatus) return true;
-                }
-                return false;
-            }
-        });
+        return false;
     }
 
     return (<>
@@ -61,13 +42,18 @@ export function LogNoteSubTypeIndex({
 
         <div>
             filter
-            <div style={{ display: "flex", gap: "0.2em" }}>
-                <button onClick={() => handleChangeFilter(null)}>
-                    All
+            <div className="orbiz__item--flex-small">
+                <button onClick={() => setCurrentStatus(null)}>
+                    <span className={!currentStatus ? "orbiz__text--underline-red" : ""} >
+                        All
+                    </span>
                 </button>
+
                 {logNoteStatusList.map(status =>
-                    <button key={status} onClick={() => handleChangeFilter(status)}>
-                        {status}
+                    <button key={status} onClick={() => setCurrentStatus(status)}>
+                        <span className={currentStatus == status ? "orbiz__text--underline-red" : ""} >
+                            {status}
+                        </span>
                     </button>
                 )}
             </div>

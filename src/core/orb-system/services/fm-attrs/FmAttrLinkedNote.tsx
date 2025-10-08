@@ -106,7 +106,10 @@ export class FmAttrRoleHub extends FmAttrLinkedNote<MyNote> {
             "roleHub",
             _value,
             "internalLink",
-            isMyNote
+            isMyNote,
+            {
+                isImmutable: true,
+            }
         )
     }
 
@@ -121,11 +124,12 @@ export class FmAttrRoleHub extends FmAttrLinkedNote<MyNote> {
         }
     }
 
-    getView(): ReactNode {
+    getView(options?: { header?: string }): ReactNode {
         if (!this._store) return null;
         return (<>
             <FmAttrRoleHubDisplay
                 store={this._store}
+                header={options?.header}
             />
         </>)
     }

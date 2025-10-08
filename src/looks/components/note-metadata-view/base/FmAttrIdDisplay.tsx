@@ -1,17 +1,19 @@
 import { FmAttrId } from "src/core/orb-system/services/fm-attrs/FmAttrString";
+import { SimpleViewBox } from "../../common/SimpleViewBox";
 
 export function
     FmAttrIdDisplay({
         fmAttr,
-        header = "id"
+        header = "",
+        headerWidth,
     }: {
         fmAttr: FmAttrId
         header?: string,
+        headerWidth?: number
     }) {
     return (<>
-        <div>
-            {header && <span>{header}: </span>}
+        <SimpleViewBox header={header} headerWidth={headerWidth}>
             {fmAttr.value}
-        </div>
+        </SimpleViewBox>
     </>)
 }

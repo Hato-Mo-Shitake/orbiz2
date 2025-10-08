@@ -1,11 +1,11 @@
 import { generateUUID } from "src/assistance/utils/uuid";
+import { RoleNodeConf } from "src/orbits/contracts/create-note";
 import { BaseFm, DailyFm, DiaryFm, LogFm, MyFm, StdFm } from "src/orbits/schema/frontmatters/fm";
 import { DiaryNoteType, LogNoteType, MyNoteType } from "src/orbits/schema/frontmatters/NoteType";
 import { ODM } from "src/orbiz/managers/OrbizDiaryManager";
 
 export abstract class BaseFmBuilder<TFm extends BaseFm = BaseFm> {
     protected _fm: Partial<TFm> = {};
-    // protected _fm: TFm;
     constructor(id: string) {
         this._fm["id"] = id;
         this._fm["tags"] = [];
@@ -14,7 +14,6 @@ export abstract class BaseFmBuilder<TFm extends BaseFm = BaseFm> {
     build(isDeepCopy = false): TFm {
         // TODO: もっといい方法があれば。。。。
         const fm = this._fm as unknown as TFm;
-        // const fm = this._fm;
 
         if (isDeepCopy) {
             return structuredClone(fm);
@@ -34,7 +33,10 @@ export abstract class StdFmBuilder<TFm extends StdFm = StdFm> extends BaseFmBuil
 }
 
 export class MyFmBuilder<TFm extends MyFm = MyFm> extends StdFmBuilder<TFm> {
-    constructor(subType: MyNoteType) {
+    constructor(
+        subType: MyNoteType,
+        roleNodeConf?: RoleNodeConf
+    ) {
         super();
         this._fm["type"] = "myNote";
         this._fm["subType"] = subType;
@@ -43,9 +45,17 @@ export class MyFmBuilder<TFm extends MyFm = MyFm> extends StdFmBuilder<TFm> {
         this._fm["categories"] = [];
         this._fm["aliases"] = [];
         this._fm["aspect"] = "";
-        this._fm["roleKind"] = "";
-        this._fm["roleHub"] = "";
+
+        if (roleNodeConf) {
+            this._fm["roleKind"] = roleNodeConf.kind;
+            this._fm["roleHub"] = roleNodeConf.hub.internalLink;
+        } else {
+            this._fm["roleKind"] = "";
+            this._fm["roleHub"] = "";
+        }
     }
+
+    // TODO: role設定をここでやることになると思う。
 }
 
 export class LogFmBuilder<TFm extends LogFm = LogFm> extends StdFmBuilder<TFm> {

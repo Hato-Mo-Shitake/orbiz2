@@ -27,42 +27,6 @@ export abstract class StdNoteViewer<
         super(note, fmOrb, reader, editor, store);
     }
 
-    getTestLooks(): React.ReactNode {
-        return (<>
-            {this.getFmAttrs()}
-            {this.getFmAttrsEditor()}
-            <div>以下tree</div>
-            {fmKeysForStdLinkedNoteList.map(key => {
-                return linkedNoteDirectionList.map(d =>
-                    <div key={`${key}-${d}`}>
-                        {`${key}-${d}`}
-                        {this.getLinkedStdNote(key, d)}
-                    </div>
-
-                )
-            })}
-        </>
-        );
-    }
-
-    // getFmAttrs(): React.ReactNode {
-    //     return (<>
-    //         {super.getFmAttrs()}
-    //         {this.fmOrb.subType.getView()}
-    //         {this.fmOrb.belongsTo.getView()}
-    //         {this.fmOrb.relatesTo.getView()}
-    //         {this.fmOrb.references.getView()}
-    //     </>)
-    // }
-    // getFmAttrsEditor(): React.ReactNode {
-    //     return (<>
-    //         {super.getFmAttrsEditor()}
-    //         {this.fmOrb.belongsTo.getEditableView()}
-    //         {this.fmOrb.relatesTo.getEditableView()}
-    //         {this.fmOrb.references.getEditableView()}
-    //     </>)
-    // }
-
     getLinkedStdNote(fmKey: FmKey<"stdLinkedNoteList">, direction: LinkedNoteDirection): React.ReactNode {
         const headerMap: Record<FmKey<"stdLinkedNoteList">, Record<LinkedNoteDirection, string>> = {
             "belongsTo": { "in": "children", "out": "parents" },
@@ -89,11 +53,5 @@ export abstract class StdNoteViewer<
                 )
             })}
         </>)
-    }
-
-    getTopSection(): React.ReactNode {
-        return (
-            super.getTopSection()
-        );
     }
 }

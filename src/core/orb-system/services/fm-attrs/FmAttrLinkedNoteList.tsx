@@ -168,13 +168,14 @@ export class FmAttrBelongsTo extends FmAttrLinkedNoteList {
         }
     }
 
-    getView(): ReactNode {
+    getView(options?: { header?: string, headerWidth: number }): ReactNode {
         if (!this._store) return null;
         return (<>
             <FmAttrLinkedNoteListDisplay
                 store={this._store}
                 selector={(state) => state.fmAttrBelongsTo}
-                header={this.fmKey}
+                header={options?.header}
+                headerWidth={options?.headerWidth}
             />
         </>)
     }
@@ -213,13 +214,14 @@ export class FmAttrRelatesTo extends FmAttrLinkedNoteList {
         this._storeSetter(this.value);
     }
 
-    getView(): ReactNode {
+    getView(options?: { header?: string, headerWidth: number }): ReactNode {
         if (!this._store) return null;
         return (<>
             <FmAttrLinkedNoteListDisplay
                 store={this._store}
                 selector={(state) => state.fmAttrRelatesTo}
-                header={this.fmKey}
+                header={options?.header}
+                headerWidth={options?.headerWidth}
             />
         </>)
     }
@@ -257,13 +259,14 @@ export class FmAttrReferences extends FmAttrLinkedNoteList {
         this._storeSetter(this.value);
     }
 
-    getView(): ReactNode {
+    getView(options?: { header?: string, headerWidth: number }): ReactNode {
         if (!this._store) return null;
         return (<>
             <FmAttrLinkedNoteListDisplay
                 store={this._store}
                 selector={(state) => state.fmAttrReferences}
-                header={this.fmKey}
+                header={options?.header}
+                headerWidth={options?.headerWidth}
             />
         </>)
     }

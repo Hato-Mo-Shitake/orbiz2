@@ -1,34 +1,18 @@
 import { useEffect } from "react";
-import { isMyNote, MyNote } from "src/core/domain/MyNote";
-import { StdNote } from "src/core/domain/StdNote";
+import { MyNote } from "src/core/domain/MyNote";
 import { RoleNodeConf } from "src/orbits/contracts/create-note";
-import { ONM } from "src/orbiz/managers/OrbizNoteManager";
 import { OSM } from "src/orbiz/managers/OrbizSettingManager";
 import { SelectBox } from "../../common/SelectBox";
-import { StdNotePicker } from "../../common/StdNotePicker";
 
 export function RoleNodeConfBox({
     roleNodeConf,
     onChange,
-    options
+    roleHub
 }: {
     roleNodeConf: Partial<RoleNodeConf>,
     onChange: (conf: Partial<RoleNodeConf>) => void,
-    options?: {
-        hubNote?: MyNote
-    }
+    roleHub: MyNote
 }) {
-    const handleRootNote = (note: StdNote | null) => {
-        if (!note) return;
-        if (!isMyNote) {
-            alert("MyNoteを入力してください。");
-            return;
-        }
-        const newConf: Partial<RoleNodeConf> = { ...roleNodeConf };
-        newConf.hub = note;
-
-        onChange(newConf);
-    }
 
     const handleRoleKind = (kind: string) => {
         const newConf: Partial<RoleNodeConf> = { ...roleNodeConf };
@@ -38,30 +22,25 @@ export function RoleNodeConfBox({
 
     // TODO: この辺りはもっと整理すべきだと思うけど、一旦。。。。
     useEffect(() => {
-        roleNodeConf.hub = options?.hubNote;
-        roleNodeConf.kind = OSM().roleKinds[0];
+        const conf: Partial<RoleNodeConf> = {};
+        conf.hub = roleHub;
+        conf.kind = OSM().roleKinds[0];
+        onChange(conf);
     }, [])
 
     return (<>
-        <div style={{ margin: "15px 0 15px 0" }}>
-            <label>
-                role hub
-
-                <StdNotePicker
-                    onChange={handleRootNote}
-                    options={{
-                        defaultNote: options?.hubNote,
-                        suggestions: ONM().allMyNoteNames
-                    }}
-                />
-            </label>
+        <h6 style={{ marginBottom: "3px" }}>note name: role-kind@role-hub</h6>
+        <div className="orbiz__item--flex-small">
+            <SelectBox
+                value={OSM().roleKinds[0]}
+                onChange={handleRoleKind}
+                options={OSM().roleKinds}
+            />
+            @
+            <span>
+                {roleHub.baseName}
+            </span>
         </div>
 
-        <h6 style={{ marginBottom: "3px" }}>role kind</h6>
-        <SelectBox
-            value={OSM().roleKinds[0]}
-            onChange={handleRoleKind}
-            options={OSM().roleKinds}
-        />
     </>)
 }

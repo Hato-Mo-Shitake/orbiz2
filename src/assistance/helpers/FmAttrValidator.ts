@@ -8,7 +8,6 @@ export class FmAttrValidator {
     }
     static internalLink(link: string): boolean {
         const path = extractLinkTarget(link);
-        // console.log(path);
         if (!path) return false;
         // 名前オンリーのリンクだとここで落ちるんだ。
         return OAM().isVaultPath(path);

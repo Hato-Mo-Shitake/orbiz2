@@ -119,11 +119,14 @@ export class FmAttrTags extends FmAttrStringList {
         }
     }
 
-    getView(): ReactNode {
+    getView(options?: { header?: string, headerWidth: number, isHorizon?: boolean }): ReactNode {
         if (!this._store) return null;
         return (<>
             <FmAttrTagsDisplay
                 store={this._store}
+                header={options?.header}
+                isHorizon={options?.isHorizon}
+                headerWidth={options?.headerWidth}
             />
         </>)
     }
@@ -176,11 +179,14 @@ export class FmAttrAliases extends FmAttrStringList {
         }
     }
 
-    getView(): ReactNode {
+    getView(options?: { header?: string, headerWidth: number, isHorizon?: boolean }): ReactNode {
         if (!this._store) return null;
         return (<>
             <FmAttrAliasesDisplay
                 store={this._store}
+                header={options?.header}
+                isHorizon={options?.isHorizon}
+                headerWidth={options?.headerWidth}
             />
         </>)
     }
@@ -230,11 +236,14 @@ export class FmAttrCategories extends FmAttrStringList {
         return OSM().categories.includes(aVal) || aVal == "";
     }
 
-    getView(): ReactNode {
+    getView(options?: { header?: string, headerWidth: number, isHorizon?: boolean }): ReactNode {
         if (!this._store) return null;
         return (<>
             <FmAttrCategoriesDisplay
                 store={this._store}
+                header={options?.header}
+                isHorizon={options?.isHorizon}
+                headerWidth={options?.headerWidth}
             />
         </>)
     }

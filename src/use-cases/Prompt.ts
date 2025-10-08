@@ -49,6 +49,13 @@ export class Prompt {
             default:
                 OEM.throwUnexpectedError();
         }
+
+        // すでに開かれているTFileのmdViewに対してマウントするため
+        // だけど、ここに記述する処理ではないような気もする。
+        // const mdView = OAM().app.workspace.getActiveViewOfType(MarkdownView);
+        // if (mdView instanceof MarkdownView) {
+        //     OVM().mountOrUpdateNoteTopSection(mdView);
+        // }
     }
 
     async addLinkedNote(unlinkedNote: StdNote, rootNote: StdNote): Promise<boolean> {
@@ -101,7 +108,15 @@ export class Prompt {
 
         const orb = await OUM().noteCreator.createMyNote(conf, { tFile: options?.tFile });
         if (!options?.newLeaf || Platform.isMobileApp) {
+
+
             await OVM().openNote(orb.note);
+
+            // うまく切り替わらないな
+            // これさ、キャッシュ更新時の更新にdelayがかかっているせいで、直前のtopSectionが反映されれたりしない？
+            // いやでも,topsectionの書き換えは,fileopenでしか管理してないはずだけどな。
+            // const mdView = OAM().app.workspace.getActiveViewOfType(MarkdownView);
+            // if (mdView) OVM().mountOrUpdateNoteTopSection(mdView);
         } else {
             await OVM().openNote(orb.note, options?.newLeaf || "split");
         }
@@ -121,6 +136,8 @@ export class Prompt {
 
         if (!options?.newLeaf || Platform.isMobileApp) {
             await OVM().openNote(orb.note);
+            // const mdView = OAM().app.workspace.getActiveViewOfType(MarkdownView);
+            // if (mdView) OVM().mountOrUpdateNoteTopSection(mdView);
         } else {
             await OVM().openNote(orb.note, options?.newLeaf || "split");
         }
@@ -143,6 +160,8 @@ export class Prompt {
 
         if (!options?.newLeaf || Platform.isMobileApp) {
             await OVM().openNote(orb.note);
+            // const mdView = OAM().app.workspace.getActiveViewOfType(MarkdownView);
+            // if (mdView) OVM().mountOrUpdateNoteTopSection(mdView);
         } else {
             await OVM().openNote(orb.note, options?.newLeaf || "split");
         }

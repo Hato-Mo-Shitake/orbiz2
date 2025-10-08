@@ -6,3 +6,45 @@ available in the app when your plugin is enabled.
 If your plugin does not need CSS, delete this file.
 
 */
+
+
+/* orbiz */
+
+.orbiz__item--flex-small {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.2em;
+    align-items: center;
+}
+
+.orbiz__item--flex-align-start-small {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.2em;
+    align-items: start;
+}
+
+.orbiz__list--horizon {
+    display: flex;
+    flex-wrap: wrap;
+    list-style: none;
+    gap: 0.3em;
+    padding: 0;
+    margin: 0;
+}
+
+.orbiz__back-color--cyan {
+    /* color: var(--color-cyan); */
+    background-color: var(--color-cyan);
+    /* background-color: aqua; */
+}
+
+.orbiz__text--underline-red {
+    text-decoration-line: underline;
+    text-decoration-color: var(--color-red);
+    text-decoration-thickness: 2px;
+}
+
+.orbiz__font--bold {
+    font-weight: bold;
+}

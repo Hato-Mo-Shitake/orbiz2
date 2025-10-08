@@ -60,7 +60,7 @@ export class NoteCreator {
             }
         }
 
-        const fmB = new MyFmBuilder(conf.subType);
+        const fmB = new MyFmBuilder(conf.subType, conf?.roleNodeConf || undefined);
         const fm = await this.buildStdNote(conf.baseName, fmB, tFile);
 
         // NOTE: この時点ではまだ、fmCacheがないからTFileを入れると落ちる。
@@ -75,12 +75,12 @@ export class NoteCreator {
             await this.addLinkedNote(newNoteOrb, conf.linkedConf);
         }
 
-        if (conf.roleNodeConf) {
-            const roleNodeConf = conf.roleNodeConf;
-            // const hubNote = ONM().getMyNote({ noteId: roleNodeConf.h });
-            // if (!hubNote) OEM.throwUnexpectedError();
-            await newNoteOrb.editor.addRole(roleNodeConf.hub, roleNodeConf.kind);
-        }
+        // if (conf.roleNodeConf) {
+        //     const roleNodeConf = conf.roleNodeConf;
+        //     // const hubNote = ONM().getMyNote({ noteId: roleNodeConf.h });
+        //     // if (!hubNote) OEM.throwUnexpectedError();
+        //     await newNoteOrb.editor.addRole(roleNodeConf.hub, roleNodeConf.kind);
+        // }
 
         if (conf.aspect) {
             await newNoteOrb.fmOrb.aspect.setNewValue(conf.aspect).commitNewValue();
@@ -97,15 +97,16 @@ export class NoteCreator {
 
     async createLogNote(conf: NewLogNoteConf, options?: { tFile?: TFile }): Promise<LogNoteOrb> {
 
+        // ここの処理の仕方はもうちょっと検討したいが、一旦これで、、、
+        conf.baseName = conf.baseName + `〈-${conf.subType}-〉`;
+
         let tFile: TFile;
         if (options?.tFile) {
             tFile = options.tFile;
-
             const newPath = createLogNotePath(conf.baseName, conf.subType);
-
             await ORM().noteR.changeTFilePath(tFile, newPath)
         } else {
-            tFile = await this.noteR.createStdTFile(conf.baseName + `〈-${conf.subType}-〉`, conf.subType);
+            tFile = await this.noteR.createStdTFile(conf.baseName, conf.subType);
         }
         const fmB = new LogFmBuilder(conf.subType);
         const fm = await this.buildStdNote(conf.baseName, fmB, tFile);

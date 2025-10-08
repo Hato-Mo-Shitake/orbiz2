@@ -67,7 +67,6 @@ export class OrbizOrbManager {
             if (!tmp) return null;
             noteId = tmp;
         } else if (src.noteId) {
-            // const tmp = OCM().getTFileByNoteId(src.noteId);
             const tmp = OTM().getNoteTFileById(src.noteId);
             if (!tmp) return null;
             tFile = tmp;

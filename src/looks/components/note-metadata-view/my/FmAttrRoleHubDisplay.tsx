@@ -4,17 +4,17 @@ import { NoteLink } from "../../common/NoteLink";
 
 export function FmAttrRoleHubDisplay({
     store,
-    header = "roleHub"
+    header
 }: {
     store: StoreApi<MyNoteState>,
-    header?: string,
+    header?: string;
 }) {
     const roleHub = useStore(store, (s) => s.fmAttrRoleHub);
 
     if (!roleHub) return null;
     return (<>
         <div>
-            {header && <span>{header}: </span>}
+            {header && <span>{header || "roleHub"}: </span>}
             <NoteLink
                 linkText={roleHub.path}
             />

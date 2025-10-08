@@ -65,13 +65,10 @@ export function NewRoleNodeConfBox({
     const [categories, setCategories] = useState<string[]>([]);
 
     return (<>
-        <h1>to create MyNote</h1>
+        <h1>to create RoleNode</h1>
 
         <button
             onClick={handleClick}
-            style={{
-                margin: "15px 0 15px 0"
-            }}
         >
             create!
         </button>
@@ -79,13 +76,10 @@ export function NewRoleNodeConfBox({
         <RoleNodeConfBox
             roleNodeConf={roleNodeConf}
             onChange={setRoleNodeConf}
-            options={{
-                hubNote: roleHub
-            }}
+            roleHub={roleHub}
+
         />
         <br />
-        <div style={{ color: "red" }}>※ ノート名は自動的に「RoleKind@RoleHubのノート名」になります。</div>
-        <div style={{ color: "red" }}>※ subTypeは自動的に「RoleHub」と同じになります。</div>
 
         <div>
             <h4>

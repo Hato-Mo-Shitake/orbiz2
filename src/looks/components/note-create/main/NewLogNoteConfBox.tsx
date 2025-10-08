@@ -52,9 +52,10 @@ export function NewLogNoteConfBox({
         resolve(newConf);
     };
 
+    const rootSubType = options?.rootNote?.fmCache["subType"];
     const [newStdNoteConf, setNewStdNoteConf] = useState<Partial<NewStdNoteConf>>({
         baseName: options?.baseName,
-        subType: "todo",
+        subType: isLogNoteType(rootSubType) ? rootSubType : "todo",
     });
 
     const [_hasStatus, _setHasStatus] = useState<boolean>(false);

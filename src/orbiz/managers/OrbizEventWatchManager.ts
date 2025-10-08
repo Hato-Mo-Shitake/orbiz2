@@ -1,3 +1,5 @@
+import { DocumentEventWatcher } from "src/app/events/watchers/document";
+import { IntervalEventWatcher } from "src/app/events/watchers/interval";
 import { MetadataCacheEventWatcher } from "src/app/events/watchers/metadataCache";
 import { UserEditEventWatcher } from "src/app/events/watchers/UserEditEventWatcher";
 import { VaultEventWatcher } from "src/app/events/watchers/vault";
@@ -12,7 +14,9 @@ export class OrbizEventWatchManager {
             new WorkspaceEventWatcher(),
             new VaultEventWatcher(),
             new MetadataCacheEventWatcher(),
-            new UserEditEventWatcher
+            new UserEditEventWatcher(),
+            new DocumentEventWatcher(),
+            new IntervalEventWatcher(),
         );
     }
 
@@ -29,7 +33,9 @@ export class OrbizEventWatchManager {
         readonly workspaceWatcher: WorkspaceEventWatcher,
         readonly vaultWatcher: VaultEventWatcher,
         readonly metadataCacheWatcher: MetadataCacheEventWatcher,
-        readonly userEditWatcher: UserEditEventWatcher
+        readonly userEditWatcher: UserEditEventWatcher,
+        readonly documentWatcher: DocumentEventWatcher,
+        readonly intervaleWatcher: IntervalEventWatcher,
     ) {
     }
 }

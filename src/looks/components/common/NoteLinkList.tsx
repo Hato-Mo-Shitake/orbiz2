@@ -18,10 +18,7 @@ export function NoteLinkList({
 
     return (<>
         <ul
-            style={{
-                marginTop: 0,
-                marginBottom: 0
-            }}
+            style={{ margin: "0", padding: "0" }}
         >
             {notes.map(n => (
                 <li key={n.path}>
@@ -34,6 +31,7 @@ export function NoteLinkList({
                             : getBasenameFromPath(n.path)
                         }
                     </NoteLink>
+
                 </li>
             ))}
         </ul>

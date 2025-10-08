@@ -1,6 +1,5 @@
 import { LogNote } from "src/core/domain/LogNote";
-import { CreateLogNoteButton } from "src/looks/components/common-orbiz/CreateLogNoteButton";
-import { CreateMyNoteButton } from "src/looks/components/common-orbiz/CreateMyNoteButton";
+import { LogNoteTopSectionDefault } from "src/looks/components/note-top-section/log/LogNoteTopSectionDefault";
 import { LogFm } from "src/orbits/schema/frontmatters/fm";
 import { LogNoteState } from "src/orbits/schema/NoteState";
 import { StoreApi } from "zustand";
@@ -38,34 +37,15 @@ export class LogNoteViewer<
             {super.getFmAttrsEditor()}
             {this.fmOrb.status.getEditableView()}
             {this.fmOrb.due.getEditableView()}
-            {/* TODO:  ここもっと綺麗にループ処理でまとめるように */}
+            {/* TODO: ここもっと綺麗にループ処理でまとめるように */}
             {!this.fmOrb.resolved.isImmutable && this.fmOrb.resolved.getEditableView()}
             {this.fmOrb.context.getEditableView()}
         </>)
     }
 
     getTopSection(): React.ReactNode {
-        return (<>
-            <div>
-                {super.getTopSection()}
-            </div>
-            < div style={{ marginTop: "0.9em", display: "flex", alignItems: "center", gap: "0.2em" }}>
-                create:
-                <CreateMyNoteButton rootNote={this.note} label="my" />
-                <CreateLogNoteButton rootNote={this.note} label="log" />
-            </div >
-            <div style={{ marginTop: "0.5em", marginBottom: "0.5em" }}>
-                <hr />
-            </div>
-            {this.fmOrb.status.getView()}
-            {this.fmOrb.due.getView()}
-            {this.fmOrb.resolved.getView()}
-            {this.fmOrb.context.getView()}
-            <div style={{ marginTop: "0.5em", marginBottom: "0.5em" }}>
-                <hr />
-            </div>
-            {this.getLinkedStdNoteList()}
-            <h1>Note</h1>
-        </>)
+        return <LogNoteTopSectionDefault
+            viewer={this}
+        />
     }
 }

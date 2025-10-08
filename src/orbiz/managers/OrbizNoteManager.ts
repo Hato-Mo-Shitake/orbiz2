@@ -1,5 +1,6 @@
 import { App, FrontMatterCache, TFile } from "obsidian";
 import { extractLinkTarget } from "src/assistance/utils/filter";
+import { getBasenameFromPath } from "src/assistance/utils/path";
 import { isMyNote, MyNote } from "src/core/domain/MyNote";
 import { StdNote } from "src/core/domain/StdNote";
 import { OAM } from "./OrbizAppManager";
@@ -30,37 +31,15 @@ export class OrbizNoteManager {
         return OAM().app
     }
 
-    // get activeTFile(): TFile | null {
-    //     const { app } = OAM();
-    //     const tFile = app.workspace.getActiveFile();
-    //     if (!tFile) return null;
-    //     return tFile;
-    // }
-
     get activeStdNote(): StdNote | null {
         const tFile = OTM().activeTFile;
         if (!tFile) return null;
         return OFM().noteF.tryStdFrom(tFile);
     }
 
-    // get allStdTFiles(): TFile[] {
-    //     const files = this.app.vault.getMarkdownFiles();
-    //     const rootDir = OAM().rootDir;
-    //     return files.filter(file => {
-    //         return this.isStdNotePath(file.path);
-    //         // [
-    //         //     rootDir + "galaxies",
-    //         //     rootDir + "logs",
-    //         // ].some(targetPath =>
-    //         //     file.path.startsWith(targetPath)
-    //         // );
-    //     });
-    // }
-
     get allStdNoteNames(): string[] {
         // TODO: 規模が大きくなってきたら、fileNames単体のキャッシュを考える。
         return OCM().getAllStdNoteNames();
-        // return [...OCM().fileNameToIdMap.keys()];
     }
 
     get allMyNoteNames(): string[] {
@@ -96,6 +75,10 @@ export class OrbizNoteManager {
         return note;
     }
 
+    isNotePath(path: string) {
+        return this.isStdNotePath(path) || this.isDiaryNotePath(path);
+    }
+
     isStdNotePath(path: string) {
         return OTM().isStdTFilePath(path);
     }
@@ -113,15 +96,7 @@ export class OrbizNoteManager {
         return path.startsWith(rootDir + "/logs");
     }
 
-    // getStdTFileByPath(path: string): TFile | null {
-    //     if (!this.isStdNotePath(path)) return null;
-    //     const tFile = OAM().app.vault.getFileByPath(path);
-    //     if (!tFile) return null;
-    //     return tFile;
-    // }
-
     getStdNoteByName(name: string): StdNote | null {
-        // const id = OCM().fileNameToIdMap.get(name);
         const id = OCM().getStdNoteIdByName(name);
 
         if (!id) return null;
@@ -133,8 +108,6 @@ export class OrbizNoteManager {
     }
 
     getPathFromNoteName(name: string): string | null {
-        // const map = OCM().fileNameToIdMap;
-        // const id = map.get(name);
         const id = OCM().getStdNoteIdByName(name);
         if (!id) return null;
         const source = OCM().getStdNoteSourceById(id);
@@ -143,28 +116,18 @@ export class OrbizNoteManager {
 
     getFmCacheByPath(path: string): FrontMatterCache | null {
         return OTM().getFmCacheByPath(path);
-        // const tFile = this.getMdTFileByPath(path);
-        // if (!tFile) return null;
-        // const cache = this.app.metadataCache.getFileCache(tFile);
-        // return cache?.frontmatter || null;
     }
-
-    // getMdTFileByPath(path: string): TFile | null {
-    //     const tFile = this.app.vault.getFileByPath(path);
-    //     if (!tFile) return null;
-    //     if (tFile.extension !== "md") return null
-    //     return tFile;
-    // }
 
     getNoteIdByTFile(tFile: TFile): string | null {
         const cache = this.app.metadataCache.getFileCache(tFile);
         const fm = cache?.frontmatter;
 
-        if (!fm) {
-            return null;
+        if (fm) {
+            return fm["id"] || null;
         }
 
-        return fm["id"] || null;
+        // 新規ノート作成直後だと,fmCacheが基本nullになるので、一旦こうしているが。。。。
+        return OCM().getStdNoteIdByName(getBasenameFromPath(tFile.path));
     }
 
     getNoteIdByPath(path: string): string | null {

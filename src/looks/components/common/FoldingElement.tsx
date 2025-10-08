@@ -3,13 +3,15 @@ import { useState } from "react";
 export function FoldingElement({
     header,
     hLevel = 5,
-    children
+    children,
+    defaultOpen = false
 }: {
     header: string,
     hLevel?: 1 | 2 | 3 | 4 | 5 | 6
-    children: React.ReactNode
+    children: React.ReactNode,
+    defaultOpen?: boolean
 }) {
-    const [isOpen, setIsOpen] = useState(false);
+    const [isOpen, setIsOpen] = useState(defaultOpen);
     const handleClick = () => {
         if (isOpen) {
             setIsOpen(false);
@@ -27,7 +29,7 @@ export function FoldingElement({
         const Tag = tags[level - 1];
         return (<>
             <Tag style={style}>
-                <span onClick={handleClick} >▼</span>
+                <span onClick={handleClick} >{isOpen ? "▼" : "▶︎"}</span>
                 {header}
             </Tag>
         </>);

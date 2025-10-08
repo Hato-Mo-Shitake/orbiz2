@@ -42,7 +42,7 @@ export abstract class FmAttr<TValue = any, TNoteState extends BaseNoteState = Ba
     }
 
     abstract setStore(store: StoreApi<TNoteState>): void;
-    abstract getView(): ReactNode;
+    abstract getView(options?: any): ReactNode;
     abstract getEditableView(): ReactNode;
 
     abstract validate(value: TValue): boolean;

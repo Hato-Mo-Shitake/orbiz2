@@ -1,7 +1,7 @@
 import MyPlugin from "main";
 import { MetadataCache } from "obsidian";
 import { OAM } from "src/orbiz/managers/OrbizAppManager";
-import { CacheChangedHandler } from "../handlers/metadataCache";
+import { EventHandlerForMetadataCache } from "../handlers/metadataCache";
 
 export class MetadataCacheEventWatcher {
     private get _myPlugin(): MyPlugin {
@@ -11,7 +11,7 @@ export class MetadataCacheEventWatcher {
         return OAM().app.metadataCache;
     }
 
-    public watchOnCacheChanged(callback: CacheChangedHandler) {
+    public watchOnCacheChanged(callback: EventHandlerForMetadataCache<"changed">) {
         this._myPlugin.registerEvent(this._metadataCache.on("changed", callback));
     }
 }

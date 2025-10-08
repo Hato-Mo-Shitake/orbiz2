@@ -1,20 +1,22 @@
 import { MyNoteState } from "src/orbits/schema/NoteState";
 import { StoreApi, useStore } from "zustand";
+import { SimpleViewBox } from "../../common/SimpleViewBox";
 
 export function FmAttrRankDisplay({
     store,
-    header = "rank"
+    header,
+    headerWidth
 }: {
     store: StoreApi<MyNoteState>,
     header?: string,
+    headerWidth?: number
 }) {
     const rank = useStore(store, (s) => s.fmAttrRank);
 
     if (rank === null) return null;
     return (<>
-        <div>
-            {header && <span>{header}: </span>}
+        <SimpleViewBox header={header} headerWidth={headerWidth}>
             {rank}
-        </div>
+        </SimpleViewBox>
     </>)
 }

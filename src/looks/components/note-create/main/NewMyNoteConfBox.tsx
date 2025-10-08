@@ -21,13 +21,6 @@ export function NewMyNoteConfBox({
     const handleClick = () => {
         const newConf: Partial<NewMyNoteConf> = {};
 
-        // TODO: 追々整理してください。
-        // const baseName = roleNodeConf.kind || newStdNoteConf.baseName;
-        // if (!baseName) {
-        //     alert("input baseName");
-        //     return;
-        // }
-
         newConf.baseName = newStdNoteConf.baseName;
 
         const subType = newStdNoteConf.subType;
@@ -38,14 +31,6 @@ export function NewMyNoteConfBox({
         newConf.subType = subType;
 
         newConf.linkedConf = newStdNoteConf.linkedConf;
-
-        // if (_hasRole && isRoleNodeConf(roleNodeConf)) {
-        //     if (roleNodeConf.hub.baseName.includes("@")) {
-        //         alert("RoleHubノートにRoleNodeノートは指定できません。");
-        //         return;
-        //     }
-        //     newConf.roleNodeConf = roleNodeConf;
-        // }
 
         if (_hasAspect && isMyNoteAspect(aspect)) {
             newConf.aspect = aspect;
@@ -61,16 +46,11 @@ export function NewMyNoteConfBox({
         resolve(newConf);
     };
 
+    const rootSubType = options?.rootNote?.fmCache["subType"];
     const [newStdNoteConf, setNewStdNoteConf] = useState<Partial<NewStdNoteConf>>({
         baseName: options?.baseName,
-        subType: "knowledge",
+        subType: isMyNoteType(rootSubType) ? rootSubType : "knowledge",
     });
-
-    // const [_hasRole, _setHasRole] = useState<boolean>(false);
-    // const [roleNodeConf, setRoleNodeConf] = useState<Partial<RoleNodeConf>>({
-    //     kind: undefined,
-    //     hub: options?.rootNote,
-    // });
 
     const [_hasAspect, _setHasAspect] = useState<boolean>(false);
     const [aspect, setAspect] = useState<string>("default");
@@ -78,10 +58,6 @@ export function NewMyNoteConfBox({
     const [_hasCategories, _setHasCategories] = useState<boolean>(false);
     const [categories, setCategories] = useState<string[]>([]);
 
-    // let defaultRoleHub: MyNote | undefined = undefined;
-    // if (options?.rootNote && isMyNote(options.rootNote)) {
-    //     defaultRoleHub = options.rootNote;
-    // }
     return (<>
         <h1>to create MyNote</h1>
 
@@ -102,37 +78,6 @@ export function NewMyNoteConfBox({
                 rootNote: options?.rootNote
             }}
         />
-
-        {/* <div>
-            <h4>
-                <label style={{ display: "flex", gap: "0.5em" }} >
-                    has role
-                    <input
-                        type="checkbox"
-                        checked={_hasRole}
-                        onChange={(evt) => _setHasRole(evt.target.checked)}
-                        style={{
-                            position: "relative",
-                            top: "5px"
-                        }}
-                    />
-                </label>
-            </h4>
-        </div>
-        <div>{_hasRole &&
-            <>
-                <RoleNodeConfBox
-                    roleNodeConf={roleNodeConf}
-                    onChange={setRoleNodeConf}
-                    options={{
-                        hubNote: defaultRoleHub
-                    }}
-                />
-                <br />
-                <div style={{ color: "red" }}>※ ノート名は自動的に「RoleKind@RoleHubのノート名」になります。</div>
-                <div style={{ color: "red" }}>※ subTypeは自動的に「RoleHub」と同じになります。</div>
-            </>
-        }</div> */}
 
         <div>
             <h4>

@@ -16,7 +16,7 @@ export abstract class StdNoteEditor<TFm extends StdFm = StdFm> extends BaseNoteE
         );
     }
 
-    async addLinkedNote(note: StdNote, fmKey: FmKey<"stdLinkedNoteList">): Promise<this> {
+    addLinkedNote(note: StdNote, fmKey: FmKey<"stdLinkedNoteList">): this {
         this.fmOrb[fmKey].addNewAVal(note);
         return this;
     }
