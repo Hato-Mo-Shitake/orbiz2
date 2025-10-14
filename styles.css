@@ -17,6 +17,13 @@ If your plugin does not need CSS, delete this file.
     align-items: center;
 }
 
+.orbiz__item--flex-middle {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1em;
+    align-items: center;
+}
+
 .orbiz__item--flex-align-start-small {
     display: flex;
     flex-wrap: wrap;
@@ -34,9 +41,7 @@ If your plugin does not need CSS, delete this file.
 }
 
 .orbiz__back-color--cyan {
-    /* color: var(--color-cyan); */
     background-color: var(--color-cyan);
-    /* background-color: aqua; */
 }
 
 .orbiz__text--underline-red {

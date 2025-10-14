@@ -1,12 +1,11 @@
-import { MainMenuModal } from "src/looks/modals/menu/MainMenuModal";
+import { openModalMainMenu } from "src/looks/modals/SimpleDisplayModal";
 
 export function OpenMainMenuButton() {
-    const handleOpenMainMenu = () => {
-        MainMenuModal.open();
-    }
-    return <button
-        style={{ backgroundColor: "skyblue" }}
-        onClick={handleOpenMainMenu}
-    >main menu
-    </button>
+    return (<>
+        <button
+            onClick={openModalMainMenu}
+        >
+            main menu
+        </button>
+    </>)
 }

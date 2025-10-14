@@ -90,6 +90,12 @@ export class OrbizDiaryManager {
         });
     }
 
+    getDailyTFile(src: string | Date) {
+        const path = this.getDailyNotePath(src);
+        if (!path) return;
+        return OAM().app.vault.getFileByPath(path);
+    }
+
     // stringはid
     getDailyNotePath(src: string | Date): string | null {
         let date: Date;

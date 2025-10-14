@@ -1,23 +1,25 @@
 import { LogNoteState } from "src/orbits/schema/NoteState";
 import { StoreApi, useStore } from "zustand";
 import { DateDisplay } from "../../common/DateDisplay";
+import { SimpleViewBox } from "../../common/SimpleViewBox";
 
 export function FmAttrResolvedDisplay({
     store,
-    header = "resolved"
+    header,
+    headerWidth
 }: {
     store: StoreApi<LogNoteState>,
     header?: string,
+    headerWidth?: number
 }) {
     const resolved = useStore(store, (s) => s.fmAttrResolved);
 
     if (!resolved) return null;
     return (<>
-        <div>
-            {header && <span>{header}: </span>}
+        <SimpleViewBox header={header} headerWidth={headerWidth}>
             <DateDisplay
                 date={resolved}
             />
-        </div>
+        </SimpleViewBox>
     </>)
 }

@@ -1,29 +1,19 @@
-import { DiaryNoteIndexModal } from "src/looks/modals/menu/diary/DiaryNoteIndexModal";
-import { LogNoteIndexModal } from "src/looks/modals/menu/log/LogNoteIndexModal";
-import { MyNoteIndexModal } from "src/looks/modals/menu/my/MyNoteIndexModal";
-import { NoteSearchlightModal } from "src/looks/modals/searchlights/NoteSearchlightModal";
-import { SettingsIndexModal } from "src/looks/modals/settings/SettingsIndexModal";
+import { generateChangeModal, openModalNoteSearchlight, openModalSettingsIndex } from "src/looks/modals/SimpleDisplayModal";
 import { ODM } from "src/orbiz/managers/OrbizDiaryManager";
 import { OVM } from "src/orbiz/managers/OrbizViewManager";
-import { DiaryNoteIndex } from "./diary/DiaryNoteIndex";
-import { LogNoteIndex } from "./log/LogNoteIndex";
-import { MyNoteIndex } from "./my/MyNoteIndex";
+import { DiaryNoteMenu } from "./diary/DiaryNoteMenu";
+import { LogNoteMenu } from "./log/LogNoteMenu";
+import { MyNoteMenu } from "./my/MyNoteMenu";
 
 export function MainMenu({
     closeModal
 }: {
-    closeModal: () => void;
+    closeModal?: () => void;
 }) {
-
-    const _handleOpenModal = (modal: { open: () => void }): () => void => {
-        return () => {
-            closeModal();
-            modal.open();
-        }
-    }
+    const changeModal = generateChangeModal(closeModal);
 
     const handleOpenTodayNote = async () => {
-        closeModal();
+        closeModal?.();
         await OVM().openNote(ODM().todayNoteOrb.note, false);
     }
 
@@ -32,31 +22,21 @@ export function MainMenu({
             today: <a onClick={handleOpenTodayNote}>{ODM().getToday("Y-m-d_D")}</a>
 
             <h2>Note Index</h2>
-            <ul style={{ fontSize: "22px" }}>
-                <li>
-                    <a onClick={_handleOpenModal(LogNoteIndexModal)}>Log</a>
-                    <LogNoteIndex
-                        closeModal={closeModal}
-                    />
-                </li>
-                <li>
-                    <a onClick={_handleOpenModal(MyNoteIndexModal)}>My</a>
-                    <MyNoteIndex
-                        closeModal={closeModal}
-                    />
-                </li>
-                <li>
-                    <a onClick={_handleOpenModal(DiaryNoteIndexModal)}>Diary</a>
-                    <DiaryNoteIndex
-                        closeModal={closeModal}
-                    />
-                </li>
-            </ul>
+
+            <MyNoteMenu
+                closeModal={closeModal}
+            />
+            <LogNoteMenu
+                closeModal={closeModal}
+            />
+            <DiaryNoteMenu
+                closeModal={closeModal}
+            />
 
             <h2>Searchlights</h2>
-            <ul style={{ fontSize: "22px" }}>
+            <ul style={{ fontSize: "20px" }}>
                 <li >
-                    <a onClick={_handleOpenModal(NoteSearchlightModal)}
+                    <a onClick={() => changeModal(openModalNoteSearchlight)}
                     >
                         Note
                     </a>
@@ -64,13 +44,9 @@ export function MainMenu({
             </ul>
 
             <h2>Settings</h2>
-            <ul style={{ fontSize: "22px" }}>
-                <li><a onClick={_handleOpenModal(SettingsIndexModal)}>Index</a></li>
+            <ul style={{ fontSize: "20px" }}>
+                <li><a onClick={() => changeModal(openModalSettingsIndex)}>Index</a></li>
             </ul>
         </div>
-    </>)
-    return (<>
-        <h1>Main Menu</h1>
-
     </>)
 }

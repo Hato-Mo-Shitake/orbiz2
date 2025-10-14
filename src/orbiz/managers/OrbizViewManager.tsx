@@ -59,7 +59,9 @@ export class OrbizViewManager {
 
         // 新規 root 作成
         const topSectionContainer = document.createElement("div");
-        metadataContainer.appendChild(topSectionContainer);
+        topSectionContainer.addClass("top-section-container")
+        // metadataContainer.appendChild(topSectionContainer);
+        metadataContainer.insertAdjacentElement("afterend", topSectionContainer);
         const root = createRoot(topSectionContainer);
 
         root.render(

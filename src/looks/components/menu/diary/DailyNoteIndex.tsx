@@ -1,24 +1,19 @@
 import { Fragment } from "react/jsx-runtime";
-import { DailyNoteIndexByMonthModal } from "src/looks/modals/menu/diary/DailyNoteIndexByMonthModal";
+import { generateChangeModal, openModalDailyNoteIndexByMonth } from "src/looks/modals/SimpleDisplayModal";
 import { ODM } from "src/orbiz/managers/OrbizDiaryManager";
 import { OEM } from "src/orbiz/managers/OrbizErrorManager";
 import { OTM } from "src/orbiz/managers/OrbizTFileManager";
 import { ScrollableBox } from "../../common/ScrollableBox";
 import { NoteList } from "../../searchlights/sub/NoteList";
 import { MainNav } from "../navigate/MainNav";
-import { DiaryNoteIndex } from "./DiaryNoteIndex";
+import { DiaryNoteMenu } from "./DiaryNoteMenu";
 
 export function DailyNoteIndex({
     closeModal
 }: {
     closeModal?: () => void;
 }) {
-    const _handleOpenModal = (modal: { open: () => void }): () => void => {
-        return () => {
-            closeModal?.();
-            modal.open();
-        }
-    }
+    const changeModal = generateChangeModal(closeModal);
 
     const [yStart, yEnd] = ODM().getExistingDailyNoteYearsBetween();
     const ymList: Record<number, number[]> = {};
@@ -38,7 +33,7 @@ export function DailyNoteIndex({
             closeModal={closeModal}
         />
         <hr />
-        <DiaryNoteIndex
+        <DiaryNoteMenu
             closeModal={closeModal}
             isHorizon={true}
         />
@@ -57,8 +52,7 @@ export function DailyNoteIndex({
                                 {mList.map(m =>
                                     <li key={`${y}-${m}`}>
                                         <a onClick={() => {
-                                            DailyNoteIndexByMonthModal.open(y, m)
-                                            closeModal?.()
+                                            changeModal(() => openModalDailyNoteIndexByMonth(y, m))
                                         }}>
                                             {`${y}-${m}`}
                                         </a>

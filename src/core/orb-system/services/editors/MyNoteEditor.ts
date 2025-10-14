@@ -14,9 +14,4 @@ export class MyNoteEditor<TFm extends MyFm = MyFm> extends StdNoteEditor<TFm> {
             fmOrb
         );
     }
-
-    addRole(roleHub: MyNote, roleKind: string) {
-        this.fmOrb.roleHub.setNewValue(roleHub).commitNewValue();
-        this.fmOrb.roleKind.setNewValue(roleKind).commitNewValue();
-    }
 }

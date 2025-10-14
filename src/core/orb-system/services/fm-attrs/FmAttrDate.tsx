@@ -93,11 +93,13 @@ export class FmAttrDue extends FmAttrDate {
         }
     }
 
-    getView(): ReactNode {
+    getView(options?: { header?: string, headerWidth?: number }): ReactNode {
         if (!this._store) return null;
         return (<>
             <FmAttrDueDisplay
                 store={this._store}
+                header={options?.header}
+                headerWidth={options?.headerWidth}
             />
         </>)
     }
@@ -139,11 +141,13 @@ export class FmAttrResolved extends FmAttrDate {
         }
     }
 
-    getView(): ReactNode {
+    getView(options?: { header?: string, headerWidth?: number }): ReactNode {
         if (!this._store) return null;
         return (<>
             <FmAttrResolvedDisplay
                 store={this._store}
+                header={options?.header}
+                headerWidth={options?.headerWidth}
             />
         </>)
     }
@@ -176,6 +180,13 @@ export class FmAttrTheDay extends FmAttrDate {
             "theDay",
             timestamp,
         );
+    }
+
+    get value(): Date {
+        if (!this._value) {
+            OEM.throwUnexpectedError();
+        }
+        return this._value;
     }
 
     setStore(store: StoreApi<DailyNoteState>): void {

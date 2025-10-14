@@ -1,13 +1,12 @@
 import { Command } from "obsidian";
 import { getRandomFromArray } from "src/assistance/utils/array";
 import { generateCurrentIsoDatetime } from "src/assistance/utils/date";
+import { debugConsole } from "src/assistance/utils/debug";
 import { sanitizeFileName } from "src/assistance/utils/filter";
 import { FmDisplayModal } from "src/looks/modals/FmDisplayModal";
 import { FmEditableModal } from "src/looks/modals/FmEditableModal";
 import { FSuggestModal } from "src/looks/modals/FSuggestModal";
-import { MainMenuModal } from "src/looks/modals/menu/MainMenuModal";
-import { NoteSearchlightModal } from "src/looks/modals/searchlights/NoteSearchlightModal";
-import { CategoriesSettingModal } from "src/looks/modals/settings/CategoriesSettingModal";
+import { openModalMainMenu } from "src/looks/modals/SimpleDisplayModal";
 import { VIEW_TYPE_EXAMPLE } from "src/looks/views/ExampleView";
 import { logNoteTypeList, LogNoteTypeZEnum, myNoteTypeList, MyNoteTypeZEnum } from "src/orbits/schema/frontmatters/NoteType";
 import { logNoteStatusList, LogNoteStatusZEnum } from "src/orbits/schema/frontmatters/Status";
@@ -56,15 +55,21 @@ const TestScript = {
         OUM().viewActivator.openNewView(VIEW_TYPE_EXAMPLE);
     },
     openCategoriesSetting: async () => {
-        CategoriesSettingModal.open();
+        // CategoriesSettingModal.open();
     },
 
     openNoteSearchlight: async () => {
-        NoteSearchlightModal.open();
+        // NoteSearchlightModal.open();
         // OUM().viewActivator.openNewView(VIEW_TYPE_NOTE_SEARCHLIGHT);
     },
     openMainMenu: async () => {
-        MainMenuModal.open();
+        debugConsole("成功！2");
+        openModalMainMenu();
+        // SimpleDisplayModal.open(
+        //     createMainMenuForModal
+        // );
+        // MainMenuModal.open();
+
         // OUM().viewActivator.openNewView("main-menu-view");
     },
     openFmEditableModal: () => {

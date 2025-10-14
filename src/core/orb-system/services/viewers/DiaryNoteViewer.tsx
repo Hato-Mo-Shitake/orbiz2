@@ -37,13 +37,13 @@ export abstract class DiaryNoteViewer<
     //         {this.fmOrb.isClosed.getEditableView()}
     //     </>)
     // }
-    getTopSection(): React.ReactNode {
-        return (<>
-            <div>
-                {super.getTopSection()}
-            </div>
-            {this.fmOrb.score.getView()}
-            {this.fmOrb.isClosed.getView()}
-        </>)
-    }
+    // getTopSection(): React.ReactNode {
+    //     return (<>
+    //         <div>
+    //             {super.getTopSection()}
+    //         </div>
+    //         {this.fmOrb.score.getView()}
+    //         {this.fmOrb.isClosed.getView()}
+    //     </>)
+    // }
 }

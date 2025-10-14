@@ -1,30 +1,35 @@
-import { CSSProperties } from "react";
-import { MyNoteSubTypeIndexModal } from "src/looks/modals/menu/my/MyNoteSubTypeIndexModal";
-import { MyNoteType, myNoteTypeList } from "src/orbits/schema/frontmatters/NoteType";
+import { MyNoteType } from "src/orbits/schema/frontmatters/NoteType";
+import { OAM } from "src/orbiz/managers/OrbizAppManager";
+import { OTM } from "src/orbiz/managers/OrbizTFileManager";
+import { ScrollableBox } from "../../common/ScrollableBox";
+import { NoteList } from "../../searchlights/sub/NoteList";
+import { MainNav } from "../navigate/MainNav";
+import { MyNoteMenu } from "./MyNoteMenu";
+
 
 export function MyNoteIndex({
-    closeModal,
-    isHorizon = false,
+    subType,
+    closeModal
 }: {
-    closeModal?: () => void,
-    isHorizon?: boolean
+    subType?: MyNoteType,
+    closeModal?: () => void;
 }) {
-    const _handleOpenSubTypeIndexModal = (subType: MyNoteType) => {
-        closeModal?.();
-        MyNoteSubTypeIndexModal.open(subType);
-    }
-    const style: CSSProperties = isHorizon
-        ? { fontSize: "20px", display: "flex", gap: "0.3em", listStyle: "none", paddingLeft: "0" }
-        : { fontSize: "20px" };
     return (<>
-        <ul style={style}>
-            {myNoteTypeList.map(subType =>
-                <li key={subType}>
-                    <a onClick={() => _handleOpenSubTypeIndexModal(subType)}>
-                        {subType}
-                    </a>
-                </li>
-            )}
-        </ul>
+        <MainNav
+            closeModal={closeModal}
+        />
+        <hr />
+        <MyNoteMenu isHorizon={true} closeModal={closeModal} />
+        <h1>{subType || "my note"} index</h1>
+        <ScrollableBox
+            height={"500px"}
+        >
+            <NoteList
+                tFileList={subType ? OTM().getAllMyTFilesForSubType(subType) : OTM().allMyTFiles}
+                beginningPath={OAM().rootPath}
+                cutSlug={`〈-${subType}-〉`}
+                closeModal={closeModal}
+            />
+        </ScrollableBox>
     </>)
 }

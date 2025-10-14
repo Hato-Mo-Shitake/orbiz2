@@ -7,7 +7,7 @@ export function FoldingElement({
     defaultOpen = false
 }: {
     header: string,
-    hLevel?: 1 | 2 | 3 | 4 | 5 | 6
+    hLevel?: 0 | 1 | 2 | 3 | 4 | 5 | 6
     children: React.ReactNode,
     defaultOpen?: boolean
 }) {
@@ -26,11 +26,13 @@ export function FoldingElement({
             gap: "0.5em"
         }
         const tags = ["h1", "h2", "h3", "h4", "h5", "h6"] as const;
-        const Tag = tags[level - 1];
+        const Tag = level == 0 ? "div" : tags[level - 1];
         return (<>
             <Tag style={style}>
                 <span onClick={handleClick} >{isOpen ? "▼" : "▶︎"}</span>
-                {header}
+                <span className={level == 0 ? "orbiz__font--bold" : ""}>
+                    {header}
+                </span>
             </Tag>
         </>);
     }

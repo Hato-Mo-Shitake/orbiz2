@@ -124,12 +124,13 @@ export class FmAttrRoleHub extends FmAttrLinkedNote<MyNote> {
         }
     }
 
-    getView(options?: { header?: string }): ReactNode {
+    getView(options?: { header?: string, headerWidth?: number }): ReactNode {
         if (!this._store) return null;
         return (<>
             <FmAttrRoleHubDisplay
                 store={this._store}
                 header={options?.header}
+                headerWidth={options?.headerWidth}
             />
         </>)
     }

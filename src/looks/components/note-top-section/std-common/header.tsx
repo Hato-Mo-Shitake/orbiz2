@@ -1,33 +1,28 @@
 import { StdNoteViewer } from "src/core/orb-system/services/viewers/StdNoteViewer";
-import { OpenFmDisplayButton } from "../../common-orbiz/OpenFmDisplayButton";
-import { OpenFmEditButton } from "../../common-orbiz/OpenFmEditButton";
-import { OpenMainMenuButton } from "../../common-orbiz/OpenMainMenuButton";
+import { CreateLogNoteButton } from "../../common-orbiz/CreateLogNoteButton";
+import { CreateMyNoteButton } from "../../common-orbiz/CreateMyNoteButton";
 import { DateDisplay } from "../../common/DateDisplay";
+import { NoteTopSectionHeader } from "../common/header";
 
 export function StdNoteTopSectionHeader({ viewer }: { viewer: StdNoteViewer }) {
     return (<>
-        <div
-            style={{ margin: "0.8em", display: "flex", gap: "1em" }}
-        >
-            <OpenMainMenuButton />
-            <OpenFmDisplayButton
-                viewer={viewer}
-            />
-            <OpenFmEditButton
-                viewer={viewer}
-            />
-        </div>
-        <div
-            style={{ marginTop: "0.9em", display: "flex", gap: "0.3em" }}
-        >
+        <NoteTopSectionHeader
+            viewer={viewer}
+        />
+
+        <div className="orbiz__item--flex-small" style={{ margin: "0.3rem 0" }}>
+            create:
+            <CreateMyNoteButton rootNote={viewer.note} label="my" />
+            <span style={{ margin: "0 0.3em" }}>{"|"}</span>
+            <CreateLogNoteButton rootNote={viewer.note} label="log" />
+        </div >
+
+        <div className="orbiz__item--flex-middle" style={{ margin: "0.5rem 0" }} >
             <span>
-                c:
-                <DateDisplay date={viewer.note.created} />
+                c: <DateDisplay date={viewer.note.created} />
             </span>
-            <span>{"|"}</span>
             <span>
-                m:
-                <DateDisplay date={viewer.note.modified} />
+                m: <DateDisplay date={viewer.note.modified} />
             </span>
         </div>
     </>)

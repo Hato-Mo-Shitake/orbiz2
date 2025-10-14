@@ -13,7 +13,12 @@ export function getCurrentYearMonth(): string {
     return `${year}-${month}`;
 }
 
+export function shitDate(date: Date, shitDays: number): Date {
+    const newDate = new Date(date);
+    newDate.setDate(date.getDate() + shitDays);
 
+    return newDate;
+}
 
 // ローカル地域基準
 // console.log(formatDate(ts, "Y-m-d_D_H:i")); // "2025-09-19_Fri_13:04"

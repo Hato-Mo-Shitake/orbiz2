@@ -290,11 +290,13 @@ export class FmAttrStatus extends FmAttrString<LogNoteStatus> {
         }
     }
 
-    getView(): ReactNode {
+    getView(options?: { header?: string, headerWidth?: number }): ReactNode {
         if (!this._store) return null;
         return (<>
             <FmAttrStatusDisplay
                 store={this._store}
+                header={options?.header}
+                headerWidth={options?.headerWidth}
             />
         </>)
     }
@@ -346,11 +348,13 @@ export class FmAttrContext extends FmAttrString {
         }
     }
 
-    getView(): ReactNode {
+    getView(options?: { header?: string, headerWidth?: number }): ReactNode {
         if (!this._store) return null;
         return (<>
             <FmAttrContextDisplay
                 store={this._store}
+                header={options?.header}
+                headerWidth={options?.headerWidth}
             />
         </>)
     }

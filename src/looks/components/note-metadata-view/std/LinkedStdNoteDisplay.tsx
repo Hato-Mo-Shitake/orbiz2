@@ -1,10 +1,15 @@
+import { Fragment } from "react/jsx-runtime";
+import { isLogNote } from "src/core/domain/LogNote";
 import { StdNote } from "src/core/domain/StdNote";
 import { StdNoteReader } from "src/core/orb-system/services/readers/StdNoteReader";
 import { LinkedNoteDirection } from "src/orbits/contracts/create-note";
 import { FmKey } from "src/orbits/contracts/fmKey";
+import { RecursiveTree } from "src/orbits/contracts/tree";
+import { SubNoteType, subNoteTypeList } from "src/orbits/schema/frontmatters/NoteType";
 import { StdNoteState } from "src/orbits/schema/NoteState";
 import { StoreApi, useStore } from "zustand";
-import { NoteLinkTreeList } from "../../common/NoteLinkTreeList";
+import { FoldingElement } from "../../common/FoldingElement";
+import { NoteLinkTree } from "../../common/NoteLinkTree";
 
 export function LinkedStdNoteDisplay({
     store,
@@ -45,10 +50,39 @@ export function LinkedStdNoteDisplay({
         direction
     ))
     if (!noteTrees.length) return null;
+
+    const subTypeTreeMap: Partial<Record<SubNoteType, RecursiveTree<StdNote>[]>> = {};
+
+    noteTrees.forEach(noteTree => {
+        const note = noteTree.hub;
+        if (isLogNote(note) && note.isResolved) return;
+        if (!subTypeTreeMap[note.subType]) subTypeTreeMap[note.subType] = [];
+
+        subTypeTreeMap[note.subType]!.push(noteTree);
+    });
+
+    if (!Object.keys(subTypeTreeMap).length) return null;
+
+    const stdNoteTrees = subNoteTypeList.map(subType => {
+        if (!subTypeTreeMap[subType]?.length) return <Fragment key={subType}></Fragment>;
+        return (<Fragment key={subType}>
+            <div style={{ marginLeft: "1em" }}>
+                {`[${subType}]`}
+            </div>
+            {subTypeTreeMap[subType].map(tree =>
+                <Fragment key={`${subType}-${tree.hub.id}`}>
+                    <NoteLinkTree noteTree={tree} />
+                </Fragment>
+            )}
+        </Fragment>)
+    });
+
     return (<>
-        {header && <div>{header}: </div>}
-        <NoteLinkTreeList
-            noteTrees={noteTrees}
-        />
+        {header
+            ? <FoldingElement header={header} hLevel={0} defaultOpen={true}>
+                {stdNoteTrees}
+            </FoldingElement>
+            : { stdNoteTrees }
+        }
     </>)
 }

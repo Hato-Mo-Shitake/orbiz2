@@ -14,7 +14,7 @@ export function CreateRoleNodeButton({
     }
     return (
         <button
-            style={{ backgroundColor: "skyblue" }}
+            // style={{ backgroundColor: "skyblue" }}
             onClick={handleOpenFmEdit}
         >
             {label}

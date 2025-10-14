@@ -9,12 +9,14 @@ export function NoteLinkTree({
     noteTree,
     openTree = false,
     rootNotePath = OAM().rootPath,
-    cutSlug
+    cutSlug,
+    filter,
 }: {
     noteTree: RecursiveTree<Note>,
     openTree?: boolean,
     rootNotePath?: string,
-    cutSlug?: string
+    cutSlug?: string,
+    filter?: (note: Note) => boolean
 }) {
     const createTree = (noteTrees: RecursiveTree<Note>[], isOpen: boolean) => {
         return (
@@ -24,17 +26,21 @@ export function NoteLinkTree({
                     marginBottom: 0
                 }}
             >
-                {noteTrees.map((noteTree) => (
-                    <li key={noteTree.hub.id}>
-                        <NoteLinkTreeAble
-                            noteTree={noteTree}
-                            createTree={createTree}
-                            isOpen={isOpen}
-                            rootNotePath={rootNotePath}
-                            cutSlug={cutSlug}
-                        />
-                    </li>
-                ))}
+                {noteTrees.map((noteTree) => {
+                    if (filter && !filter(noteTree.hub)) return null;
+
+                    return (
+                        <li key={noteTree.hub.id}>
+                            <NoteLinkTreeAble
+                                noteTree={noteTree}
+                                createTree={createTree}
+                                isOpen={isOpen}
+                                rootNotePath={rootNotePath}
+                                cutSlug={cutSlug}
+                            />
+                        </li>
+                    )
+                })}
             </ul>
         )
     }

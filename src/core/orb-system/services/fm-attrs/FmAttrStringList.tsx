@@ -119,7 +119,7 @@ export class FmAttrTags extends FmAttrStringList {
         }
     }
 
-    getView(options?: { header?: string, headerWidth: number, isHorizon?: boolean }): ReactNode {
+    getView(options?: { header?: string, headerWidth?: number, isHorizon?: boolean }): ReactNode {
         if (!this._store) return null;
         return (<>
             <FmAttrTagsDisplay
@@ -236,7 +236,7 @@ export class FmAttrCategories extends FmAttrStringList {
         return OSM().categories.includes(aVal) || aVal == "";
     }
 
-    getView(options?: { header?: string, headerWidth: number, isHorizon?: boolean }): ReactNode {
+    getView(options?: { header?: string, headerWidth?: number, isHorizon?: boolean }): ReactNode {
         if (!this._store) return null;
         return (<>
             <FmAttrCategoriesDisplay

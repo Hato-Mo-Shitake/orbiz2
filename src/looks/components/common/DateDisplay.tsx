@@ -13,6 +13,7 @@ export function DateDisplay({
     if (!date) return <span></span>
 
     const dailyNotePath = ODM().getDailyNotePath(date)!;
+
     return (
         <span>
             <NoteLink linkText={dailyNotePath}>

@@ -49,13 +49,6 @@ export class Prompt {
             default:
                 OEM.throwUnexpectedError();
         }
-
-        // すでに開かれているTFileのmdViewに対してマウントするため
-        // だけど、ここに記述する処理ではないような気もする。
-        // const mdView = OAM().app.workspace.getActiveViewOfType(MarkdownView);
-        // if (mdView instanceof MarkdownView) {
-        //     OVM().mountOrUpdateNoteTopSection(mdView);
-        // }
     }
 
     async addLinkedNote(unlinkedNote: StdNote, rootNote: StdNote): Promise<boolean> {

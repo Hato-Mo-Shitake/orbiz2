@@ -10,13 +10,13 @@ export function SimpleViewBox({
     headerWidth?: number,
 }) {
     return (<>
-        <div className="orbiz__item--flex-align-start-small" style={{ margin: "0.5em" }}>
+        <div className="orbiz__item--flex-align-start-small" >
             {header &&
                 <div
                     className="orbiz__font--bold"
                     style={{ width: headerWidth ? `${headerWidth}rem` : "" }}
                 >
-                    {header}:
+                    {header}
                 </div>
             }
             <div>

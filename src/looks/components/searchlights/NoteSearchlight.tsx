@@ -1,8 +1,6 @@
 import { useState } from "react";
 import { Fragment } from "react/jsx-runtime";
-import { generateCurrentIsoDatetime } from "src/assistance/utils/date";
 import { useCheckboxOptions } from "src/looks/hooks/useCheckboxOptions";
-import { MainMenuModal } from "src/looks/modals/menu/MainMenuModal";
 import { DiaryNoteType, diaryNoteTypeList, LogNoteType, logNoteTypeList, MyNoteType, myNoteTypeList, NoteType, noteTypeList } from "src/orbits/schema/frontmatters/NoteType";
 import { CheckBoxes } from "../common/CheckBoxes";
 import { DateRange, DateRangePicker } from "../common/DateRangePicker";
@@ -15,7 +13,7 @@ export function NoteSearchlight({
 }: {
     closeModal: () => void;
 }) {
-    const now = generateCurrentIsoDatetime();
+    // const now = generateCurrentIsoDatetime();
     const [dateRange, setDateRange] = useState<DateRange | null>(null)
 
     const noteTypeOptions = useCheckboxOptions<NoteType>([...noteTypeList], {
@@ -36,11 +34,6 @@ export function NoteSearchlight({
     const test = () => {
         typeOptionsList.forEach(opt => console.log(opt.options.checkedList));
         console.log(dateRange);
-    }
-
-    const handleOpenMainMenu = () => {
-        closeModal();
-        MainMenuModal.open();
     }
 
     return (<>

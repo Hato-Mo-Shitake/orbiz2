@@ -2,7 +2,7 @@ import { OTM } from "src/orbiz/managers/OrbizTFileManager";
 import { ScrollableBox } from "../../common/ScrollableBox";
 import { NoteList } from "../../searchlights/sub/NoteList";
 import { MainNav } from "../navigate/MainNav";
-import { DiaryNoteIndex } from "./DiaryNoteIndex";
+import { DiaryNoteMenu } from "./DiaryNoteMenu";
 
 export function DailyNoteIndexByMonth({
     y,
@@ -13,19 +13,12 @@ export function DailyNoteIndexByMonth({
     m: number,
     closeModal?: () => void;
 }) {
-    const _handleOpenModal = (modal: { open: () => void }): () => void => {
-        return () => {
-            closeModal?.();
-            modal.open();
-        }
-    }
-
     return (<>
         <MainNav
             closeModal={closeModal}
         />
         <hr />
-        <DiaryNoteIndex
+        <DiaryNoteMenu
             closeModal={closeModal}
             isHorizon={true}
         />

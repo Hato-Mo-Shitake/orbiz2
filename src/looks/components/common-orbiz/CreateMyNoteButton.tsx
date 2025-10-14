@@ -1,6 +1,8 @@
 
+import { isMyNote } from "src/core/domain/MyNote";
 import { StdNote } from "src/core/domain/StdNote";
 import { OUM } from "src/orbiz/managers/OrbizUseCaseManager";
+import { CreateRoleNodeButton } from "./CreateRoleNodeButton";
 
 export function CreateMyNoteButton({
     rootNote,
@@ -13,11 +15,19 @@ export function CreateMyNoteButton({
         OUM().prompt.createMyNote({ rootNote: rootNote });
     }
     return (
-        <button
-            style={{ backgroundColor: "skyblue" }}
-            onClick={handleOpenFmEdit}
+        <span
+        // className="orbiz__item--flex-small" 
         >
-            {label}
-        </button>
+            <button onClick={handleOpenFmEdit}  >
+                {label}
+            </button>
+            {(isMyNote(rootNote) && !rootNote.isRoleNode)
+                && <span>
+                    <span>(</span>
+                    <CreateRoleNodeButton rootNote={rootNote} label="role-node" />
+                    <span>)</span>
+                </span>
+            }
+        </span>
     )
 }

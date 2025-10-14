@@ -12,7 +12,8 @@ export function OpenFmDisplayButton({
     }
     return (
         <button
-            style={{ backgroundColor: "skyblue" }}
+            // style={{ backgroundColor: "skyblue" }}
+            // className="orbiz__button--small"
             onClick={handleOpenFmEdit}
         >
             fm display
