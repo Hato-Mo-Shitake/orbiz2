@@ -54,8 +54,6 @@ export class MyFmBuilder<TFm extends MyFm = MyFm> extends StdFmBuilder<TFm> {
             this._fm["roleHub"] = "";
         }
     }
-
-    // TODO: role設定をここでやることになると思う。
 }
 
 export class LogFmBuilder<TFm extends LogFm = LogFm> extends StdFmBuilder<TFm> {

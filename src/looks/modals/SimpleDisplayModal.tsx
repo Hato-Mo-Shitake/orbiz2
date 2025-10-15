@@ -65,8 +65,8 @@ const openModal = (ModalNode: React.FC<{ closeModal: () => void }>) => {
         (closeModal: CloseModal) => <ModalNode closeModal={closeModal} />
     );
 }
-export const openModalMainMenu = () => openModal(MainMenu)
 
+export const openModalMainMenu = () => openModal(MainMenu)
 
 export const openModalMyNoteMenu = () => openModal(MyNoteMenu)
 export const openModalMyNoteIndex = (subType?: MyNoteType) => {
@@ -75,7 +75,6 @@ export const openModalMyNoteIndex = (subType?: MyNoteType) => {
     );
 }
 
-// export const openModalLogNoteIndex = () => openModal(LogNoteIndex);
 export const openModalLogNoteIndex = (subType?: LogNoteType) => {
     SimpleDisplayModal.open(
         (closeModal: CloseModal) => <LogNoteIndex subType={subType} closeModal={closeModal} />
@@ -83,15 +82,15 @@ export const openModalLogNoteIndex = (subType?: LogNoteType) => {
 }
 export const openModalLogNoteMenu = () => openModal(LogNoteMenu);
 
-
-
 export const openModalDailyNoteIndex = () => openModal(DailyNoteIndex);
 export const openModalDailyNoteIndexByMonth = (y: number, m: number) => {
     SimpleDisplayModal.open(
         (closeModal: CloseModal) => <DailyNoteIndexByMonth y={y} m={m} closeModal={closeModal} />
     );
 }
+
 export const openModalNoteSearchlight = () => openModal(NoteSearchlight);
+
 export const openModalSettingsIndex = () => openModal(SettingsIndex);
 export const openModalCategoriesSetting = () => openModal(CategoriesSetting);
 export const openModalRoleKindsSetting = () => openModal(RoleKindsSetting)

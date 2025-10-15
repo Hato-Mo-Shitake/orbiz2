@@ -24,4 +24,3 @@ export class WorkspaceEventWatcher {
         this._myPlugin.registerEvent(this._workspace.on("editor-change", callback))
     }
 }
-

@@ -3,8 +3,6 @@ import { OAM } from "src/orbiz/managers/OrbizAppManager";
 import { OUM } from "src/orbiz/managers/OrbizUseCaseManager";
 
 export class LooksRegistrar {
-    constructor() { }
-
     register(): void {
         const { app, myPlugin } = OAM();
 

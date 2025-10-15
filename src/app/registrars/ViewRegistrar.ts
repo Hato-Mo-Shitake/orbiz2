@@ -3,8 +3,6 @@ import { ReactExampleView, VIEW_TYPE_REACT_EXAMPLE } from "src/looks/views/React
 import { OAM } from "src/orbiz/managers/OrbizAppManager";
 
 export class ViewRegistrar {
-    constructor() { }
-
     register(): void {
         const { myPlugin } = OAM();
 
