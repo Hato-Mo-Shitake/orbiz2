@@ -1,8 +1,8 @@
+import { AM } from "src/app/AppManager";
 import { generateUUID } from "src/assistance/utils/uuid";
 import { RoleNodeConf } from "src/orbits/contracts/create-note";
 import { BaseFm, DailyFm, DiaryFm, LogFm, MyFm, StdFm } from "src/orbits/schema/frontmatters/fm";
 import { DiaryNoteType, LogNoteType, MyNoteType } from "src/orbits/schema/frontmatters/NoteType";
-import { ODM } from "src/orbiz/managers/OrbizDiaryManager";
 
 export abstract class BaseFmBuilder<TFm extends BaseFm = BaseFm> {
     protected _fm: Partial<TFm> = {};
@@ -85,7 +85,7 @@ export abstract class DiaryFmBuilder<TFm extends DiaryFm = DiaryFm> extends Base
 export class DailyFmBuilder<TFm extends DailyFm = DailyFm> extends DiaryFmBuilder<TFm> {
     constructor() {
         const daily = "daily" as const;
-        super(`${daily}_${ODM().getToday()}`, daily);
+        super(`${daily}_${AM.diary.getToday()}`, daily);
         this._fm["theDay"] = (new Date()).getTime();
         this._fm["createdNotes"] = [];
         this._fm["modifiedNotes"] = [];

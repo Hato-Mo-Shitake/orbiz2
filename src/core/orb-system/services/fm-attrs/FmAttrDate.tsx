@@ -1,6 +1,8 @@
 import { TFile } from "obsidian";
 import { ReactNode } from "react";
+import { AM } from "src/app/AppManager";
 import { isValidDate } from "src/assistance/utils/validation";
+import { UnexpectedError } from "src/errors/UnexpectedError";
 import { FmAttrTheDayEditor } from "src/looks/components/note-metadata-edit/daily/FmAttrTheDayEditor";
 import { FmAttrDueEditor } from "src/looks/components/note-metadata-edit/log/FmAttrDueEditor";
 import { FmAttrResolvedEditor } from "src/looks/components/note-metadata-edit/log/FmAttrResolvedEditor";
@@ -9,10 +11,6 @@ import { FmAttrDueDisplay } from "src/looks/components/note-metadata-view/log/Fm
 import { FmAttrResolvedDisplay } from "src/looks/components/note-metadata-view/log/FmAttrResolvedDisplay";
 import { FmKey } from "src/orbits/contracts/fmKey";
 import { DailyNoteState, LogNoteState } from "src/orbits/schema/NoteState";
-import { ODM } from "src/orbiz/managers/OrbizDiaryManager";
-import { OEM } from "src/orbiz/managers/OrbizErrorManager";
-import { ONM } from "src/orbiz/managers/OrbizNoteManager";
-import { ORM } from "src/orbiz/managers/OrbizRepositoryManager";
 import { StoreApi } from "zustand";
 import { FmAttr } from "./FmAttr";
 
@@ -63,7 +61,7 @@ abstract class FmAttrDate extends FmAttr<Date | null> {
         const newTimestamp = this._newValue?.getTime();
         if (this._value?.getTime() === newTimestamp) return;
 
-        await ORM().noteR.updateFmAttr(this.tFile, this.fmKey, newTimestamp);
+        await AM.repository.noteR.updateFmAttr(this.tFile, this.fmKey, newTimestamp);
         this._value = newTimestamp ? new Date(newTimestamp) : null;
         this.afterCommit();
     }
@@ -163,9 +161,9 @@ export class FmAttrResolved extends FmAttrDate {
 
     protected afterCommit(): void {
         super.afterCommit();
-        const id = ONM().getNoteIdByTFile(this.tFile);
-        if (!id) OEM.throwUnexpectedError();
-        ODM().todayRecordNoteIds.rIds.add(id);
+        const id = AM.note.getNoteIdByTFile(this.tFile);
+        if (!id) throw new UnexpectedError();
+        AM.diary.todayRecordNoteIds.rIds.add(id);
     }
 }
 
@@ -184,7 +182,7 @@ export class FmAttrTheDay extends FmAttrDate {
 
     get value(): Date {
         if (!this._value) {
-            OEM.throwUnexpectedError();
+            throw new UnexpectedError();
         }
         return this._value;
     }

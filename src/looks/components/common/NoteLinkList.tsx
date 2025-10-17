@@ -1,11 +1,12 @@
+import { AM } from "src/app/AppManager";
 import { getBasenameFromPath } from "src/assistance/utils/path";
 import { Note } from "src/orbits/contracts/note-orb";
-import { OAM } from "src/orbiz/managers/OrbizAppManager";
 import { NoteLink } from "./NoteLink";
 
 export function NoteLinkList({
     notes,
-    rootNotePath = OAM().rootPath,
+    // rootNotePath = OAM().rootPath,
+    rootNotePath = AM.orbiz.rootPath,
     cutSlug
 }: {
     notes: Note[],

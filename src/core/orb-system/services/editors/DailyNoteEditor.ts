@@ -1,7 +1,6 @@
 import { DailyNote } from "src/core/domain/DailyNote";
 import { StdNote } from "src/core/domain/StdNote";
 import { DailyFm } from "src/orbits/schema/frontmatters/fm";
-import { ONM } from "src/orbiz/managers/OrbizNoteManager";
 import { DailyFmOrb } from "../../orbs/FmOrb";
 import { DiaryNoteEditor } from "./DiaryNoteEditor";
 
@@ -28,7 +27,7 @@ export class DailyNoteEditor<TFm extends DailyFm = DailyFm> extends DiaryNoteEdi
         const rNotes: Map<string, StdNote> = new Map();
 
         mIds.forEach(id => {
-            const note = ONM().getStdNote({ noteId: id })!;
+            const note = AM.note.getStdNote({ noteId: id })!;
             mNotes.set(id, note);
         });
 
@@ -37,7 +36,7 @@ export class DailyNoteEditor<TFm extends DailyFm = DailyFm> extends DiaryNoteEdi
             if (mNote) {
                 cNotes.set(id, mNote)
             } else {
-                const note = ONM().getStdNote({ noteId: id })!;
+                const note = AM.note.getStdNote({ noteId: id })!;
                 cNotes.set(id, note);
             }
         });
@@ -48,7 +47,7 @@ export class DailyNoteEditor<TFm extends DailyFm = DailyFm> extends DiaryNoteEdi
             if (mcNote) {
                 rNotes.set(id, mcNote)
             } else {
-                const note = ONM().getStdNote({ noteId: id })!;
+                const note = AM.note.getStdNote({ noteId: id })!;
                 rNotes.set(id, note);
             }
         });

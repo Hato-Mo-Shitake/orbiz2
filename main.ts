@@ -1,10 +1,9 @@
 import { MarkdownView, Plugin } from 'obsidian';
 import { AppInitializer } from 'src/app/AppInitializer';
+import { AM } from 'src/app/AppManager';
 import { debugConsole } from 'src/assistance/utils/debug';
-import { ODM } from 'src/orbiz/managers/OrbizDiaryManager';
-import { OVM } from 'src/orbiz/managers/OrbizViewManager';
 
-export default class MyPlugin extends Plugin {
+export default class OrbizPlugin extends Plugin {
 	async onload() {
 		if (!this.app.workspace.layoutReady) {
 			this.app.workspace.onLayoutReady(async () => {
@@ -23,7 +22,7 @@ export default class MyPlugin extends Plugin {
 	}
 
 	async saveProgress() {
-		await ODM().writeDailyLogNoteIds();
+		await AM.diary.writeDailyLogNoteIds();
 	}
 
 	private async initializeApp(): Promise<void> {
@@ -33,7 +32,7 @@ export default class MyPlugin extends Plugin {
 		);
 
 		await appInitializer.initialize();
-		// const activeFile = OTM().activeTFile;
+		// const activeFile = AM.tFile.activeTFile;
 		const mdView = this.app.workspace.getActiveViewOfType(MarkdownView);
 		if (!mdView) return;
 		debugConsole("最初のマウント");
@@ -44,7 +43,7 @@ export default class MyPlugin extends Plugin {
 			const mdView = leaf.view;
 			// if (tFile.path !== mdView.file?.path) return;
 
-			OVM().mountOrUpdateNoteTopSection(mdView);
+			AM.looks.mountOrUpdateNoteTopSection(mdView);
 		});
 		debugConsole("最初のマウント完了");
 		// debugConsole("最初に開かれているノート！", activeFile?.path);

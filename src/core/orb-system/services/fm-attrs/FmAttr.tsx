@@ -1,10 +1,10 @@
 import { TFile } from "obsidian";
 import { ReactNode } from "react";
+import { AM } from "src/app/AppManager";
 import { FmAttrEditor, FmAttrViewer } from "src/orbits/contracts/fmAttr";
 import { FmKey } from "src/orbits/contracts/fmKey";
 import { Listener } from "src/orbits/contracts/observer";
 import { BaseNoteState } from "src/orbits/schema/NoteState";
-import { ORM } from "src/orbiz/managers/OrbizRepositoryManager";
 import { StoreApi } from "zustand";
 
 export abstract class FmAttr<TValue = any, TNoteState extends BaseNoteState = BaseNoteState> implements FmAttrEditor<TValue>, FmAttrViewer<TValue> {
@@ -69,7 +69,7 @@ export abstract class FmAttr<TValue = any, TNoteState extends BaseNoteState = Ba
             throw new Error(`validation error in commit. fmKey: ${this.fmKey}`);
         }
 
-        await ORM().noteR.updateFmAttr(this.tFile, this.fmKey, filteredValue);
+        await AM.repository.noteR.updateFmAttr(this.tFile, this.fmKey, filteredValue);
         this._value = structuredClone(this._newValue) || null;
         this.afterCommit();
     }

@@ -1,6 +1,6 @@
 
+import { AM } from "src/app/AppManager";
 import { StdNote } from "src/core/domain/StdNote";
-import { OUM } from "src/orbiz/managers/OrbizUseCaseManager";
 
 export function CreateLogNoteButton({
     rootNote,
@@ -10,7 +10,7 @@ export function CreateLogNoteButton({
     label?: string,
 }) {
     const handleOpenFmEdit = () => {
-        OUM().prompt.createLogNote({ rootNote: rootNote });
+        AM.useCase.prompt.createLogNote({ rootNote: rootNote });
     }
     return (
         <button

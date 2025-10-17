@@ -1,20 +1,20 @@
 import { DataWriteOptions, TFile, TFolder } from "obsidian";
+import { AM } from "src/app/AppManager";
 import { createDailyNotePath, createLogNotePath, createMyNotePath, getParentPath } from "src/assistance/utils/path";
 import { DuplicateStdNoteNameExistError } from "src/errors/DuplicateStdNoteNameExistError";
+import { UnexpectedError } from "src/errors/UnexpectedError";
 import { BaseFm } from "src/orbits/schema/frontmatters/fm";
 import { FmValue } from "src/orbits/schema/frontmatters/FmKey";
 import { isLogNoteType, isMyNoteType, SubNoteType } from "src/orbits/schema/frontmatters/NoteType";
-import { OAM } from "src/orbiz/managers/OrbizAppManager";
-import { OCM } from "src/orbiz/managers/OrbizCacheManager";
-import { OEM } from "src/orbiz/managers/OrbizErrorManager";
-import { OOM } from "src/orbiz/managers/OrbizOrbManager";
 
 export class NoteRepository {
     private get fileManager() {
-        return OAM().app.fileManager;
+        return AM.obsidian.fileManager;
+        // return OAM().app.fileManager;
     }
     private get vault() {
-        return OAM().app.vault;
+        return AM.obsidian.vault;
+        // return OAM().app.vault;
     }
 
     async deleteAndUpsertFmAttrs(tFile: TFile, deletedFm: Record<string, FmValue>, newFm: Record<string, FmValue>) {
@@ -64,9 +64,10 @@ export class NoteRepository {
         try {
             const pPath = getParentPath(tFile.path);
             const newPath = pPath + "/" + newName + ".md";
-            await OAM().app.fileManager.renameFile(tFile, newPath);
+            await this.fileManager.renameFile(tFile, newPath);
+            // await OAM().app.fileManager.renameFile(tFile, newPath);
         } catch {
-            OEM.throwUnexpectedError();
+            throw new UnexpectedError();
         }
 
         return newName;
@@ -78,11 +79,12 @@ export class NoteRepository {
 
         try {
             // await OAM().app.vault.rename(tFile, newPath);
-            await OAM().app.fileManager.renameFile(tFile, newPath);
+            // await OAM().app.fileManager.renameFile(tFile, newPath);
+            await this.fileManager.renameFile(tFile, newPath);
 
             // await OAM().app.fileManager.renameFile(tFile, "test-space/logs/@かに.md");
         } catch {
-            OEM.throwUnexpectedError();
+            throw new UnexpectedError();
         }
 
         return newPath;
@@ -91,20 +93,22 @@ export class NoteRepository {
     async changeTFilePath(tFile: TFile, newPath: string): Promise<string> {
         await this.getOrCreateTFolder(getParentPath(newPath));
         try {
-            await OAM().app.fileManager.renameFile(tFile, newPath);
+            // await OAM().app.fileManager.renameFile(tFile, newPath);
+            await this.fileManager.renameFile(tFile, newPath);
         } catch (e) {
             console.error(e);
-            OEM.throwUnexpectedError();
+            throw new UnexpectedError();
         }
 
         return newPath;
     }
 
     async createStdTFile(baseName: string, subType: SubNoteType, data = "", options?: DataWriteOptions): Promise<TFile> {
-        const existingId = OCM().getStdNoteIdByName(baseName);
+        // const existingId = AM.cache.getStdNoteIdByName(baseName);
+        const existingId = AM.cache.getStdNoteIdByName(baseName);
         if (existingId) {
-            const orb = OOM().getStdNoteOrb({ noteId: existingId });
-            if (!orb) OEM.throwUnexpectedError();
+            const orb = AM.orb.getStdNoteOrb({ noteId: existingId });
+            if (!orb) throw new UnexpectedError();
             throw new DuplicateStdNoteNameExistError(orb);
         }
 
@@ -114,7 +118,7 @@ export class NoteRepository {
         } else if (isLogNoteType(subType)) {
             path = createLogNotePath(baseName, subType);
         } else {
-            OEM.throwUnexpectedError();
+            throw new UnexpectedError();
         }
 
         // const path = createStdNotePath(baseName, subType);

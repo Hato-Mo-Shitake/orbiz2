@@ -1,7 +1,6 @@
 import { FmAttrCategories } from "src/core/orb-system/services/fm-attrs/FmAttrStringList";
 import { useFmAttrEditable } from "src/looks/hooks/note-edit/useFmAttrEditable";
 import { MyNoteState } from "src/orbits/schema/NoteState";
-import { OSM } from "src/orbiz/managers/OrbizSettingManager";
 import { StoreApi, useStore } from "zustand";
 import { SelectableItemList } from "../../common/SelectableItemList";
 
@@ -24,7 +23,7 @@ export function FmAttrCategoriesEditor({
             <SelectableItemList
                 selectedList={newValue || []}
                 onChange={setNewValue}
-                selections={OSM().categories}
+                selections={AM.orbizSetting.categories}
             />
         </div>
     </>)

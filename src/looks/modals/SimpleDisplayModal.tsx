@@ -2,14 +2,14 @@ import { App, Modal } from "obsidian";
 import * as React from "react";
 import { ReactNode } from "react";
 import { createRoot, Root } from "react-dom/client";
+import { AM } from "src/app/AppManager";
 import { LogNoteType, MyNoteType } from "src/orbits/schema/frontmatters/NoteType";
-import { OAM } from "src/orbiz/managers/OrbizAppManager";
-import { MainMenu } from "../components/menu/MainMenu";
-import { DailyNoteIndex } from "../components/menu/diary/DailyNoteIndex";
-import { DailyNoteIndexByMonth } from "../components/menu/diary/DailyNoteIndexByMonth";
-import { LogNoteIndex } from "../components/menu/log/LogNoteIndex";
+import { DailyNoteIndex } from "../components/index/diary/DailyNoteIndex";
+import { DailyNoteIndexByMonth } from "../components/index/diary/DailyNoteIndexByMonth";
+import { LogNoteIndex } from "../components/index/log/LogNoteIndex";
+import { MyNoteIndex } from "../components/index/my/MyNoteIndex";
 import { LogNoteMenu } from "../components/menu/log/LogNoteMenu";
-import { MyNoteIndex } from "../components/menu/my/MyNoteIndex";
+import { MainMenu } from "../components/menu/MainMenu";
 import { MyNoteMenu } from "../components/menu/my/MyNoteMenu";
 import { NoteSearchlight } from "../components/searchlights/NoteSearchlight";
 import { CategoriesSetting } from "../components/settings/CategoriesSetting";
@@ -19,7 +19,8 @@ import { SettingsIndex } from "../components/settings/SettingsIndex";
 type CreateModalNode = (closeModal: () => void) => ReactNode;
 export class SimpleDisplayModal extends Modal {
     static open(createNode: CreateModalNode) {
-        const modal = new SimpleDisplayModal(OAM().app, createNode);
+        // const modal = new SimpleDisplayModal(OAM().app, createNode);
+        const modal = new SimpleDisplayModal(AM.obsidian.app, createNode);
         modal.open();
     }
 

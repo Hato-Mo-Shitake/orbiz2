@@ -1,10 +1,9 @@
+import { AM } from "src/app/AppManager";
 import { extractNoteNameFromInternalLink } from "src/assistance/utils/link";
 import { MyNote } from "src/core/domain/MyNote";
+import { UnexpectedError } from "src/errors/UnexpectedError";
 import { FmKey } from "src/orbits/contracts/fmKey";
 import { MyFm } from "src/orbits/schema/frontmatters/fm";
-import { OCM } from "src/orbiz/managers/OrbizCacheManager";
-import { OEM } from "src/orbiz/managers/OrbizErrorManager";
-import { ONM } from "src/orbiz/managers/OrbizNoteManager";
 import { MyFmOrb } from "../../orbs/FmOrb";
 import { StdNoteReader } from "./StdNoteReader";
 
@@ -12,11 +11,11 @@ export class MyNoteReader<TFm extends MyFm = MyFm> extends StdNoteReader<TFm> {
     static getRoleNodeNoteList(rootNote: MyNote, inLinkIds: string[]): MyNote[] {
         const targetIds: string[] = [];
         inLinkIds.forEach(id => {
-            const source = OCM().getStdNoteSourceById(id);
+            const source = AM.cache.getStdNoteSourceById(id);
             if (!source) return;
 
-            const fm = ONM().getFmCacheByPath(source.path);
-            if (!fm) OEM.throwUnexpectedError();
+            const fm = AM.note.getFmCacheByPath(source.path);
+            if (!fm) throw new UnexpectedError();
 
             const iLink = String(fm["roleHub"]);
             if (rootNote.baseName == extractNoteNameFromInternalLink(iLink)) {
@@ -24,7 +23,7 @@ export class MyNoteReader<TFm extends MyFm = MyFm> extends StdNoteReader<TFm> {
             }
         });
 
-        return targetIds.map(id => ONM().getMyNote({ noteId: id })!);
+        return targetIds.map(id => AM.note.getMyNote({ noteId: id })!);
     }
 
     constructor(

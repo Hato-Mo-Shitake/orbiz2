@@ -1,12 +1,13 @@
 import { Fragment } from "react/jsx-runtime";
+import { AM } from "src/app/AppManager";
 import { Note } from "src/orbits/contracts/note-orb";
 import { RecursiveTree } from "src/orbits/contracts/tree";
-import { OAM } from "src/orbiz/managers/OrbizAppManager";
 import { NoteLinkTree } from "./NoteLinkTree";
 
 export function NoteLinkTreeList({
     noteTrees,
-    rootNotePath = OAM().rootPath,
+    // rootNotePath = OAM().rootPath,
+    rootNotePath = AM.orbiz.rootPath,
     cutSlug
 }: {
     noteTrees: RecursiveTree<Note>[],

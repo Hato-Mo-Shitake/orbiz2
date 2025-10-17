@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { OSM } from "src/orbiz/managers/OrbizSettingManager";
 import { EditableItemList } from "../common/EditableItemList";
 import { MainNav } from "../menu/navigate/MainNav";
 
@@ -9,10 +8,10 @@ export function RoleKindsSetting({
     closeModal: () => void;
 }) {
 
-    const [roleKinds, setRoleKinds] = useState<string[]>(OSM().roleKinds);
+    const [roleKinds, setRoleKinds] = useState<string[]>(AM.orbizSetting.roleKinds);
     const handleClick = () => {
-        OSM().setRoleKinds(roleKinds);
-        OSM().save();
+        AM.orbizSetting.setRoleKinds(roleKinds);
+        AM.orbizSetting.save();
         alert("更新が完了しました。");
     }
     return (<>

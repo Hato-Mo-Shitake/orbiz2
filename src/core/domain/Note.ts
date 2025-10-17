@@ -1,9 +1,8 @@
 import { CachedMetadata, FrontMatterCache, TFile } from "obsidian";
+import { AM } from "src/app/AppManager";
 import { getBasenameFromPath } from "src/assistance/utils/path";
+import { UnexpectedError } from "src/errors/UnexpectedError";
 import { BaseFm } from "src/orbits/schema/frontmatters/fm";
-import { OAM } from "src/orbiz/managers/OrbizAppManager";
-import { OEM } from "src/orbiz/managers/OrbizErrorManager";
-import { OTM } from "src/orbiz/managers/OrbizTFileManager";
 
 export abstract class BaseNote<TFm extends BaseFm = BaseFm> {
     readonly id: string;
@@ -51,20 +50,23 @@ export abstract class BaseNote<TFm extends BaseFm = BaseFm> {
 
     get tFile(): TFile {
         // NOTE: 常に最新のものを取得。
-        const _tFile = OTM().getMdTFileByPath(this.path);
-        if (!_tFile) OEM.throwUnexpectedError();
+        const _tFile = AM.tFile.getMdTFileByPath(this.path);
+        if (!_tFile) throw new UnexpectedError();
         return _tFile;
     }
 
     // なるべく最新の状態を返すために、fmは自身に持たないようにする。
     get fmCache(): FrontMatterCache {
         const fmCache = this.metadata.frontmatter;
-        if (!fmCache) OEM.throwUnexpectedError();
+        if (!fmCache) throw new UnexpectedError();
         return fmCache;
     }
 
     get metadata(): CachedMetadata {
-        const cache = OAM().app.metadataCache.getFileCache(this.tFile);
+
+        const cache = AM.obsidian.metadataCache.getFileCache(this.tFile);
+        // const cache = OAM().app.metadataCache.getFileCache(this.tFile);
+
         if (!cache) {
             throw new Error("not cache is empty.");
         }
@@ -72,10 +74,12 @@ export abstract class BaseNote<TFm extends BaseFm = BaseFm> {
     }
 
     read(): Promise<string> {
-        return OAM().app.vault.cachedRead(this.tFile);
+        return AM.obsidian.vault.cachedRead(this.tFile);
+        // return OAM().app.vault.cachedRead(this.tFile);
     }
 
     readActual(): Promise<string> {
-        return OAM().app.vault.read(this.tFile);
+        return AM.obsidian.vault.read(this.tFile);
+        // return OAM().app.vault.read(this.tFile);
     }
 }

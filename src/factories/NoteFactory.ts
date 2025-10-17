@@ -1,12 +1,11 @@
 import { TFile } from "obsidian";
+import { AM } from "src/app/AppManager";
 import { DailyNote } from "src/core/domain/DailyNote";
 import { LogNote } from "src/core/domain/LogNote";
 import { MyNote } from "src/core/domain/MyNote";
 import { StdNote } from "src/core/domain/StdNote";
+import { UnexpectedError } from "src/errors/UnexpectedError";
 import { DailyFm, isDailyFm, isLogFm, isMyFm, LogFm, MyFm } from "src/orbits/schema/frontmatters/fm";
-import { OAM } from "src/orbiz/managers/OrbizAppManager";
-import { OEM } from "src/orbiz/managers/OrbizErrorManager";
-import { OTM } from "src/orbiz/managers/OrbizTFileManager";
 export class NoteFactory {
     constructor(
     ) { }
@@ -17,23 +16,24 @@ export class NoteFactory {
             tFile = src;
         } else {
             if (src.noteId) {
-                const tmp = OTM().getNoteTFileById(src.noteId);
+                const tmp = AM.tFile.getNoteTFileById(src.noteId);
                 if (!tmp) return null;
                 tFile = tmp;
             } else if (src.internalLink) {
-                const tmp = OTM().getMdTFileByInternalLink(src.internalLink);
+                const tmp = AM.tFile.getMdTFileByInternalLink(src.internalLink);
                 if (!tmp) return null;
                 tFile = tmp;
             } else if (src.noteName) {
-                const tmp = OTM().getNoteTFileByNoteName(src.noteName);
+                const tmp = AM.tFile.getNoteTFileByNoteName(src.noteName);
                 if (!tmp) return null;
                 tFile = tmp;
             } else {
-                OEM.throwUnexpectedError();
+                throw new UnexpectedError();
             }
         }
 
-        const app = OAM().app;
+        // const app = OAM().app;
+        const { app } = AM.obsidian;
         const fmCache = app.metadataCache.getFileCache(tFile)?.frontmatter;
         if (!fmCache) return null;
 
@@ -49,7 +49,8 @@ export class NoteFactory {
         if (isMyFm(src)) {
             return new MyNote(src);
         }
-        const fmCache = OAM().app.metadataCache.getFileCache(src)?.frontmatter;
+        const fmCache = AM.obsidian.metadataCache.getFileCache(src)?.frontmatter;
+        // const fmCache = OAM().app.metadataCache.getFileCache(src)?.frontmatter;
         if (!fmCache) return null;
 
         if (isMyFm(fmCache)) {
@@ -62,7 +63,8 @@ export class NoteFactory {
         if (isLogFm(src)) {
             return new LogNote(src);
         }
-        const fmCache = OAM().app.metadataCache.getFileCache(src)?.frontmatter;
+        // const fmCache = OAM().app.metadataCache.getFileCache(src)?.frontmatter;
+        const fmCache = AM.obsidian.metadataCache.getFileCache(src)?.frontmatter;
         if (!fmCache) return null;
 
         if (isLogFm(fmCache)) {
@@ -79,7 +81,8 @@ export class NoteFactory {
         }
     }): DailyNote | null {
         if (src.tFile) {
-            const fmCache = OAM().app.metadataCache.getFileCache(src.tFile)?.frontmatter;
+            // const fmCache = OAM().app.metadataCache.getFileCache(src.tFile)?.frontmatter;
+            const fmCache = AM.obsidian.metadataCache.getFileCache(src.tFile)?.frontmatter;
             if (!fmCache) return null;
             if (isDailyFm(fmCache)) {
                 return new DailyNote(fmCache, src.tFile.path);
@@ -87,7 +90,7 @@ export class NoteFactory {
         } else if (src.fmAndPath) {
             return new DailyNote(src.fmAndPath.fm, src.fmAndPath.path)
         } else {
-            OEM.throwUnexpectedError();
+            throw new UnexpectedError();
         }
 
         return null;

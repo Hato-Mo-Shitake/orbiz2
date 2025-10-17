@@ -1,12 +1,12 @@
-import MyPlugin from "main";
+import OrbizPlugin from "main";
 import { App, PluginSettingTab, Setting } from "obsidian";
+import { AM } from "src/app/AppManager";
 import { isOrbizSpaceType } from "src/orbits/contracts/orbiz-space-type";
-import { OSM } from "src/orbiz/managers/OrbizSettingManager";
 
 export class SampleSettingTab extends PluginSettingTab {
-    plugin: MyPlugin;
+    plugin: OrbizPlugin;
 
-    constructor(app: App, plugin: MyPlugin) {
+    constructor(app: App, plugin: OrbizPlugin) {
         super(app, plugin);
         this.plugin = plugin;
     }
@@ -21,12 +21,12 @@ export class SampleSettingTab extends PluginSettingTab {
             .setDesc('It\'s a secret!!!')
             .addText(text => text
                 .setPlaceholder('Enter your secret')
-                .setValue(OSM().sampleSetting)
+                .setValue(AM.orbizSetting.sampleSetting)
                 // .setValue(this.plugin.settings.mySetting)
                 .onChange(async (value) => {
-                    OSM().setSampleSetting(value);
+                    AM.orbizSetting.setSampleSetting(value);
                     // this.plugin.settings.mySetting = value;
-                    await OSM().save();
+                    await AM.orbizSetting.save();
                     // await this.plugin.saveSettings();
                 }));
 
@@ -36,14 +36,14 @@ export class SampleSettingTab extends PluginSettingTab {
                 dropdown
                     .addOption("my", "my space")
                     .addOption("test", "test space")
-                    .setValue(OSM().spaceType)
+                    .setValue(AM.orbizSetting.spaceType)
                     .onChange(async (value) => {
                         if (!isOrbizSpaceType(value)) {
                             alert("invalid value");
                             return;
                         }
-                        OSM().setSpaceType(value);
-                        await OSM().save();
+                        AM.orbizSetting.setSpaceType(value);
+                        await AM.orbizSetting.save();
                     })
             );
     }

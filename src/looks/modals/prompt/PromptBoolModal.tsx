@@ -1,7 +1,7 @@
 import { Modal } from "obsidian";
 import { ReactNode } from "react";
 import { createRoot, Root } from "react-dom/client";
-import { OAM } from "src/orbiz/managers/OrbizAppManager";
+import { AM } from "src/app/AppManager";
 
 export class PromptBoolModal extends Modal {
     static get(msg: string): Promise<boolean> {
@@ -17,7 +17,8 @@ export class PromptBoolModal extends Modal {
         private readonly msg: string,
         private resolve: (flag: boolean) => void
     ) {
-        super(OAM().app);
+        // super(OAM().app);
+        super(AM.obsidian.app);
     }
 
     onOpen() {

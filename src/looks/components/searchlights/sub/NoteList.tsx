@@ -1,18 +1,18 @@
 import { TFile } from "obsidian";
 import { useEffect, useState } from "react";
+import { AM } from "src/app/AppManager";
 import { getBasenameFromPath } from "src/assistance/utils/path";
-import { OAM } from "src/orbiz/managers/OrbizAppManager";
 
 export function NoteList({
     tFileList,
-    beginningPath = null,
+    beginningPath = AM.orbiz.rootPath,
     chunk = 50,
     cutSlug,
     closeModal,
     filter
 }: {
     tFileList: TFile[],
-    beginningPath?: string | null,
+    beginningPath?: string,
     chunk?: number,
     cutSlug?: string,
     closeModal?: () => void,
@@ -34,18 +34,20 @@ export function NoteList({
     )
     const isPagination = sorted.length > chunk ? true : false;
 
-    const sourcePath = beginningPath || OAM().rootPath;
-    const ws = OAM().app.workspace;
+
+    // const sourcePath = beginningPath || AM.orbiz.rootPath;
+
+    const ws = AM.obsidian.app.workspace;
 
     const handleNoteLinkClick = (evt: React.MouseEvent, linkText: string) => {
         closeModal?.()
         if (evt.metaKey) {
             // コマンドキーを押しながらの時
-            ws.openLinkText(linkText, sourcePath, "tab");
+            ws.openLinkText(linkText, beginningPath, "tab");
         } else if (evt.shiftKey) {
-            ws.openLinkText(linkText, sourcePath, "window");
+            ws.openLinkText(linkText, beginningPath, "window");
         } else {
-            ws.openLinkText(linkText, sourcePath);
+            ws.openLinkText(linkText, beginningPath);
         }
     }
 

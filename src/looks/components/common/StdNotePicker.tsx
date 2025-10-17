@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { trimFull } from "src/assistance/utils/filter";
 import { StdNote } from "src/core/domain/StdNote";
-import { ONM } from "src/orbiz/managers/OrbizNoteManager";
 import { AutoSuggestInput } from "./AutoSuggestInput";
 
 
@@ -19,7 +18,7 @@ export function StdNotePicker({
 
     const _createNote = (noteName: string): StdNote | null => {
         if (!noteName) return null;
-        return ONM().getStdNoteByName(noteName);
+        return AM.note.getStdNoteByName(noteName);
     }
     const handleChange = (noteName: string) => {
         const name = trimFull(noteName);
@@ -33,7 +32,7 @@ export function StdNotePicker({
         <AutoSuggestInput
             input={noteName}
             onChange={handleChange}
-            suggestions={options?.suggestions || ONM().allStdNoteNames}
+            suggestions={options?.suggestions || AM.note.allStdNoteNames}
             onSelect={handleChange}
             onEnter={handleChange}
             placeholder={options?.defaultNote?.baseName}

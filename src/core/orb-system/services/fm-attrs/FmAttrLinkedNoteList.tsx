@@ -1,7 +1,10 @@
 import { TFile } from "obsidian";
 import { ReactNode } from "react";
+import { AM } from "src/app/AppManager";
 import { arraysEqual } from "src/assistance/utils/array";
 import { StdNote } from "src/core/domain/StdNote";
+import { NotImplementedError } from "src/errors/NotImplementedError";
+import { UnexpectedError } from "src/errors/UnexpectedError";
 import { FmAttrDailyLinkedNoteListEditor } from "src/looks/components/note-metadata-edit/daily/FmAttrDailyLinkedNoteListEditor";
 import { FmAttrLinkedNoteListEditor } from "src/looks/components/note-metadata-edit/std/FmAttrLinkedNoteListEditor";
 import { FmAttrDailyLinkedNoteListDisplay } from "src/looks/components/note-metadata-view/daily/FmAttrDailyLinkedNoteListDisplay";
@@ -9,9 +12,6 @@ import { FmAttrLinkedNoteListDisplay } from "src/looks/components/note-metadata-
 import { FmAttrList } from "src/orbits/contracts/fmAttr";
 import { FmKey } from "src/orbits/contracts/fmKey";
 import { DailyNoteState, StdNoteState } from "src/orbits/schema/NoteState";
-import { OEM } from "src/orbiz/managers/OrbizErrorManager";
-import { ONM } from "src/orbiz/managers/OrbizNoteManager";
-import { ORM } from "src/orbiz/managers/OrbizRepositoryManager";
 import { StoreApi } from "zustand";
 import { FmAttr } from "./FmAttr";
 
@@ -34,18 +34,18 @@ export abstract class FmAttrLinkedNoteList extends FmAttr<StdNote[]> implements 
             noteList = [];
         } else if (_rawFmValueType === "internalLink") {
             noteList = rawFmValueList.reduce((pre: StdNote[], rawFmValue: string) => {
-                const note = ONM().getStdNote({ internalLink: rawFmValue });
+                const note = AM.note.getStdNote({ internalLink: rawFmValue });
                 if (!note) return pre;
                 return [...pre, note];
             }, []);
         } else if (_rawFmValueType === "noteId") {
             noteList = rawFmValueList.reduce((pre: StdNote[], rawFmValue: string) => {
-                const note = ONM().getStdNote({ noteId: rawFmValue });
+                const note = AM.note.getStdNote({ noteId: rawFmValue });
                 if (!note) return pre;
                 return [...pre, note];
             }, []);
         } else {
-            OEM.throwUnexpectedError();
+            throw new UnexpectedError();
         }
 
         super(
@@ -122,11 +122,12 @@ export abstract class FmAttrLinkedNoteList extends FmAttr<StdNote[]> implements 
         if (arraysEqual(this.value.map(aVal => aVal.id), this._newValue.map(aVal => aVal.id))) return;
 
         if (this._rawFmValueType === "internalLink") {
-            await ORM().noteR.updateFmAttr(this.tFile, this.fmKey, this._newValue.map(aVal => aVal.internalLink));
+            await AM.repository.noteR.updateFmAttr(this.tFile, this.fmKey, this._newValue.map(aVal => aVal.internalLink));
         } else if (this._rawFmValueType === "noteId") {
-            await ORM().noteR.updateFmAttr(this.tFile, this.fmKey, this._newValue.map(aVal => aVal.id));
+            await AM.repository.noteR.updateFmAttr(this.tFile, this.fmKey, this._newValue.map(aVal => aVal.id));
         } else {
-            OEM.throwNotImplementedError();
+            throw new NotImplementedError();
+            // OEM.throwNotImplementedError();
         }
 
         this._value = this.newValue ? [...this.newValue] : [];

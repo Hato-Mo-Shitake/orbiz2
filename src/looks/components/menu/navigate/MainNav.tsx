@@ -1,6 +1,5 @@
+import { AM } from "src/app/AppManager";
 import { generateChangeModal, openModalDailyNoteIndex, openModalLogNoteIndex, openModalMainMenu, openModalMyNoteIndex, openModalNoteSearchlight, openModalSettingsIndex } from "src/looks/modals/SimpleDisplayModal";
-import { ODM } from "src/orbiz/managers/OrbizDiaryManager";
-import { OVM } from "src/orbiz/managers/OrbizViewManager";
 
 export function MainNav({
     closeModal,
@@ -11,12 +10,12 @@ export function MainNav({
 
     const handleOpenTodayNote = async () => {
         closeModal?.();
-        await OVM().openNote(ODM().todayNoteOrb.note, false);
+        await AM.looks.openNote(AM.diary.todayNoteOrb.note, false);
     }
 
     return (<>
         <div>
-            <div style={{ fontSize: "18px" }}>today: <a onClick={handleOpenTodayNote}>{ODM().getToday("Y-m-d_D")}</a></div>
+            <div style={{ fontSize: "18px" }}>today: <a onClick={handleOpenTodayNote}>{AM.diary.getToday("Y-m-d_D")}</a></div>
             <hr />
             <div><a onClick={() => changeModal(openModalMainMenu)} style={{ fontSize: "20px" }}>main menu</a></div>
             <ul style={{ fontSize: "18px" }} className="orbiz__list--horizon" >

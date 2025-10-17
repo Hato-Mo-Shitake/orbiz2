@@ -1,6 +1,6 @@
+import { AM } from "src/app/AppManager";
 import { shitDate } from "src/assistance/utils/date";
 import { DailyNoteViewer } from "src/core/orb-system/services/viewers/DailyNoteViewer";
-import { ODM } from "src/orbiz/managers/OrbizDiaryManager";
 import { CreateLogNoteButton } from "../../common-orbiz/CreateLogNoteButton";
 import { CreateMyNoteButton } from "../../common-orbiz/CreateMyNoteButton";
 import { DateDisplay } from "../../common/DateDisplay";
@@ -22,13 +22,13 @@ export function DailyNoteTopSectionDefault({ viewer }: { viewer: DailyNoteViewer
             <CreateLogNoteButton label="log" />
         </div >
         <div className="orbiz__item--flex-middle" style={{ margin: "0.5rem 0" }} >
-            {ODM().getDailyTFile(yesterday) &&
+            {AM.diary.getDailyTFile(yesterday) &&
                 <span>
                     <DateDisplay date={yesterday} />
                     {"　<<"}
                 </span>
             }
-            {ODM().getDailyTFile(tomorrow) &&
+            {AM.diary.getDailyTFile(tomorrow) &&
                 <span>
                     {">>　"}
                     <DateDisplay date={tomorrow} />

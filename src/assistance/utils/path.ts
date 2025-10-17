@@ -1,6 +1,5 @@
+import { AM } from "src/app/AppManager";
 import { LogNoteType, MyNoteType } from "src/orbits/schema/frontmatters/NoteType";
-import { OAM } from "src/orbiz/managers/OrbizAppManager";
-import { ODM } from "src/orbiz/managers/OrbizDiaryManager";
 import { dateFormat, getCurrentYearMonth } from "./date";
 
 export function getBasenameFromPath(path: string): string {
@@ -10,18 +9,22 @@ export function getBasenameFromPath(path: string): string {
 }
 
 export function createMyNotePath(baseName: string, subType: MyNoteType): string {
-    return `${OAM().rootPath}/galaxies/${subType}/${getCurrentYearMonth()}/${baseName}.md`;
+    return `${AM.orbiz.rootPath}/galaxies/${subType}/${getCurrentYearMonth()}/${baseName}.md`;
+    // return `${OAM().rootPath}/galaxies/${subType}/${getCurrentYearMonth()}/${baseName}.md`;
 }
 
 export function createLogNotePath(baseName: string, subType: LogNoteType): string {
-    return `${OAM().rootPath}/logs/${subType}/${getCurrentYearMonth()}/${baseName}.md`;
+    return `${AM.orbiz.rootPath}/logs/${subType}/${getCurrentYearMonth()}/${baseName}.md`;
+    // return `${OAM().rootPath}/logs/${subType}/${getCurrentYearMonth()}/${baseName}.md`;
 }
 
 export function createDailyNotePath(date?: Date): string {
-    const y = date ? dateFormat(date, "Y") : ODM().getToday("Y");
-    const m = date ? dateFormat(date, "m") : ODM().getToday("m");
-    const ymd = date ? dateFormat(date, "Y-m-d") : ODM().getToday("Y-m-d");
-    return `${OAM().rootPath}/diaries/daily/${y}/${m}/${ymd}.md`;
+    const y = date ? dateFormat(date, "Y") : AM.diary.getToday("Y");
+    // const y = date ? dateFormat(date, "Y") : AM.diary.getToday("Y");
+    const m = date ? dateFormat(date, "m") : AM.diary.getToday("m");
+    const ymd = date ? dateFormat(date, "Y-m-d") : AM.diary.getToday("Y-m-d");
+    return `${AM.orbiz.rootPath}/diaries/daily/${y}/${m}/${ymd}.md`;
+    // return `${OAM().rootPath}/diaries/daily/${y}/${m}/${ymd}.md`;
 }
 
 export function getParentPath(path: string): string {

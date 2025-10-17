@@ -1,6 +1,6 @@
-import { OAM } from "src/orbiz/managers/OrbizAppManager";
-import { COMMAND_LIST_INI_EXAMPLE } from "../commands/example/ini-example";
-import { COMMAND_SELECT_TEST } from "../commands/test/test";
+import { COMMAND_LIST_INI_EXAMPLE } from "../../commands/example/ini-example";
+import { COMMAND_SELECT_TEST } from "../../commands/test/test";
+import { AM } from "../AppManager";
 
 export class CommandRegister {
     // private readonly commands: Command[] = [];
@@ -19,17 +19,18 @@ export class CommandRegister {
     // }
 
     register(): void {
-        const { myPlugin } = OAM();
+        // const { OrbizPlugin } = OAM();
+        const { plugin } = AM.orbiz;
 
         [
             COMMAND_SELECT_TEST,
             ...COMMAND_LIST_INI_EXAMPLE,
         ].forEach(command => {
-            myPlugin.addCommand(command);
+            plugin.addCommand(command);
         });
 
         // this.commands.forEach(command => {
-        //     myPlugin.addCommand(command);
+        //     OrbizPlugin.addCommand(command);
         // });
     }
 }

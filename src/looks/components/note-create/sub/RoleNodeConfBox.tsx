@@ -1,7 +1,7 @@
 import { useEffect } from "react";
+import { AM } from "src/app/AppManager";
 import { MyNote } from "src/core/domain/MyNote";
 import { RoleNodeConf } from "src/orbits/contracts/create-note";
-import { OSM } from "src/orbiz/managers/OrbizSettingManager";
 import { SelectBox } from "../../common/SelectBox";
 
 export function RoleNodeConfBox({
@@ -24,7 +24,8 @@ export function RoleNodeConfBox({
     useEffect(() => {
         const conf: Partial<RoleNodeConf> = {};
         conf.hub = roleHub;
-        conf.kind = OSM().roleKinds[0];
+        // conf.kind = AM.orbizSetting.roleKinds[0];
+        conf.kind = AM.orbizSetting.roleKinds[0];
         onChange(conf);
     }, [])
 
@@ -32,9 +33,9 @@ export function RoleNodeConfBox({
         <h6 style={{ marginBottom: "3px" }}>note name: role-kind@role-hub</h6>
         <div className="orbiz__item--flex-small">
             <SelectBox
-                value={OSM().roleKinds[0]}
+                value={AM.orbizSetting.roleKinds[0]}
                 onChange={handleRoleKind}
-                options={OSM().roleKinds}
+                options={AM.orbizSetting.roleKinds}
             />
             @
             <span>

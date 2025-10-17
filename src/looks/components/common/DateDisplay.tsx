@@ -1,5 +1,5 @@
+import { AM } from "src/app/AppManager";
 import { dateFormat } from "src/assistance/utils/date";
-import { ODM } from "src/orbiz/managers/OrbizDiaryManager";
 import { NoteLink } from "./NoteLink";
 
 export function DateDisplay({
@@ -12,7 +12,7 @@ export function DateDisplay({
 ) {
     if (!date) return <span></span>
 
-    const dailyNotePath = ODM().getDailyNotePath(date)!;
+    const dailyNotePath = AM.diary.getDailyNotePath(date)!;
 
     return (
         <span>

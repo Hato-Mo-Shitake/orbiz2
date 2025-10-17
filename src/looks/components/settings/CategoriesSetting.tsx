@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { OSM } from "src/orbiz/managers/OrbizSettingManager";
 import { EditableItemList } from "../common/EditableItemList";
 import { MainNav } from "../menu/navigate/MainNav";
 
@@ -9,10 +8,10 @@ export function CategoriesSetting({
     closeModal: () => void;
 }) {
 
-    const [categories, setCategories] = useState<string[]>(OSM().categories);
+    const [categories, setCategories] = useState<string[]>(AM.orbizSetting.categories);
     const handleClick = () => {
-        OSM().setCategories(categories);
-        OSM().save();
+        AM.orbizSetting.setCategories(categories);
+        AM.orbizSetting.save();
         alert("更新が完了しました。");
     }
     return (<>

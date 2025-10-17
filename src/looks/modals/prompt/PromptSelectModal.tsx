@@ -1,7 +1,7 @@
 import { Modal } from "obsidian";
 import { ReactNode } from "react";
 import { createRoot, Root } from "react-dom/client";
-import { OAM } from "src/orbiz/managers/OrbizAppManager";
+import { AM } from "src/app/AppManager";
 
 export class PromptSelectModal<T = string> extends Modal {
     static get<T = string>(title: string, list: { value: T, label: string }[]): Promise<T | null> {
@@ -18,7 +18,8 @@ export class PromptSelectModal<T = string> extends Modal {
         private readonly list: { value: T, label: string }[],
         private resolve: (selected: T | null) => void
     ) {
-        super(OAM().app);
+        // super(OAM().app);
+        super(AM.obsidian.app);
     }
 
     onOpen() {

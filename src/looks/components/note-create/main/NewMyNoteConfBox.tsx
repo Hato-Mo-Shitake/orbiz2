@@ -3,7 +3,6 @@ import { StdNote } from "src/core/domain/StdNote";
 import { isNewMyNoteConf, NewMyNoteConf, NewStdNoteConf } from "src/orbits/contracts/create-note";
 import { isMyNoteAspect, myNoteAspectList } from "src/orbits/schema/frontmatters/Aspect";
 import { isMyNoteType, myNoteTypeList } from "src/orbits/schema/frontmatters/NoteType";
-import { OSM } from "src/orbiz/managers/OrbizSettingManager";
 import { SelectableItemList } from "../../common/SelectableItemList";
 import { SelectBox } from "../../common/SelectBox";
 import { NewStdNoteConfBox } from "../sub/NewStdNoteConfBox";
@@ -123,7 +122,7 @@ export function NewMyNoteConfBox({
             <SelectableItemList
                 selectedList={categories}
                 onChange={setCategories}
-                selections={OSM().categories}
+                selections={AM.orbizSetting.categories}
             />
         }</div>
     </>);

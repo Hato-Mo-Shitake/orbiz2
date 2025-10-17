@@ -1,6 +1,5 @@
+import { AM } from "src/app/AppManager";
 import { generateChangeModal, openModalNoteSearchlight, openModalSettingsIndex } from "src/looks/modals/SimpleDisplayModal";
-import { ODM } from "src/orbiz/managers/OrbizDiaryManager";
-import { OVM } from "src/orbiz/managers/OrbizViewManager";
 import { DiaryNoteMenu } from "./diary/DiaryNoteMenu";
 import { LogNoteMenu } from "./log/LogNoteMenu";
 import { MyNoteMenu } from "./my/MyNoteMenu";
@@ -14,12 +13,12 @@ export function MainMenu({
 
     const handleOpenTodayNote = async () => {
         closeModal?.();
-        await OVM().openNote(ODM().todayNoteOrb.note, false);
+        await AM.looks.openNote(AM.diary.todayNoteOrb.note, false);
     }
 
     return (<>
         <div>
-            today: <a onClick={handleOpenTodayNote}>{ODM().getToday("Y-m-d_D")}</a>
+            today: <a onClick={handleOpenTodayNote}>{AM.diary.getToday("Y-m-d_D")}</a>
 
             <h2>Note Index</h2>
 

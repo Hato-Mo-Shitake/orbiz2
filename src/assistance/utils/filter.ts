@@ -4,10 +4,10 @@
 //         if (fmAttrValidator.internalLink(link)) return link;
 //         if (isVaultPath(link)) return `[[${link}]]`;
 //         if (!link.includes("/")) {
-//             const map = OCM().fileNameToIdMap;
+//             const map = AM.cache.fileNameToIdMap;
 //             const noteId = map.get(link);
 //             if (!noteId) return null;
-//             const source = OCM().getStdNoteSourceById(noteId);
+//             const source = AM.cache.getStdNoteSourceById(noteId);
 //             if (!source) return null;
 
 //             const parts = source.path.split("/");

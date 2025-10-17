@@ -1,5 +1,6 @@
 import { TFile } from "obsidian";
 import { ReactNode } from "react";
+import { AM } from "src/app/AppManager";
 import { arraysEqual } from "src/assistance/utils/array";
 import { FmAttrTagsEditor } from "src/looks/components/note-metadata-edit/base/FmAttrTagsEditor";
 import { FmAttrTemplateDoneEditor } from "src/looks/components/note-metadata-edit/daily/FmAttrTemplateDoneEditor";
@@ -12,8 +13,6 @@ import { FmAttrCategoriesDisplay } from "src/looks/components/note-metadata-view
 import { FmAttrList } from "src/orbits/contracts/fmAttr";
 import { FmKey } from "src/orbits/contracts/fmKey";
 import { BaseNoteState, DailyNoteState, MyNoteState } from "src/orbits/schema/NoteState";
-import { ORM } from "src/orbiz/managers/OrbizRepositoryManager";
-import { OSM } from "src/orbiz/managers/OrbizSettingManager";
 import { StoreApi } from "zustand";
 import { FmAttr } from "./FmAttr";
 
@@ -84,7 +83,7 @@ export abstract class FmAttrStringList<TAVal extends string = string> extends Fm
         if (this.value === this._newValue) return;
         if (arraysEqual(this.value, this._newValue)) return;
 
-        ORM().noteR.updateFmAttr(this.tFile, this.fmKey, this._newValue);
+        AM.repository.noteR.updateFmAttr(this.tFile, this.fmKey, this._newValue);
         this._value = this.newValue ? [...this.newValue] : [];
         this.afterCommit();
     }
@@ -226,14 +225,14 @@ export class FmAttrCategories extends FmAttrStringList {
     }
 
     filterAVal(aVal: string): string {
-        if (!OSM().categories.includes(aVal)) {
+        if (!AM.orbizSetting.categories.includes(aVal)) {
             return "";
         }
         return aVal;
     }
 
     validateAVal(aVal: string): boolean {
-        return OSM().categories.includes(aVal) || aVal == "";
+        return AM.orbizSetting.categories.includes(aVal) || aVal == "";
     }
 
     getView(options?: { header?: string, headerWidth?: number, isHorizon?: boolean }): ReactNode {
@@ -272,7 +271,7 @@ export class FmAttrCategories extends FmAttrStringList {
     // getEditBox(): ReactNode {
     //     return <FmAttrSelectableList
     //         fmEditor={this}
-    //         selections={OSM().categories}
+    //         selections={AM.orbizSetting.categories}
     //     />
     // }
 }
@@ -291,14 +290,14 @@ export class FmAttrTemplateDone extends FmAttrStringList {
     }
 
     filterAVal(aVal: string): string {
-        if (!OSM().templateDone.includes(aVal)) {
+        if (!AM.orbizSetting.templateDone.includes(aVal)) {
             return "";
         }
         return aVal;
     }
 
     validateAVal(aVal: string): boolean {
-        return OSM().templateDone.includes(aVal) || aVal == "";
+        return AM.orbizSetting.templateDone.includes(aVal) || aVal == "";
     }
 
     setStore(store: StoreApi<DailyNoteState>): void {

@@ -1,9 +1,9 @@
 import { useState } from "react"
 import { StdNote } from "src/core/domain/StdNote"
+import { UnexpectedError } from "src/errors/UnexpectedError"
 import { IndividualNames } from "src/looks/modals/prompt/PromptMyNoteNameForDuplicateModal"
 import { NewMyNoteConf } from "src/orbits/contracts/create-note"
 import { isMyFm } from "src/orbits/schema/frontmatters/fm"
-import { OEM } from "src/orbiz/managers/OrbizErrorManager"
 
 export function NewMyNoteNameInputForDuplicate({
     resolve,
@@ -23,7 +23,7 @@ export function NewMyNoteNameInputForDuplicate({
 
     const defaultNewNoteName = `${dupName}〈-${newNoteConf.subType}-〉`;
     const fm = alreadyNote.fmCache;
-    if (!isMyFm(fm)) OEM.throwUnexpectedError();
+    if (!isMyFm(fm)) throw new UnexpectedError();
     const defaultAlreadyNoteName = `${dupName}〈-${fm.subType}-〉`;
 
     const [newName, setNewName] = useState(defaultNewNoteName);

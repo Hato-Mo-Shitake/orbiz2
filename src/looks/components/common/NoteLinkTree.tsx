@@ -1,14 +1,15 @@
 import { ReactNode, useEffect, useState } from "react";
+import { AM } from "src/app/AppManager";
 import { getBasenameFromPath } from "src/assistance/utils/path";
 import { Note } from "src/orbits/contracts/note-orb";
 import { RecursiveTree } from "src/orbits/contracts/tree";
-import { OAM } from "src/orbiz/managers/OrbizAppManager";
 import { NoteLink } from "./NoteLink";
 
 export function NoteLinkTree({
     noteTree,
     openTree = false,
-    rootNotePath = OAM().rootPath,
+    // rootNotePath = OAM().rootPath,
+    rootNotePath = AM.orbiz.rootPath,
     cutSlug,
     filter,
 }: {
@@ -52,7 +53,8 @@ function NoteLinkTreeAble({
     noteTree,
     isOpen = false,
     createTree,
-    rootNotePath = OAM().rootPath,
+    // rootNotePath = OAM().rootPath,
+    rootNotePath = AM.orbiz.rootPath,
     cutSlug
 }: {
     noteTree: RecursiveTree<Note>,

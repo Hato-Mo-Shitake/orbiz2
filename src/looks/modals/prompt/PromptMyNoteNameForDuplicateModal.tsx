@@ -1,9 +1,9 @@
 import { Modal } from "obsidian";
 import { createRoot, Root } from "react-dom/client";
+import { AM } from "src/app/AppManager";
 import { StdNote } from "src/core/domain/StdNote";
 import { NewMyNoteNameInputForDuplicate } from "src/looks/components/note-create/main/NewMyNoteNameInputForDuplicate";
 import { NewMyNoteConf } from "src/orbits/contracts/create-note";
-import { OAM } from "src/orbiz/managers/OrbizAppManager";
 
 export type IndividualNames = {
     newNoteName: string,
@@ -24,7 +24,8 @@ export class PromptMyNoteNameForDuplicateModal extends Modal {
         private readonly newNoteConf: NewMyNoteConf,
         private readonly alreadyNote: StdNote
     ) {
-        super(OAM().app);
+        // super(OAM().app);
+        super(AM.obsidian.app);
     }
 
     onOpen() {

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
+import { AM } from "src/app/AppManager";
 import { StdNote } from "src/core/domain/StdNote";
-import { ONM } from "src/orbiz/managers/OrbizNoteManager";
 import { EditableItemList } from "./EditableItemList";
 
 export function StdNoteListPicker({
@@ -30,7 +30,7 @@ export function StdNoteListPicker({
     //     if (!noteName) return false;
     //     if (noteList.some(note => note.name == noteName)) return false;
 
-    //     const note = ONM().getStdNoteByName(noteName);
+    //     const note = AM.note.getStdNoteByName(noteName);
     //     if (!note) return false;
 
     //     onChange([note, ...noteList]);
@@ -49,7 +49,7 @@ export function StdNoteListPicker({
     const handleChange = (labels: string[]) => {
         // setNoteNameList(labels);
         onChange(
-            labels.map(name => ONM().getStdNoteByName(name)!)
+            labels.map(name => AM.note.getStdNoteByName(name)!)
         );
     }
 
@@ -62,7 +62,7 @@ export function StdNoteListPicker({
                 options={{
                     // onAdd: handleAdd,
                     // onDelete: handleDelete,
-                    inputSuggestions: ONM().allStdNoteNames,
+                    inputSuggestions: AM.note.allStdNoteNames,
                     inputPlaceholder: options?.placeholder
                 }}
             />

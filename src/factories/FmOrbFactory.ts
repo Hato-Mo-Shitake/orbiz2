@@ -1,11 +1,11 @@
 import { FrontMatterCache, TFile } from "obsidian";
+import { AM } from "src/app/AppManager";
 import { isLiteral } from "src/assistance/utils/validation";
 import { DailyFmOrb, LogFmOrb, MyFmOrb } from "src/core/orb-system/orbs/FmOrb";
 import { FmAttrIsClosed } from "src/core/orb-system/services/fm-attrs/FmAttrBoolean";
 import { FmAttrDue, FmAttrResolved, FmAttrTheDay } from "src/core/orb-system/services/fm-attrs/FmAttrDate";
 import { FmAttrRoleHub } from "src/core/orb-system/services/fm-attrs/FmAttrLinkedNote";
 import { FmAttrBelongsTo, FmAttrCreatedNotes, FmAttrModifiedNotes, FmAttrReferences, FmAttrRelatesTo, FmAttrResolvedNotes } from "src/core/orb-system/services/fm-attrs/FmAttrLinkedNoteList";
-
 import { FmAttrAmountSpent, FmAttrRank, FmAttrScore } from "src/core/orb-system/services/fm-attrs/FmAttrNumber";
 import { FmAttrAspect, FmAttrContext, FmAttrId, FmAttrRoleKind, FmAttrStatus, FmAttrSubType, FmAttrType } from "src/core/orb-system/services/fm-attrs/FmAttrString";
 import { FmAttrAliases, FmAttrCategories, FmAttrTags, FmAttrTemplateDone } from "src/core/orb-system/services/fm-attrs/FmAttrStringList";
@@ -13,7 +13,6 @@ import { isMyNoteAspect, MyNoteAspect } from "src/orbits/schema/frontmatters/Asp
 import { DailyFm, isDailyFm, isLogFm, isMyFm, LogFm, MyFm } from "src/orbits/schema/frontmatters/fm";
 import { isLogNoteType, isMyNoteType, LogNoteType, MyNoteType } from "src/orbits/schema/frontmatters/NoteType";
 import { isLogNoteStatus, LogNoteStatus } from "src/orbits/schema/frontmatters/Status";
-import { OAM } from "src/orbiz/managers/OrbizAppManager";
 
 export class FmOrbFactory {
     forMy(tFile: TFile, options?: { fm?: MyFm }): MyFmOrb | null {
@@ -21,7 +20,8 @@ export class FmOrbFactory {
         if (options?.fm) {
             fm = options.fm;
         } else {
-            const fmCache: FrontMatterCache | undefined = OAM().app.metadataCache.getFileCache(tFile)?.frontmatter;
+            const fmCache: FrontMatterCache | undefined = AM.obsidian.metadataCache.getFileCache(tFile)?.frontmatter;
+            // const fmCache: FrontMatterCache | undefined = OAM().app.metadataCache.getFileCache(tFile)?.frontmatter;
             if (!isMyFm(fmCache)) return null;
             fm = fmCache;
         }
@@ -63,7 +63,8 @@ export class FmOrbFactory {
         if (options?.fm) {
             fm = options.fm;
         } else {
-            const fmCache: FrontMatterCache | undefined = OAM().app.metadataCache.getFileCache(tFile)?.frontmatter;
+            const fmCache: FrontMatterCache | undefined = AM.obsidian.metadataCache.getFileCache(tFile)?.frontmatter;
+            // const fmCache: FrontMatterCache | undefined = OAM().app.metadataCache.getFileCache(tFile)?.frontmatter;
             if (!isLogFm(fmCache)) return null;
             fm = fmCache;
         }
@@ -101,7 +102,8 @@ export class FmOrbFactory {
         if (options?.fm) {
             fm = options.fm;
         } else {
-            const fmCache: FrontMatterCache | undefined = OAM().app.metadataCache.getFileCache(tFile)?.frontmatter;
+            const fmCache: FrontMatterCache | undefined = AM.obsidian.metadataCache.getFileCache(tFile)?.frontmatter;
+            // const fmCache: FrontMatterCache | undefined = OAM().app.metadataCache.getFileCache(tFile)?.frontmatter;
             if (!isDailyFm(fmCache)) return null;
             fm = fmCache;
         }

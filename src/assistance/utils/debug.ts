@@ -1,7 +1,7 @@
-import { OSM } from "src/orbiz/managers/OrbizSettingManager";
+import { AM } from "src/app/AppManager";
 
 export function debugConsole(...args: any[]): void {
-    if (OSM().spaceType === "test") {
+    if (AM.orbizSetting.spaceType === "test") {
         console.log(...args);
     }
 }

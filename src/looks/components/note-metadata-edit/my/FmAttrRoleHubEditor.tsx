@@ -1,7 +1,6 @@
 import { FmAttrRoleHub } from "src/core/orb-system/services/fm-attrs/FmAttrLinkedNote";
 import { useFmAttrEditable } from "src/looks/hooks/note-edit/useFmAttrEditable";
 import { MyNoteState } from "src/orbits/schema/NoteState";
-import { ONM } from "src/orbiz/managers/OrbizNoteManager";
 import { StoreApi, useStore } from "zustand";
 import { StdNotePicker } from "../../common/StdNotePicker";
 
@@ -16,7 +15,7 @@ export function FmAttrRoleHubEditor({
     const { newValue, setNewValue, handleCommit } = useFmAttrEditable(fmAttr);
 
     // const handleChange = (roleKind: string) => {
-    //     if (!OSM().roleKinds.includes(roleKind)) {
+    //     if (!AM.orbizSetting.roleKinds.includes(roleKind)) {
     //         alert("invalid value.");
     //         return;
     //     }
@@ -34,14 +33,14 @@ export function FmAttrRoleHubEditor({
                 onChange={setNewValue}
                 options={{
                     defaultNote: newValue || undefined,
-                    suggestions: ONM().allMyNoteNames
+                    suggestions: AM.note.allMyNoteNames
                 }}
             />
             {/* <div>current value: {roleKind}</div> */}
             {/* <SelectBox
                 value={newValue || ""}
                 onChange={handleChange}
-                options={OSM().roleKinds}
+                options={AM.orbizSetting.roleKinds}
             /> */}
         </div>
     </>)

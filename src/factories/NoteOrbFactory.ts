@@ -1,5 +1,6 @@
 
 import { TFile } from "obsidian";
+import { AM } from "src/app/AppManager";
 import { DailyNote, isDailyNote } from "src/core/domain/DailyNote";
 import { DiaryNote } from "src/core/domain/DiaryNote";
 import { isLogNote, LogNote } from "src/core/domain/LogNote";
@@ -10,7 +11,6 @@ import { DailyNoteOrb, DiaryNoteOrb, LogNoteOrb, MyNoteOrb, StdNoteOrb } from "s
 import { DailyFm, DiaryFm, isDailyFm, isLogFm, isMyFm, LogFm, MyFm, StdFm } from "src/orbits/schema/frontmatters/fm";
 import { StdNoteSource } from "src/orbits/schema/NoteSource";
 import { BaseNoteState, createDailyNoteState, createLogNoteState, createMyNoteState, DailyNoteState, DiaryNoteState, LogNoteState, MyNoteState, StdNoteState } from "src/orbits/schema/NoteState";
-import { OAM } from "src/orbiz/managers/OrbizAppManager";
 import { StoreApi } from "zustand";
 import { FmOrbFactory } from "./FmOrbFactory";
 import { NoteEditorFactory } from "./NoteEditorFactory";
@@ -44,7 +44,8 @@ export class NoteOrbFactory {
         if (!(src instanceof TFile)) return null;
         const tFile = src;
 
-        const fmCache = OAM().app.metadataCache.getFileCache(tFile)?.frontmatter;
+        // const fmCache = OAM().app.metadataCache.getFileCache(tFile)?.frontmatter;
+        const fmCache = AM.obsidian.metadataCache.getFileCache(tFile)?.frontmatter;
 
         if (isMyFm(fmCache)) {
             const note = this.noteF.forMy(fmCache);
@@ -69,7 +70,8 @@ export class NoteOrbFactory {
         if (!(src instanceof TFile)) return null;
         const tFile = src;
 
-        const fmCache = OAM().app.metadataCache.getFileCache(tFile)?.frontmatter;
+        // const fmCache = OAM().app.metadataCache.getFileCache(tFile)?.frontmatter;
+        const fmCache = AM.obsidian.metadataCache.getFileCache(tFile)?.frontmatter;
 
         if (isDailyFm(fmCache)) {
             const note = this.noteF.forDaily({ fmAndPath: { fm: fmCache, path: tFile.path } });

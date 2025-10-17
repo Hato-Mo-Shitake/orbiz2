@@ -1,7 +1,6 @@
 import { BaseNote } from "src/core/domain/Note";
 import { FmAttrEditor } from "src/orbits/contracts/fmAttr";
 import { BaseFm } from "src/orbits/schema/frontmatters/fm";
-import { ORM } from "src/orbiz/managers/OrbizRepositoryManager";
 import { BaseFmOrb } from "../../orbs/FmOrb";
 
 export abstract class BaseNoteEditor<TFm extends BaseFm = BaseFm> {
@@ -18,7 +17,7 @@ export abstract class BaseNoteEditor<TFm extends BaseFm = BaseFm> {
     }
 
     async rename(newName: string) {
-        ORM().noteR.renameTFile(this.note.tFile, newName);
+        AM.repository.noteR.renameTFile(this.note.tFile, newName);
     }
 
     async commitNewFm(): Promise<void> {

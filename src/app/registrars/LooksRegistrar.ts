@@ -1,18 +1,19 @@
 import { SampleSettingTab } from "src/looks/plugin-setting-tabs/SampleSettingTab";
-import { OAM } from "src/orbiz/managers/OrbizAppManager";
-import { OUM } from "src/orbiz/managers/OrbizUseCaseManager";
+import { AM } from "../AppManager";
 
 export class LooksRegistrar {
     register(): void {
-        const { app, myPlugin } = OAM();
+        const { app } = AM.obsidian;
+        const { plugin } = AM.orbiz;
+        // const { app, OrbizPlugin } = OAM();
 
-        myPlugin.addRibbonIcon('dice', 'Activate view', () => {
-            OUM().viewActivator.activateExampleView();
+        plugin.addRibbonIcon('dice', 'Activate view', () => {
+            AM.useCase.viewActivator.activateExampleView();
         });
 
-        const statusBarItemEl = myPlugin.addStatusBarItem();
+        const statusBarItemEl = plugin.addStatusBarItem();
         statusBarItemEl.setText('Status Bar Text!');
 
-        myPlugin.addSettingTab(new SampleSettingTab(app, myPlugin));
+        plugin.addSettingTab(new SampleSettingTab(app, plugin));
     }
 }

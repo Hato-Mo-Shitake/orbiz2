@@ -1,25 +1,24 @@
+import { AM } from "src/app/AppManager";
 import { extractNoteNameFromInternalLink } from "src/assistance/utils/link";
 import { getBasenameFromPath } from "src/assistance/utils/path";
 import { StdNote } from "src/core/domain/StdNote";
 import { StdFmOrb } from "src/core/orb-system/orbs/FmOrb";
+import { UnexpectedError } from "src/errors/UnexpectedError";
 import { LinkedNoteDirection } from "src/orbits/contracts/create-note";
 import { FmKey } from "src/orbits/contracts/fmKey";
 import { RecursiveTree } from "src/orbits/contracts/tree";
 import { StdFm } from "src/orbits/schema/frontmatters/fm";
-import { OCM } from "src/orbiz/managers/OrbizCacheManager";
-import { OEM } from "src/orbiz/managers/OrbizErrorManager";
-import { ONM } from "src/orbiz/managers/OrbizNoteManager";
 import { BaseNoteReader } from "./NoteReader";
 
 export abstract class StdNoteReader<TFm extends StdFm = StdFm> extends BaseNoteReader<TFm> {
     static getInLinkedNoteList(rootNote: StdNote, fmKey: FmKey<"stdLinkedNoteList">, inLinkIds: string[]): StdNote[] {
         const targetIds: string[] = [];
         inLinkIds.forEach(id => {
-            const source = OCM().getStdNoteSourceById(id);
+            const source = AM.cache.getStdNoteSourceById(id);
             if (!source) return;
 
-            const fm = ONM().getFmCacheByPath(source.path);
-            if (!fm) OEM.throwUnexpectedError();
+            const fm = AM.note.getFmCacheByPath(source.path);
+            if (!fm) throw new UnexpectedError();
 
             const iLinks = fm[fmKey];
 
@@ -31,12 +30,12 @@ export abstract class StdNoteReader<TFm extends StdFm = StdFm> extends BaseNoteR
             });
         });
 
-        return targetIds.map(id => ONM().getStdNote({ noteId: id })!);
+        return targetIds.map(id => AM.note.getStdNote({ noteId: id })!);
     }
     static getOutLinkedNoteList(rootNote: StdNote, fmKey: FmKey<"stdLinkedNoteList">, outLinkIds: string[]): StdNote[] {
         const targetIds: string[] = [];
         outLinkIds.forEach(id => {
-            const source = OCM().getStdNoteSourceById(id);
+            const source = AM.cache.getStdNoteSourceById(id);
             if (!source) return;
 
 
@@ -50,7 +49,7 @@ export abstract class StdNoteReader<TFm extends StdFm = StdFm> extends BaseNoteR
             }
         });
 
-        return targetIds.map(id => ONM().getStdNote({ noteId: id })!);
+        return targetIds.map(id => AM.note.getStdNote({ noteId: id })!);
     }
 
     static buildRecursiveStdNoteTree(
@@ -61,14 +60,14 @@ export abstract class StdNoteReader<TFm extends StdFm = StdFm> extends BaseNoteR
         const build = (id: string, chain: Set<string>): RecursiveTree<StdNote> => {
             if (chain.has(id)) {
                 console.warn(`循環参照を検出: ${id}`);
-                return { hub: ONM().getStdNote({ noteId: id })!, nodes: [] };
+                return { hub: AM.note.getStdNote({ noteId: id })!, nodes: [] };
             }
 
-            const source = OCM().getStdNoteSourceById(id);
-            if (!source) return { hub: ONM().getStdNote({ noteId: id })!, nodes: [] };
+            const source = AM.cache.getStdNoteSourceById(id);
+            if (!source) return { hub: AM.note.getStdNote({ noteId: id })!, nodes: [] };
 
-            const fm = ONM().getFmCacheByPath(source.path);
-            if (!fm) return { hub: ONM().getStdNote({ noteId: id })!, nodes: [] };
+            const fm = AM.note.getFmCacheByPath(source.path);
+            if (!fm) return { hub: AM.note.getStdNote({ noteId: id })!, nodes: [] };
 
             const nextChain = new Set(chain);
             nextChain.add(id);
@@ -80,17 +79,17 @@ export abstract class StdNoteReader<TFm extends StdFm = StdFm> extends BaseNoteR
                 if (Array.isArray(iLinks)) {
                     nextIds = iLinks.flatMap(link => {
                         const name = extractNoteNameFromInternalLink(link);
-                        return name ? (OCM().getStdNoteIdByName(name) ?? []) : [];
+                        return name ? (AM.cache.getStdNoteIdByName(name) ?? []) : [];
                     });
                 }
             } else {
                 const thisName = getBasenameFromPath(source.path);
 
                 nextIds = [...source.inLinkIds].flatMap(otherId => {
-                    const otherSource = OCM().getStdNoteSourceById(otherId);
+                    const otherSource = AM.cache.getStdNoteSourceById(otherId);
                     if (!otherSource) return [];
 
-                    const otherFm = ONM().getFmCacheByPath(otherSource.path);
+                    const otherFm = AM.note.getFmCacheByPath(otherSource.path);
                     if (!otherFm) return [];
 
                     const iLinks = otherFm[key];
@@ -106,7 +105,7 @@ export abstract class StdNoteReader<TFm extends StdFm = StdFm> extends BaseNoteR
             }
 
             const nodes = nextIds.map(nextId => build(nextId, nextChain));
-            return { hub: ONM().getStdNote({ noteId: id })!, nodes };
+            return { hub: AM.note.getStdNote({ noteId: id })!, nodes };
         };
 
         return build(rootNoteId, new Set());
@@ -143,7 +142,7 @@ export abstract class StdNoteReader<TFm extends StdFm = StdFm> extends BaseNoteR
             case ("relatesTo"):
                 return this.fmOrb[key].noteIds;
             default:
-                throw OEM.throwUnexpectedError();
+                throw new UnexpectedError();
         }
     }
 
@@ -155,13 +154,13 @@ export abstract class StdNoteReader<TFm extends StdFm = StdFm> extends BaseNoteR
     }
     // getInLinkIds(key: FmKey<"stdLinkedNoteList">): string[] {
     //     const results: string[] = [];
-    //     // const sources = OCM().noteSources;
+    //     // const sources = AM.cache.noteSources;
     //     const thisNoteName = this.note.baseName;
     //     this.note.source.inLinkIds.forEach(id => {
-    //         const source = OCM().getStdNoteSourceById(id);
+    //         const source = AM.cache.getStdNoteSourceById(id);
     //         if (!source) throw new Error("sourceがない: getInLinkIds()")
 
-    //         const fm = ONM().getFmCacheByPath(source.path);
+    //         const fm = AM.note.getFmCacheByPath(source.path);
     //         if (!fm) throw new Error("fm cacheがない: getInLinkIds()")
 
     //         const iLinks = fm[key];
@@ -204,10 +203,10 @@ export abstract class StdNoteReader<TFm extends StdFm = StdFm> extends BaseNoteR
     //             return { hub: id, nodes: [] };
     //         }
 
-    //         const source = OCM().getStdNoteSourceById(id);
+    //         const source = AM.cache.getStdNoteSourceById(id);
     //         if (!source) return { hub: id, nodes: [] };
 
-    //         const fm = ONM().getFmCacheByPath(source.path);
+    //         const fm = AM.note.getFmCacheByPath(source.path);
     //         if (!fm) return { hub: id, nodes: [] };
 
     //         const nextChain = new Set(chain);
@@ -220,17 +219,17 @@ export abstract class StdNoteReader<TFm extends StdFm = StdFm> extends BaseNoteR
     //             if (Array.isArray(iLinks)) {
     //                 nextIds = iLinks.flatMap(link => {
     //                     const name = extractNoteNameFromInternalLink(link);
-    //                     return name ? (OCM().getStdNoteIdByName(name) ?? []) : [];
+    //                     return name ? (AM.cache.getStdNoteIdByName(name) ?? []) : [];
     //                 });
     //             }
     //         } else {
     //             const thisName = getBasenameFromPath(source.path);
 
     //             nextIds = [...source.inLinkIds].flatMap(otherId => {
-    //                 const otherSource = OCM().getStdNoteSourceById(otherId);
+    //                 const otherSource = AM.cache.getStdNoteSourceById(otherId);
     //                 if (!otherSource) return [];
 
-    //                 const otherFm = ONM().getFmCacheByPath(otherSource.path);
+    //                 const otherFm = AM.note.getFmCacheByPath(otherSource.path);
     //                 if (!otherFm) return [];
 
     //                 const iLinks = otherFm[key];

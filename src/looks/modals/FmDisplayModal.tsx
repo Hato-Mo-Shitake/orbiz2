@@ -1,11 +1,12 @@
 import { App, Modal } from "obsidian";
 import { createRoot, Root } from "react-dom/client";
+import { AM } from "src/app/AppManager";
 import { NoteViewer } from "src/orbits/contracts/note-orb";
-import { OAM } from "src/orbiz/managers/OrbizAppManager";
 
 export class FmDisplayModal extends Modal {
     static openNew(viewer: NoteViewer) {
-        const { app } = OAM();
+        // const { app } = OAM();
+        const { app } = AM.obsidian;
         new FmDisplayModal(app, viewer).open();
     }
 

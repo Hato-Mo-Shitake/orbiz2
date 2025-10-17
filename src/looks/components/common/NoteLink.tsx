@@ -1,17 +1,19 @@
 import { ReactNode } from "react";
+import { AM } from "src/app/AppManager";
 import { getBasenameFromPath } from "src/assistance/utils/path";
-import { OAM } from "src/orbiz/managers/OrbizAppManager";
 
 export function NoteLink({
     linkText,
-    beginningPath = OAM().rootPath,
+    // beginningPath = OAM().rootPath,
+    beginningPath = AM.orbiz.rootPath,
     children
 }: {
     linkText: string,
     beginningPath?: string,
     children?: ReactNode | string
 }) {
-    const ws = OAM().app.workspace;
+    // const ws = OAM().app.workspace;
+    const ws = AM.obsidian.workspace;
     // const sourcePath = beginningPath || OAM().rootPath;
     const handleNoteLinkClick = (evt: React.MouseEvent, linkText: string) => {
         if (evt.metaKey) {

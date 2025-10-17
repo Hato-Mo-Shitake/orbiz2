@@ -1,5 +1,7 @@
 import { TFile } from "obsidian";
 import { ReactNode } from "react";
+import { AM } from "src/app/AppManager";
+import { UnexpectedError } from "src/errors/UnexpectedError";
 import { FmAttrContextEditor } from "src/looks/components/note-metadata-edit/log/FmAttrContextEditor";
 import { FmAttrStatusEditor } from "src/looks/components/note-metadata-edit/log/FmAttrStatusEditor";
 import { FmAttrAspectEditor } from "src/looks/components/note-metadata-edit/my/FmAttrAspectEditor";
@@ -16,8 +18,6 @@ import { MyNoteAspect } from "src/orbits/schema/frontmatters/Aspect";
 import { DiaryNoteType, LogNoteType, MyNoteType, NoteType } from "src/orbits/schema/frontmatters/NoteType";
 import { LogNoteStatus } from "src/orbits/schema/frontmatters/Status";
 import { LogNoteState, MyNoteState } from "src/orbits/schema/NoteState";
-import { OEM } from "src/orbiz/managers/OrbizErrorManager";
-import { OSM } from "src/orbiz/managers/OrbizSettingManager";
 import { StoreApi } from "zustand";
 import { FmAttrSimpleValue } from "./FmAttrSimpleValue";
 
@@ -63,7 +63,7 @@ export class FmAttrId extends FmAttrString {
     }
 
     setStore(store: StoreApi<any>): void {
-        OEM.throwUnexpectedError();
+        throw new UnexpectedError();
     }
     getView(options?: { header?: string, headerWidth?: number }): ReactNode {
         return (<>
@@ -95,7 +95,7 @@ export class FmAttrType<TType extends NoteType = NoteType> extends FmAttrString 
         )
     }
     setStore(store: StoreApi<any>): void {
-        OEM.throwUnexpectedError();
+        throw new UnexpectedError();
     }
     getView(options?: { header?: string, headerWidth?: number }): ReactNode {
         return (<>
@@ -126,7 +126,7 @@ export class FmAttrSubType<TSubType extends MyNoteType | LogNoteType | DiaryNote
         )
     }
     setStore(store: StoreApi<any>): void {
-        OEM.throwUnexpectedError();
+        throw new UnexpectedError();
     }
     getView(options?: { header?: string, headerWidth?: number }): ReactNode {
         return (<>
@@ -170,14 +170,14 @@ export class FmAttrRoleKind extends FmAttrString {
     }
 
     filter(value: string): string {
-        if (!OSM().roleKinds.includes(value)) {
+        if (!AM.orbizSetting.roleKinds.includes(value)) {
             return "";
         }
         return value;
     }
 
     validate(value: string): boolean {
-        return OSM().roleKinds.includes(value) || value == "";
+        return AM.orbizSetting.roleKinds.includes(value) || value == "";
     }
 
     getView(options?: { header?: string, headerWidth?: number }): ReactNode {
@@ -203,7 +203,7 @@ export class FmAttrRoleKind extends FmAttrString {
     // getEditBox(): ReactNode {
     //     return <FmAttrSelectBox
     //         fmEditor={this}
-    //         options={OSM().roleKinds}
+    //         options={AM.orbizSetting.roleKinds}
     //     />
     // }
 }

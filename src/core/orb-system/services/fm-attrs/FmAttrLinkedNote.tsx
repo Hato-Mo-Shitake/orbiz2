@@ -1,14 +1,14 @@
 import { TFile } from "obsidian";
 import { ReactNode } from "react";
+import { AM } from "src/app/AppManager";
 import { isMyNote, MyNote } from "src/core/domain/MyNote";
 import { StdNote } from "src/core/domain/StdNote";
+import { NotImplementedError } from "src/errors/NotImplementedError";
+import { UnexpectedError } from "src/errors/UnexpectedError";
 import { FmAttrRoleHubEditor } from "src/looks/components/note-metadata-edit/my/FmAttrRoleHubEditor";
 import { FmAttrRoleHubDisplay } from "src/looks/components/note-metadata-view/my/FmAttrRoleHubDisplay";
 import { FmKey } from "src/orbits/contracts/fmKey";
 import { MyNoteState } from "src/orbits/schema/NoteState";
-import { OEM } from "src/orbiz/managers/OrbizErrorManager";
-import { ONM } from "src/orbiz/managers/OrbizNoteManager";
-import { ORM } from "src/orbiz/managers/OrbizRepositoryManager";
 import { StoreApi } from "zustand";
 import { FmAttr } from "./FmAttr";
 
@@ -29,17 +29,17 @@ export abstract class FmAttrLinkedNote<TNote extends StdNote = StdNote> extends 
         if (!rawFmValue) {
             note = null;
         } else if (_rawFmValueType === "internalLink") {
-            note = ONM().getStdNote({ internalLink: rawFmValue });
+            note = AM.note.getStdNote({ internalLink: rawFmValue });
             if (!isNote(note)) {
-                OEM.throwUnexpectedError();
+                throw new UnexpectedError();
             }
         } else if (_rawFmValueType === "noteId") {
-            note = ONM().getStdNote({ noteId: rawFmValue });
+            note = AM.note.getStdNote({ noteId: rawFmValue });
             if (!isNote(note)) {
-                OEM.throwUnexpectedError();
+                throw new UnexpectedError();
             }
         } else {
-            OEM.throwUnexpectedError();
+            throw new UnexpectedError();
         }
 
 
@@ -74,11 +74,12 @@ export abstract class FmAttrLinkedNote<TNote extends StdNote = StdNote> extends 
         if (this._value?.id === this._newValue.id) return;
 
         if (this._rawFmValueType === "internalLink") {
-            await ORM().noteR.updateFmAttr(this.tFile, this.fmKey, this._newValue.internalLink);
+            await AM.repository.noteR.updateFmAttr(this.tFile, this.fmKey, this._newValue.internalLink);
         } else if (this._rawFmValueType === "noteId") {
-            await ORM().noteR.updateFmAttr(this.tFile, this.fmKey, this._newValue.id);
+            await AM.repository.noteR.updateFmAttr(this.tFile, this.fmKey, this._newValue.id);
         } else {
-            OEM.throwNotImplementedError();
+            throw new NotImplementedError();
+            // OEM.throwNotImplementedError();
         }
 
         this.afterCommit();

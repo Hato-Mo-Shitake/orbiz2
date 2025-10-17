@@ -1,6 +1,5 @@
 
 import { MyNote } from "src/core/domain/MyNote";
-import { OUM } from "src/orbiz/managers/OrbizUseCaseManager";
 
 export function CreateRoleNodeButton({
     rootNote,
@@ -10,7 +9,7 @@ export function CreateRoleNodeButton({
     label?: string,
 }) {
     const handleOpenFmEdit = () => {
-        OUM().prompt.createRoleNode(rootNote);
+        AM.useCase.prompt.createRoleNode(rootNote);
     }
     return (
         <button
