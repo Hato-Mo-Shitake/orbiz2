@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { AM } from "src/app/AppManager";
 import { trimFull } from "src/assistance/utils/filter";
 import { StdNote } from "src/core/domain/StdNote";
 import { AutoSuggestInput } from "./AutoSuggestInput";

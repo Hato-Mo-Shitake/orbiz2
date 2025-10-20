@@ -16,10 +16,7 @@ const handleUpdateNoteOrbCaches: EventHandlerForWorkspace<"layoutChange"> = asyn
 }
 const handleSetNoteTopSection: EventHandlerForWorkspace<"fileOpen"> = (tFile) => {
     if (!tFile) return;
-
-    // const leaves = OAM().app.workspace.getLeavesOfType("markdown");
     const leaves = AM.obsidian.workspace.getLeavesOfType("markdown");
-
 
     leaves.forEach(leaf => {
         if (!(leaf.view instanceof MarkdownView)) return;
@@ -36,7 +33,6 @@ const handleWatchUserEdit: EventHandlerForWorkspace<"editorChange"> = (editor, i
         if (!tFile) return;
         const noteId = AM.note.getNoteIdByTFile(tFile);
         if (!noteId) return;
-        // AM.eventWatch.userEditWatcher.userEdit(noteId, editor, info);
         AM.eventWatch.userEditWatcher.userEdit(noteId, editor, info);
     }
 }

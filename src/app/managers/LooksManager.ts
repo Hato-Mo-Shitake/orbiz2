@@ -36,7 +36,6 @@ export class LooksManager {
     }
 
     mountOrUpdateNoteTopSection(mdView: MarkdownView) {
-
         const metadataContainer = mdView.containerEl.querySelector(".metadata-container");
         if (!(metadataContainer instanceof HTMLElement)) return;
         const tFile = mdView.file;
@@ -48,7 +47,6 @@ export class LooksManager {
         if (!orb) return;
 
         // 履歴管理。
-        // ONhistoryM().setNoteHistory(orb.note.id);
         AM.noteHistory.setNoteHistory(orb.note.id);
 
         const entry = this.containerRootMap.get(metadataContainer);

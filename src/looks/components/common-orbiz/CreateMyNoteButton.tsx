@@ -1,4 +1,5 @@
 
+import { AM } from "src/app/AppManager";
 import { isMyNote } from "src/core/domain/MyNote";
 import { StdNote } from "src/core/domain/StdNote";
 import { CreateRoleNodeButton } from "./CreateRoleNodeButton";

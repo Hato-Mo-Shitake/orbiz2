@@ -1,4 +1,5 @@
 import { ReactNode, useState } from "react";
+import { AM } from "src/app/AppManager";
 import { StdNote } from "src/core/domain/StdNote";
 import { isNewMyNoteConf, NewMyNoteConf, NewStdNoteConf } from "src/orbits/contracts/create-note";
 import { isMyNoteAspect, myNoteAspectList } from "src/orbits/schema/frontmatters/Aspect";

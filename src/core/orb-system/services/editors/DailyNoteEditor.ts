@@ -1,3 +1,4 @@
+import { AM } from "src/app/AppManager";
 import { DailyNote } from "src/core/domain/DailyNote";
 import { StdNote } from "src/core/domain/StdNote";
 import { DailyFm } from "src/orbits/schema/frontmatters/fm";

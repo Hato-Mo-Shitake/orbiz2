@@ -18,16 +18,12 @@ const handleUpdateCacheWhenPathChanged: EventHandlerForVault<"rename"> = async (
 const handlePromptAdaptToNewTFileToNote: EventHandlerForVault<"create"> = async (file) => {
     if (file instanceof TFile) {
         if (!file.path.startsWith("tmp/")) return;
-        // const rootNote = AM.note.getStdNote({ noteId: ONhistoryM().latestId! })!;
         const rootNote = AM.note.getStdNote({ noteId: AM.noteHistory.latestId! })!;
-        // await AM.useCase.prompt.adaptTFileToNote(file, rootNote);
         await AM.useCase.prompt.adaptTFileToNote(file, rootNote);
 
-        // const mdView = OAM().app.workspace.getActiveViewOfType(MarkdownView);
         const mdView = AM.obsidian.workspace.getActiveViewOfType(MarkdownView);
 
         if (mdView instanceof MarkdownView) {
-            // AM.looks.mountOrUpdateNoteTopSection(mdView);
             AM.looks.mountOrUpdateNoteTopSection(mdView);
         }
     }
@@ -35,7 +31,6 @@ const handlePromptAdaptToNewTFileToNote: EventHandlerForVault<"create"> = async 
 const handleRecordTodayNoteIds: EventHandlerForVault<"modify"> = (file) => {
     if (file instanceof TFile) {
 
-        // if (!OAM().isVaultPath(file.path)) return;
         if (!AM.orbiz.isVaultPath(file.path)) return;
 
         const id = AM.note.getNoteIdByTFile(file);

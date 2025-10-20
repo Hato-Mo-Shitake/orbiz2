@@ -50,20 +50,14 @@ export class TFileManager {
     }
     getAllMyTFilesForSubType(subType: MyNoteType): TFile[] {
         const folderPath = `${AM.orbiz.rootPath}/galaxies/${subType}`;
-        // const folderPath = `${OAM().rootPath}/galaxies/${subType}`;
         const folder = this.app.vault.getFolderByPath(folderPath);
-        // const folder = OAM().app.vault.getFolderByPath(folderPath);
-        if (!folder) throw new UnexpectedError();
-        // throw new UnexpectedError();
+        if (!folder) return [];
         return getAllTFilesInFolder(folder);
     }
     get allLogTFiles(): TFile[] {
         const folderPath = `${AM.orbiz.rootPath}/logs`;
-        //  const folderPath = `${OAM().rootPath}/logs`;
         const folder = AM.obsidian.vault.getFolderByPath(folderPath);
-        // const folder = OAM().app.vault.getFolderByPath(folderPath);
-        if (!folder) throw new UnexpectedError();
-        // throw new UnexpectedError();
+        if (!folder) return [];
         return getAllTFilesInFolder(folder);
     }
     getAllLogTFilesForSubType(subType: LogNoteType): TFile[] {

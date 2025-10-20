@@ -50,7 +50,7 @@ export class PromptNewMyNoteConfModal extends Modal {
                     resolve={resolve}
                     options={{
                         baseName: this._baseName || undefined,
-                        rootNote: this._rootNote || AM.note.activeStdNote || undefined,
+                        rootNote: this._rootNote || undefined,
                     }}
                 />
             </StrictMode>

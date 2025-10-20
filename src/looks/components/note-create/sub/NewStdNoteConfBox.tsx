@@ -29,7 +29,7 @@ export function NewStdNoteConfBox({
         key: "belongsTo",
     });
 
-    const [_hasLinkedNote, _setHasLinkedNote] = useState<boolean>(true);
+    const [_hasLinkedNote, _setHasLinkedNote] = useState<boolean>(Boolean(options?.rootNote));
 
     const _handleHasLink = (checked: boolean) => {
         _setHasLinkedNote(checked);

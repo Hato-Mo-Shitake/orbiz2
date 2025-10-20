@@ -6,10 +6,12 @@ import { BaseFm } from "src/orbits/schema/frontmatters/fm";
 
 export abstract class BaseNote<TFm extends BaseFm = BaseFm> {
     readonly id: string;
+    protected readonly _initialFm: FrontMatterCache;
     constructor(
         fm: TFm,
     ) {
         this.id = fm["id"];
+        this._initialFm = fm;
     }
 
     abstract get path(): string;
@@ -58,7 +60,7 @@ export abstract class BaseNote<TFm extends BaseFm = BaseFm> {
     // なるべく最新の状態を返すために、fmは自身に持たないようにする。
     get fmCache(): FrontMatterCache {
         const fmCache = this.metadata.frontmatter;
-        if (!fmCache) throw new UnexpectedError();
+        if (!fmCache) return this._initialFm;
         return fmCache;
     }
 

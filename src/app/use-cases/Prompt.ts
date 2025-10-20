@@ -103,15 +103,7 @@ export class Prompt {
 
         const orb = await AM.useCase.noteCreator.createMyNote(conf, { tFile: options?.tFile });
         if (!options?.newLeaf || Platform.isMobileApp) {
-
-
             await AM.looks.openNote(orb.note);
-
-            // うまく切り替わらないな
-            // これさ、キャッシュ更新時の更新にdelayがかかっているせいで、直前のtopSectionが反映されれたりしない？
-            // いやでも,topsectionの書き換えは,fileopenでしか管理してないはずだけどな。
-            // const mdView = OAM().app.workspace.getActiveViewOfType(MarkdownView);
-            // if (mdView) AM.looks.mountOrUpdateNoteTopSection(mdView);
         } else {
             await AM.looks.openNote(orb.note, options?.newLeaf || "split");
         }
