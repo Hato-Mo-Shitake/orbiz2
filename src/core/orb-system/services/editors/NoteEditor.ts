@@ -1,3 +1,4 @@
+import { AM } from "src/app/AppManager";
 import { BaseNote } from "src/core/domain/Note";
 import { FmAttrEditor } from "src/orbits/contracts/fmAttr";
 import { BaseFm } from "src/orbits/schema/frontmatters/fm";

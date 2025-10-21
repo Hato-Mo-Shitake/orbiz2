@@ -194,6 +194,7 @@ export class NoteCreator {
         if (direction === "out") {
             newNoteOrb.editor.addLinkedNote(rootNoteOrb.note, conf.key);
         } else if (direction === "in") {
+            // ここで上書きになってます？ なってないわ。。？？？？？ 謎すぎる。
             rootNoteOrb.editor.addLinkedNote(newNoteOrb.note, conf.key);
             await rootNoteOrb.editor.commitNewFm();
         } else {

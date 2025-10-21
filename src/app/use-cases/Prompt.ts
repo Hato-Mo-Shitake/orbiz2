@@ -58,7 +58,7 @@ export class Prompt {
             = [
                 { value: ["out", "belongsTo"], label: "patent" },
                 { value: ["in", "belongsTo"], label: "child" },
-                { value: ["out", "relatesTo"], label: "relative parent" },
+                { value: ["out", "relatesTo"], label: "relative elder" },
                 { value: ["in", "relatesTo"], label: "relative child" },
                 { value: ["out", "references"], label: "reference" },
                 { value: ["in", "references"], label: "referenced" },
@@ -70,7 +70,6 @@ export class Prompt {
         );
 
         if (!selected) {
-            // alert("value is null");
             return false;
         }
         const [d, key] = selected;

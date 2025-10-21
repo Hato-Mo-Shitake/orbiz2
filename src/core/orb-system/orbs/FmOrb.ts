@@ -1,9 +1,9 @@
 import { FmAttrIsClosed } from "src/core/orb-system/services/fm-attrs/FmAttrBoolean";
 import { FmAttrDue, FmAttrResolved, FmAttrTheDay } from "src/core/orb-system/services/fm-attrs/FmAttrDate";
 import { FmAttrAmountSpent, FmAttrRank, FmAttrScore } from "src/core/orb-system/services/fm-attrs/FmAttrNumber";
-import { FmAttrAspect, FmAttrContext, FmAttrId, FmAttrRoleKind, FmAttrStatus, FmAttrSubType, FmAttrType } from "src/core/orb-system/services/fm-attrs/FmAttrString";
+import { FmAttrAspect, FmAttrContext, FmAttrDiaryNoteType, FmAttrId, FmAttrLogNoteType, FmAttrMyNoteType, FmAttrRoleKind, FmAttrStatus, FmAttrType } from "src/core/orb-system/services/fm-attrs/FmAttrString";
 import { FmAttrAliases, FmAttrCategories, FmAttrTags, FmAttrTemplateDone } from "src/core/orb-system/services/fm-attrs/FmAttrStringList";
-import { DiaryNoteType, LogNoteType, MyNoteType, StdNoteType } from "../../../orbits/schema/frontmatters/NoteType";
+import { StdNoteType } from "../../../orbits/schema/frontmatters/NoteType";
 import { FmAttr } from "../services/fm-attrs/FmAttr";
 import { FmAttrRoleHub } from "../services/fm-attrs/FmAttrLinkedNote";
 import { FmAttrBelongsTo, FmAttrCreatedNotes, FmAttrModifiedNotes, FmAttrReferences, FmAttrRelatesTo, FmAttrResolvedNotes } from "../services/fm-attrs/FmAttrLinkedNoteList";
@@ -26,7 +26,7 @@ export abstract class StdFmOrb extends BaseFmOrb {
         type: FmAttrType<StdNoteType>,
         id: FmAttrId,
         tags: FmAttrTags,
-        public readonly subType: FmAttrSubType,
+        public readonly subType: FmAttrMyNoteType | FmAttrLogNoteType,
         public readonly belongsTo: FmAttrBelongsTo,
         public readonly relatesTo: FmAttrRelatesTo,
         public readonly references: FmAttrReferences
@@ -44,7 +44,8 @@ export class MyFmOrb extends StdFmOrb {
         type: FmAttrType<"myNote">,
         id: FmAttrId,
         tags: FmAttrTags,
-        subType: FmAttrSubType<MyNoteType>,
+        // subType: FmAttrSubType<MyNoteType>,
+        public readonly subType: FmAttrMyNoteType,
         belongsTo: FmAttrBelongsTo,
         relatesTo: FmAttrRelatesTo,
         references: FmAttrReferences,
@@ -72,7 +73,7 @@ export class LogFmOrb extends StdFmOrb {
         type: FmAttrType<"logNote">,
         id: FmAttrId,
         tags: FmAttrTags,
-        subType: FmAttrSubType<LogNoteType>,
+        public readonly subType: FmAttrLogNoteType,
         belongsTo: FmAttrBelongsTo,
         relatesTo: FmAttrRelatesTo,
         references: FmAttrReferences,
@@ -98,7 +99,7 @@ export abstract class DiaryFmOrb extends BaseFmOrb {
         type: FmAttrType<StdNoteType>,
         id: FmAttrId,
         tags: FmAttrTags,
-        public readonly subType: FmAttrSubType<DiaryNoteType>,
+        public readonly subType: FmAttrDiaryNoteType,
         public readonly score: FmAttrScore,
         public readonly isClosed: FmAttrIsClosed,
     ) {
@@ -115,7 +116,8 @@ export class DailyFmOrb extends DiaryFmOrb {
         type: FmAttrType<StdNoteType>,
         id: FmAttrId,
         tags: FmAttrTags,
-        subType: FmAttrSubType<"daily">,
+        // subType: FmAttrSubType<"daily">,
+        readonly subType: FmAttrDiaryNoteType<"daily">,
         score: FmAttrScore,
         isClosed: FmAttrIsClosed,
         readonly theDay: FmAttrTheDay,

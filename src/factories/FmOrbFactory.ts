@@ -7,11 +7,11 @@ import { FmAttrDue, FmAttrResolved, FmAttrTheDay } from "src/core/orb-system/ser
 import { FmAttrRoleHub } from "src/core/orb-system/services/fm-attrs/FmAttrLinkedNote";
 import { FmAttrBelongsTo, FmAttrCreatedNotes, FmAttrModifiedNotes, FmAttrReferences, FmAttrRelatesTo, FmAttrResolvedNotes } from "src/core/orb-system/services/fm-attrs/FmAttrLinkedNoteList";
 import { FmAttrAmountSpent, FmAttrRank, FmAttrScore } from "src/core/orb-system/services/fm-attrs/FmAttrNumber";
-import { FmAttrAspect, FmAttrContext, FmAttrId, FmAttrRoleKind, FmAttrStatus, FmAttrSubType, FmAttrType } from "src/core/orb-system/services/fm-attrs/FmAttrString";
+import { FmAttrAspect, FmAttrContext, FmAttrDiaryNoteType, FmAttrId, FmAttrLogNoteType, FmAttrMyNoteType, FmAttrRoleKind, FmAttrStatus, FmAttrType } from "src/core/orb-system/services/fm-attrs/FmAttrString";
 import { FmAttrAliases, FmAttrCategories, FmAttrTags, FmAttrTemplateDone } from "src/core/orb-system/services/fm-attrs/FmAttrStringList";
 import { isMyNoteAspect, MyNoteAspect } from "src/orbits/schema/frontmatters/Aspect";
 import { DailyFm, isDailyFm, isLogFm, isMyFm, LogFm, MyFm } from "src/orbits/schema/frontmatters/fm";
-import { isLogNoteType, isMyNoteType, LogNoteType, MyNoteType } from "src/orbits/schema/frontmatters/NoteType";
+import { isLogNoteType, isMyNoteType } from "src/orbits/schema/frontmatters/NoteType";
 import { isLogNoteStatus, LogNoteStatus } from "src/orbits/schema/frontmatters/Status";
 
 export class FmOrbFactory {
@@ -43,7 +43,8 @@ export class FmOrbFactory {
             new FmAttrType<"myNote">(tFile, type),
             new FmAttrId(tFile, fm["id"]),
             new FmAttrTags(tFile, fm["tags"]),
-            new FmAttrSubType<MyNoteType>(tFile, subType),
+            // new FmAttrSubType<MyNoteType>(tFile, subType),
+            new FmAttrMyNoteType(tFile, subType),
             new FmAttrBelongsTo(tFile, fm["belongsTo"]),
             new FmAttrRelatesTo(tFile, fm["relatesTo"]),
             new FmAttrReferences(tFile, fm["references"]),
@@ -64,7 +65,6 @@ export class FmOrbFactory {
             fm = options.fm;
         } else {
             const fmCache: FrontMatterCache | undefined = AM.obsidian.metadataCache.getFileCache(tFile)?.frontmatter;
-            // const fmCache: FrontMatterCache | undefined = OAM().app.metadataCache.getFileCache(tFile)?.frontmatter;
             if (!isLogFm(fmCache)) return null;
             fm = fmCache;
         }
@@ -86,7 +86,8 @@ export class FmOrbFactory {
             new FmAttrType<"logNote">(tFile, type),
             new FmAttrId(tFile, fm["id"]),
             new FmAttrTags(tFile, fm["tags"]),
-            new FmAttrSubType<LogNoteType>(tFile, subType),
+            // new FmAttrSubType<LogNoteType>(tFile, subType),
+            new FmAttrLogNoteType(tFile, subType),
             new FmAttrBelongsTo(tFile, fm["belongsTo"]),
             new FmAttrRelatesTo(tFile, fm["relatesTo"]),
             new FmAttrReferences(tFile, fm["references"]),
@@ -118,7 +119,8 @@ export class FmOrbFactory {
             new FmAttrType<"diaryNote">(tFile, type),
             new FmAttrId(tFile, fm["id"]),
             new FmAttrTags(tFile, fm["tags"]),
-            new FmAttrSubType<"daily">(tFile, subType),
+            // new FmAttrSubType<"daily">(tFile, subType),
+            new FmAttrDiaryNoteType<"daily">(tFile, subType),
             new FmAttrScore(tFile, fm["score"]),
             new FmAttrIsClosed(tFile, fm["isClosed"]),
             new FmAttrTheDay(tFile, fm["theDay"]),

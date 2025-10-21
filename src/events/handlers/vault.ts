@@ -17,7 +17,7 @@ const handleUpdateCacheWhenPathChanged: EventHandlerForVault<"rename"> = async (
 }
 const handlePromptAdaptToNewTFileToNote: EventHandlerForVault<"create"> = async (file) => {
     if (file instanceof TFile) {
-        if (!file.path.startsWith("tmp/")) return;
+        if (!file.path.startsWith("____/new-files")) return;
         const rootNote = AM.note.getStdNote({ noteId: AM.noteHistory.latestId! })!;
         await AM.useCase.prompt.adaptTFileToNote(file, rootNote);
 

@@ -44,6 +44,9 @@ export abstract class FmAttr<TValue = any, TNoteState extends BaseNoteState = Ba
     abstract setStore(store: StoreApi<TNoteState>): void;
     abstract getView(options?: any): ReactNode;
     abstract getEditableView(): ReactNode;
+    getForcedEditableView(): ReactNode {
+        return null;
+    }
 
     abstract validate(value: TValue): boolean;
     abstract filter(value: TValue): TValue | null;
@@ -71,6 +74,21 @@ export abstract class FmAttr<TValue = any, TNoteState extends BaseNoteState = Ba
 
         await AM.repository.noteR.updateFmAttr(this.tFile, this.fmKey, filteredValue);
         this._value = structuredClone(this._newValue) || null;
+        this.afterCommit();
+    }
+
+    async forcedUpdate(value: TValue) {
+        const filteredValue = this.filter(value);
+        if (filteredValue === null) {
+            throw new Error(`validation error in commit. fmKey: ${this.fmKey}`);
+        }
+        if (this._value == filteredValue) return;
+        if (!this.validate(filteredValue)) {
+            throw new Error(`validation error in commit. fmKey: ${this.fmKey}`);
+        }
+        await AM.repository.noteR.updateFmAttr(this.tFile, this.fmKey, filteredValue);
+        this._value = structuredClone(filteredValue) || null;
+        this._newValue = filteredValue; // TODO: うーーーーん。とりあえず。store更新の都合でこう、、、、
         this.afterCommit();
     }
 

@@ -3,6 +3,7 @@ import { StdNote } from "src/core/domain/StdNote";
 import { createStore, StoreApi } from "zustand";
 import { Note } from "../contracts/note-orb";
 import { MyNoteAspect } from "./frontmatters/Aspect";
+import { DiaryNoteType, LogNoteType, MyNoteType } from "./frontmatters/NoteType";
 import { LogNoteStatus } from "./frontmatters/Status";
 
 // ---- state の型定義 ----
@@ -28,6 +29,8 @@ export interface StdNoteState extends BaseNoteState {
     setOutLinkIds: (outLinkIds: string[]) => void,
 }
 export interface MyNoteState extends StdNoteState {
+    fmAttrMyNoteType: MyNoteType | null,
+    setFmAttrMyNoteType: (subType: MyNoteType) => void,
     fmAttrRank: number | null,
     setFmAttrRank: (rank: number) => void,
     fmAttrCategories: string[],
@@ -42,6 +45,8 @@ export interface MyNoteState extends StdNoteState {
     setFmAttrRoleHub: (hub: MyNote) => void;
 }
 export interface LogNoteState extends StdNoteState {
+    fmAttrLogNoteType: LogNoteType | null,
+    setFmAttrLogNoteType: (subType: LogNoteType) => void,
     fmAttrStatus: LogNoteStatus | null,
     setFmAttrStatus: (status: LogNoteStatus) => void,
     fmAttrDue: Date | null,
@@ -53,6 +58,8 @@ export interface LogNoteState extends StdNoteState {
 }
 
 export interface DiaryNoteState extends BaseNoteState {
+    fmAttrDiaryNoteType: DiaryNoteType | null,
+    setFmAttrDiaryNoteType: (subType: DiaryNoteType) => void,
     fmAttrIsClosed: boolean | null,
     setFmAttrIsClosed: (isClosed: boolean) => void,
     fmAttrScore: number | null,
@@ -110,12 +117,12 @@ function buildStdNoteState<T extends StdNoteState>(
 }
 
 function buildMyNoteState<T extends MyNoteState>(
-    // fmOrb: MyFmOrb,
-    // inLinkIds: string[],
     set: StoreApi<T>["setState"]
 ): MyNoteState {
     return {
         ...buildStdNoteState(set),
+        fmAttrMyNoteType: null,
+        setFmAttrMyNoteType: (subType: MyNoteType) => set({ fmAttrMyNoteType: subType } as Partial<T>),
         fmAttrRank: null,
         setFmAttrRank: (rank: number) => set({ fmAttrRank: rank } as Partial<T>),
         fmAttrCategories: [],
@@ -138,6 +145,8 @@ function buildLogNoteState<T extends LogNoteState>(
 ): LogNoteState {
     return {
         ...buildStdNoteState(set),
+        fmAttrLogNoteType: null,
+        setFmAttrLogNoteType: (subType: LogNoteType) => set({ fmAttrLogNoteType: subType } as Partial<T>),
         fmAttrStatus: null,
         setFmAttrStatus: (status: LogNoteStatus) => set({ fmAttrStatus: status } as Partial<T>),
         fmAttrDue: null,
@@ -155,6 +164,8 @@ function buildDiaryNoteState<T extends DiaryNoteState>(
 ): DiaryNoteState {
     return {
         ...buildBaseNoteState(set),
+        fmAttrDiaryNoteType: null,
+        setFmAttrDiaryNoteType: (subType: DiaryNoteType) => set({ fmAttrDiaryNoteType: subType } as Partial<T>),
         fmAttrIsClosed: null,
         setFmAttrIsClosed: (isClosed: boolean) => set({ fmAttrIsClosed: isClosed } as Partial<T>),
         fmAttrScore: null,

@@ -25,6 +25,7 @@ export interface FmAttrEditor<TValue = any> extends FmAttrReader<TValue>, Observ
     newValue: TValue | undefined,
     setNewValue(newValue: TValue): this;
     commitNewValue(): Promise<void>;
+    forcedUpdate(value: TValue): Promise<void>;
 }
 export function isFmAttrEditor(editor: unknown): editor is FmAttrEditor<any> {
     return (
@@ -42,6 +43,7 @@ export interface FmAttrViewer<TValue = any> extends FmAttrReader<TValue>, Observ
     // getEditBox(): ReactNode;
     getView(options?: any): ReactNode;
     getEditableView(): ReactNode;
+    getForcedEditableView?(): ReactNode;
 }
 export function isFmAttrViewer(viewer: unknown): viewer is FmAttrViewer {
     return (

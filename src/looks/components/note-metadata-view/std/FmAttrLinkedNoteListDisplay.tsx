@@ -24,23 +24,5 @@ export function FmAttrLinkedNoteListDisplay({
                 notes={lnList}
             />
         </SimpleViewBox>
-
-        {/* <div style={{ margin: "0.5em" }}>
-            {header &&
-                <div
-                    className="orbiz__font--bold"
-                    style={{ width: "5rem" }}
-                >
-                    {header}:
-                </div>
-            }
-            <div
-                style={{ paddingLeft: "6rem" }}
-            >
-                <NoteLinkList
-                    notes={lnList}
-                />
-            </div>
-        </div > */}
     </>)
 }

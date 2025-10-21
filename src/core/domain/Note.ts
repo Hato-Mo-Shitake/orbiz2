@@ -53,7 +53,10 @@ export abstract class BaseNote<TFm extends BaseFm = BaseFm> {
     get tFile(): TFile {
         // NOTE: 常に最新のものを取得。
         const _tFile = AM.tFile.getMdTFileByPath(this.path);
-        if (!_tFile) throw new UnexpectedError();
+        if (!_tFile) {
+            console.error(this.path);
+            throw new UnexpectedError();
+        }
         return _tFile;
     }
 
@@ -65,7 +68,6 @@ export abstract class BaseNote<TFm extends BaseFm = BaseFm> {
     }
 
     get metadata(): CachedMetadata {
-
         const cache = AM.obsidian.metadataCache.getFileCache(this.tFile);
         // const cache = OAM().app.metadataCache.getFileCache(this.tFile);
 

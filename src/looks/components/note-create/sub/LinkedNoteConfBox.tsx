@@ -18,23 +18,23 @@ export function LinkedNoteConfBox({
 }) {
     const linkedLabels: Record<FmKey<"stdLinkedNoteList">, Record<LinkedNoteDirection, string>> = {
         "belongsTo": {
-            "in": "parent note",
-            "out": "child note"
+            "in": "parent",
+            "out": "child"
         },
         "relatesTo": {
-            "in": "relate note",
-            "out": "related note"
+            "in": "relative elder",
+            "out": "relative children"
         },
         "references": {
-            "in": "reference note",
-            "out": "referenced note"
+            "in": "reference",
+            "out": "referenced"
         }
     }
 
     const handleRootNote = (note: StdNote | null) => {
         if (!note) return;
         const newConf: Partial<LinkedNoteConf> = { ...linkedConf };
-        newConf.rootNoteId = note.id;
+        newConf.rootNote = note;
 
         onChange(newConf);
     }

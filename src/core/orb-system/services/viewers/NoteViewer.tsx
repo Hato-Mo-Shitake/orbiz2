@@ -42,13 +42,32 @@ export abstract class BaseNoteViewer<
 
     getFmAttrsEditor(): ReactNode {
         return (<>
+            <p>{this.note.baseName}</p>
             {this.fmViewers.map(v => {
                 if (v.isImmutable || !v.getEditableView) return;
 
-                return (<Fragment key={v.fmKey}>
-                    {v.getEditableView()}
-                    <hr />
-                </Fragment>)
+                return (
+                    <Fragment key={v.fmKey}>
+                        {v.getEditableView()}
+                        <hr />
+                    </Fragment>
+                )
+            })}
+        </>)
+    }
+
+    getFmAttrsForcedEditor(): ReactNode {
+        return (<>
+            <p>{this.note.baseName}</p>
+            {this.fmViewers.map(v => {
+                if (!v.isImmutable || !v.getForcedEditableView) return;
+
+                return (
+                    <Fragment key={v.fmKey}>
+                        {v.getForcedEditableView()}
+                        <hr />
+                    </Fragment>
+                )
             })}
         </>)
     }

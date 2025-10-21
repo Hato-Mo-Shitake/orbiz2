@@ -189,6 +189,7 @@ export class NoteOrbFactory {
     private _initializeMyStore(store: StoreApi<MyNoteState>, fmOrb: MyFmOrb, source: StdNoteSource) {
         this._initializeStdStore(store, fmOrb, source);
 
+        fmOrb.subType.setStore(store);
         fmOrb.rank.setStore(store);
         fmOrb.categories.setStore(store);
         fmOrb.aliases.setStore(store);
@@ -199,6 +200,7 @@ export class NoteOrbFactory {
     private _initializeLogStore(store: StoreApi<LogNoteState>, fmOrb: LogFmOrb, source: StdNoteSource) {
         this._initializeStdStore(store, fmOrb, source);
 
+        fmOrb.subType.setStore(store);
         fmOrb.status.setStore(store);
         fmOrb.due.setStore(store);
         fmOrb.resolved.setStore(store);
@@ -207,6 +209,8 @@ export class NoteOrbFactory {
 
     private _initializeDiaryStore(store: StoreApi<DiaryNoteState>, fmOrb: DiaryFmOrb) {
         this._initializeBaseStore(store, fmOrb);
+
+        // fmOrb.subType.setStore(store);
         fmOrb.score.setStore(store);
         fmOrb.isClosed.setStore(store);
     }

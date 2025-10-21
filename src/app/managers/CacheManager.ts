@@ -233,27 +233,42 @@ export class CacheManager {
 
         const oldName = getBasenameFromPath(oldPath);
         const newName = getBasenameFromPath(tFile.path);
-        if (oldName == newName) return;
+
+
+        // ばか
+        // if (oldName == newName) return;
 
         const id = this._stdNoteIdMapByName.get(oldName);
         // if (!id) OEM.throwNoIdNote(tFile.path);
         if (!id) throw new NoIdNoteError(tFile.path);
 
-        if (!this._prePathChangedId || this._prePathChangedId === id) {
-            this._debouncedUpdateCacheWhenPathChanged(tFile, oldName, newName, id);
-        } else {
-            this._prePathChangedId = id;
-            this._updateCacheWhenPathChanged(tFile, oldName, newName, id);
-        }
+        this._updateCacheWhenPathChanged(tFile, oldName, newName, id);
+        // if (!this._prePathChangedId || this._prePathChangedId === id) {
+        // if (this._prePathChangedId === id) {
+        //     this._debouncedUpdateCacheWhenPathChanged(tFile, oldName, newName, id);
+        // } else {
+        //     this._prePathChangedId = id;
+        //     this._updateCacheWhenPathChanged(tFile, oldName, newName, id);
+        // }
     }
-    private _debouncedUpdateCacheWhenPathChanged = debounce(this._updateCacheWhenPathChanged, 1500, true);
+    // private _debouncedUpdateCacheWhenPathChanged = debounce(this._updateCacheWhenPathChanged, 1500, true);
     private _updateCacheWhenPathChanged(tFile: TFile, oldName: string, newName: string, id: string): void {
-        const source = this.getStdNoteSourceByTFile(tFile);
+        // const source = this.getStdNoteSourceByTFile(tFile);
+        const source = this.getStdNoteSourceById(id);
+
+        // subType変更の時、ここにすら来てない？
+        debugConsole("path change source", source);
         if (!source) return;
-        // 更新
-        source.path = tFile.path;
 
         // 更新
+        // source.path = tFile.path;
+
+        // 更新
+        const oldSource = this._stdNoteSourceMapById.get(id)!;
+        const newSource: StdNoteSource = { ...oldSource, path: tFile.path };
+        debugConsole("change stdNoteSource", oldSource, "->", newSource);
+
+        this._stdNoteSourceMapById.set(id, newSource);
         this._stdNoteIdMapByName.delete(oldName);
         this._stdNoteIdMapByName.set(newName, id);
 
@@ -301,12 +316,12 @@ export class CacheManager {
 
     private _debouncedUpdateCacheWhenMetadataChanged = debounce(this._updateCacheWhenMetadataChanged, 500, true);
     private async _updateCacheWhenMetadataChanged(noteId: string, tFile: TFile, editor?: Editor) {
-        // const cache = OAM().app.metadataCache.getFileCache(tFile);
+
         const cache = AM.obsidian.metadataCache.getFileCache(tFile);
-        // if (!cache) throw new UnexpectedError();
+
         if (!cache) throw new UnexpectedError();
         const fmCache = cache?.frontmatter;
-        // if (fmCache?.id !== noteId) throw new UnexpectedError();
+
         if (fmCache?.id !== noteId) throw new UnexpectedError();
 
         // ノートトラッシュ時

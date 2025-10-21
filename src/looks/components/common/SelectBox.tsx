@@ -25,9 +25,7 @@ export function SelectBox({
             onChange={(e) => onChange(e.target.value)}
         >
             {selections.map(opt => (
-                <option key={opt.value} value={opt.value}
-                // selected={opt.value == value}
-                >
+                <option key={opt.value} value={opt.value}>
                     {opt.label || opt.value}
                 </option>
             ))}

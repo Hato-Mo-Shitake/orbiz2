@@ -1,3 +1,6 @@
+import { AM } from "src/app/AppManager";
+import { isMyNote } from "src/core/domain/MyNote";
+import { StdNote } from "src/core/domain/StdNote";
 import { FmAttrRoleHub } from "src/core/orb-system/services/fm-attrs/FmAttrLinkedNote";
 import { useFmAttrEditable } from "src/looks/hooks/note-edit/useFmAttrEditable";
 import { MyNoteState } from "src/orbits/schema/NoteState";
@@ -14,13 +17,13 @@ export function FmAttrRoleHubEditor({
     const roleHub = useStore(store, (s) => s.fmAttrRoleHub);
     const { newValue, setNewValue, handleCommit } = useFmAttrEditable(fmAttr);
 
-    // const handleChange = (roleKind: string) => {
-    //     if (!AM.orbizSetting.roleKinds.includes(roleKind)) {
-    //         alert("invalid value.");
-    //         return;
-    //     }
-    //     setNewValue(roleKind);
-    // }
+    const handleChange = (note: StdNote) => {
+        if (!isMyNote(note)) {
+            alert("not my note.");
+            return;
+        }
+        setNewValue(note);
+    }
 
     return (<>
         <div>
@@ -30,18 +33,12 @@ export function FmAttrRoleHubEditor({
             </h5>
             <div>current value: {roleHub?.baseName || "null"}</div>
             <StdNotePicker
-                onChange={setNewValue}
+                onChange={handleChange}
                 options={{
                     defaultNote: newValue || undefined,
                     suggestions: AM.note.allMyNoteNames
                 }}
             />
-            {/* <div>current value: {roleKind}</div> */}
-            {/* <SelectBox
-                value={newValue || ""}
-                onChange={handleChange}
-                options={AM.orbizSetting.roleKinds}
-            /> */}
         </div>
     </>)
 }

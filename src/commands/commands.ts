@@ -1,6 +1,8 @@
 import { Command } from "obsidian";
 import { AM } from "src/app/AppManager";
+import { FmForcedEditableModal } from "src/looks/modals/FmForcedEditableModal";
 import { FSuggestModal } from "src/looks/modals/FSuggestModal";
+import { openModalMainMenu } from "src/looks/modals/SimpleDisplayModal";
 
 const CommandScript = {
     createMyNote: async () => {
@@ -8,6 +10,19 @@ const CommandScript = {
     },
     createLogNote: async () => {
         AM.useCase.prompt.createLogNote();
+    },
+    openMainMenu: () => {
+        openModalMainMenu();
+    },
+    forcedUpdateMetadata: () => {
+        const orb = AM.orb.getActiveStdNoteOrb();
+        if (!orb) return;
+        FmForcedEditableModal.openNew(orb.viewer);
+    },
+    softDeleteNote: () => {
+        const tFile = AM.tFile.activeTFile;
+        if (!tFile) return;
+        AM.useCase.noteSoftDeleter.trashNote(tFile);
     }
 }
 

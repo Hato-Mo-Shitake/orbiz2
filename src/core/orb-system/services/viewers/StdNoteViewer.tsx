@@ -30,7 +30,7 @@ export abstract class StdNoteViewer<
     getLinkedStdNote(fmKey: FmKey<"stdLinkedNoteList">, direction: LinkedNoteDirection): React.ReactNode {
         const headerMap: Record<FmKey<"stdLinkedNoteList">, Record<LinkedNoteDirection, string>> = {
             "belongsTo": { "in": "children:", "out": "parents:" },
-            "relatesTo": { "in": "relative children:", "out": "relative parents:" },
+            "relatesTo": { "in": "relative children:", "out": "relative elder:" },
             "references": { "in": "referenced:", "out": "references:" }
         }
 

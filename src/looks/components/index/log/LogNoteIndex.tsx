@@ -18,22 +18,6 @@ export function LogNoteIndex({
     const [currentStatus, setCurrentStatus] = useState<LogNoteStatus | null>(null);
     const [excludeResolved, setExcludeResolved] = useState<boolean>(true);
 
-    // const filter = (t: TFile): boolean => {
-    //     const fmCache = AM.obsidian.metadataCache.getFileCache(t)?.frontmatter;
-    //     if (!fmCache) return false;
-
-    //     if (excludeResolved && fmCache["resolved"]) return false;
-
-    //     if (currentStatus === null) return true;
-
-    //     if (currentStatus === "default") {
-    //         if (!fmCache["status"] || fmCache["status"] == "default") return true;
-    //     } else {
-    //         if (fmCache["status"] == currentStatus) return true;
-    //     }
-    //     return false;
-    // }
-
     const filter = useCallback((t: TFile): boolean => {
         const fmCache = AM.obsidian.metadataCache.getFileCache(t)?.frontmatter;
         if (!fmCache) return false;
@@ -48,7 +32,7 @@ export function LogNoteIndex({
             if (fmCache["status"] == currentStatus) return true;
         }
         return false;
-    }, [currentStatus, excludeResolved])
+    }, [currentStatus, excludeResolved]);
 
     return (<>
         <MainNav
@@ -58,8 +42,10 @@ export function LogNoteIndex({
         <LogNoteMenu isHorizon={true} closeModal={closeModal} />
         <h1>{subType || "log note"} index</h1>
 
-        <label>
-            exclude resolved
+        <label className="orbiz__item--flex-small">
+            <div>
+                exclude resolved
+            </div>
             <input
                 type="checkbox"
                 checked={excludeResolved}
@@ -91,7 +77,6 @@ export function LogNoteIndex({
         >
             <NoteList
                 tFileList={subType ? AM.tFile.getAllLogTFilesForSubType(subType) : AM.tFile.allLogTFiles}
-                // beginningPath={AM.orbiz.rootPath}
                 cutSlug={`〈-${subType}-〉`}
                 closeModal={closeModal}
                 filter={filter}
