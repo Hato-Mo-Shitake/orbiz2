@@ -35,5 +35,10 @@ export function DailyNoteTopSectionDefault({ viewer }: { viewer: DailyNoteViewer
                 </span>
             }
         </div>
+        <hr />
+        <div style={{ margin: "0.4rem 0" }} >
+            <div>助けて</div>
+            {viewer.getDailyLogNoteList()}
+        </div>
     </>)
 }

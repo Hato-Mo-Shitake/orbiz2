@@ -43,6 +43,8 @@ export interface MyNoteState extends StdNoteState {
     setFmAttrRoleKind: (kind: string) => void,
     fmAttrRoleHub: MyNote | null;
     setFmAttrRoleHub: (hub: MyNote) => void;
+    fmAttrDone: Date | null;
+    setFmAttrDone: (done: Date) => void;
 }
 export interface LogNoteState extends StdNoteState {
     fmAttrLogNoteType: LogNoteType | null,
@@ -73,6 +75,8 @@ export interface DailyNoteState extends DiaryNoteState {
     setFmAttrCreatedNotes: (notes: StdNote[]) => void;
     fmAttrModifiedNotes: StdNote[];
     setFmAttrModifiedNotes: (notes: StdNote[]) => void;
+    fmAttrDoneNotes: StdNote[];
+    setFmAttrDoneNotes: (notes: StdNote[]) => void;
     fmAttrResolvedNotes: StdNote[];
     setFmAttrResolvedNotes: (notes: StdNote[]) => void;
     fmAttrAmountSpent: number | null,
@@ -135,6 +139,8 @@ function buildMyNoteState<T extends MyNoteState>(
         setFmAttrRoleKind: (kind: string) => set({ fmAttrRoleKind: kind } as Partial<T>),
         fmAttrRoleHub: null,
         setFmAttrRoleHub: (note: MyNote) => set({ fmAttrRoleHub: note } as Partial<T>),
+        fmAttrDone: null,
+        setFmAttrDone: (done: Date) => set({ fmAttrDone: done } as Partial<T>),
     };
 }
 
@@ -185,13 +191,14 @@ function buildDailyNoteState<T extends DailyNoteState>(
         setFmAttrCreatedNotes: (notes: StdNote[]) => set({ fmAttrCreatedNotes: notes } as Partial<T>),
         fmAttrModifiedNotes: [],
         setFmAttrModifiedNotes: (notes: StdNote[]) => set({ fmAttrModifiedNotes: notes } as Partial<T>),
+        fmAttrDoneNotes: [],
+        setFmAttrDoneNotes: (notes: StdNote[]) => set({ fmAttrDoneNotes: notes } as Partial<T>),
         fmAttrResolvedNotes: [],
         setFmAttrResolvedNotes: (notes: StdNote[]) => set({ fmAttrResolvedNotes: notes } as Partial<T>),
         fmAttrAmountSpent: null,
         setFmAttrAmountSpent: (amountSpent: number) => set({ fmAttrAmountSpent: amountSpent } as Partial<T>),
         fmAttrTemplateDone: [],
         setFmAttrTemplateDone: (templateDone: string[]) => set({ fmAttrTemplateDone: templateDone } as Partial<T>),
-
     };
 }
 

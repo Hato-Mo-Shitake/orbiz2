@@ -81,7 +81,6 @@ export class NoteFactory {
         }
     }): DailyNote | null {
         if (src.tFile) {
-            // const fmCache = OAM().app.metadataCache.getFileCache(src.tFile)?.frontmatter;
             const fmCache = AM.obsidian.metadataCache.getFileCache(src.tFile)?.frontmatter;
             if (!fmCache) return null;
             if (isDailyFm(fmCache)) {

@@ -234,12 +234,7 @@ export class CacheManager {
         const oldName = getBasenameFromPath(oldPath);
         const newName = getBasenameFromPath(tFile.path);
 
-
-        // ばか
-        // if (oldName == newName) return;
-
         const id = this._stdNoteIdMapByName.get(oldName);
-        // if (!id) OEM.throwNoIdNote(tFile.path);
         if (!id) throw new NoIdNoteError(tFile.path);
 
         this._updateCacheWhenPathChanged(tFile, oldName, newName, id);
@@ -255,9 +250,6 @@ export class CacheManager {
     private _updateCacheWhenPathChanged(tFile: TFile, oldName: string, newName: string, id: string): void {
         // const source = this.getStdNoteSourceByTFile(tFile);
         const source = this.getStdNoteSourceById(id);
-
-        // subType変更の時、ここにすら来てない？
-        debugConsole("path change source", source);
         if (!source) return;
 
         // 更新
@@ -266,7 +258,6 @@ export class CacheManager {
         // 更新
         const oldSource = this._stdNoteSourceMapById.get(id)!;
         const newSource: StdNoteSource = { ...oldSource, path: tFile.path };
-        debugConsole("change stdNoteSource", oldSource, "->", newSource);
 
         this._stdNoteSourceMapById.set(id, newSource);
         this._stdNoteIdMapByName.delete(oldName);
@@ -475,7 +466,8 @@ export class CacheManager {
 
     private _initializeNewNote(noteSource: StdNoteSource) {
         delete noteSource.unCacheInitialized;
-        AM.diary.todayRecordNoteIds.cIds.add(noteSource.id);
+        AM.diary.addDailyLogNoteIds("createdNotes", noteSource.id);
+        // AM.diary.todayRecordNoteIds.cIds.add(noteSource.id);
     }
 
     private _getNewOutLinkIds(cache: CachedMetadata): { newOutLinkIds: Set<string>, notHasIdLinks: Set<string> } {

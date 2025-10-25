@@ -9,19 +9,34 @@ export class FmAttrFilter {
         if (AM.orbiz.isVaultPath(link)) return `[[${link}]]`;
         // if (OAM().isVaultPath(link)) return `[[${link}]]`;
 
-        if (!link.includes("/")) {
-            const noteId = AM.cache.getStdNoteIdByName(link);
+        const noteId = AM.cache.getStdNoteIdByName(link);
 
-            if (!noteId) return null;
-            const source = AM.cache.getStdNoteSourceById(noteId);
-            if (!source) return null;
+        if (!noteId) return null;
+        const source = AM.cache.getStdNoteSourceById(noteId);
+        if (!source) return null;
 
-            const parts = source.path.split("/");
 
-            const filtered = parts.map(sanitizeFileName).join("/");
+        if (!AM.orbiz.isVaultPath(source.path)) return null;
+        const parts = source.path.split("/");
 
-            return `[[${filtered}]]`;
-        }
-        return null;
+        const filtered = parts.map(sanitizeFileName).join("/");
+
+        return `[[${filtered}]]`;
+
+
+        // if (!link.includes("/")) {
+        //     const noteId = AM.cache.getStdNoteIdByName(link);
+
+        //     if (!noteId) return null;
+        //     const source = AM.cache.getStdNoteSourceById(noteId);
+        //     if (!source) return null;
+
+        //     const parts = source.path.split("/");
+
+        //     const filtered = parts.map(sanitizeFileName).join("/");
+
+        //     return `[[${filtered}]]`;
+        // }
+        // return null;
     }
 }

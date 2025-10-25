@@ -17,8 +17,6 @@ import { FmAttr } from "./FmAttr";
 
 type RawFmValueForLinkedNote = "noteId" | "internalLink";
 export abstract class FmAttrLinkedNoteList extends FmAttr<StdNote[]> implements FmAttrList<StdNote> {
-
-    // protected _store: StoreApi<StdNoteState> | null;
     constructor(
         tFile: TFile,
         fmKey: FmKey<"linkedNoteList">,
@@ -57,14 +55,13 @@ export abstract class FmAttrLinkedNoteList extends FmAttr<StdNote[]> implements 
     }
 
     get value(): StdNote[] {
-        // if (this._storeGetter) {
-        //     return this._storeGetter() || [];
-        // }
         return this._value || [];
     }
 
     addNewAVal(aVal: StdNote): this {
         if (this.isImmutable) throw new Error("can not update.");
+
+        if (this.noteIds.includes(aVal.id)) return this;
 
         if (this._newValue === undefined) {
             this._newValue = [...this.value];
@@ -122,12 +119,11 @@ export abstract class FmAttrLinkedNoteList extends FmAttr<StdNote[]> implements 
         if (arraysEqual(this.value.map(aVal => aVal.id), this._newValue.map(aVal => aVal.id))) return;
 
         if (this._rawFmValueType === "internalLink") {
-            await AM.repository.noteR.updateFmAttr(this.tFile, this.fmKey, this._newValue.map(aVal => aVal.internalLink));
+            await AM.repository.noteR.updateFmAttr(this.tFile, this.fmKey, this._newValue.map(aVal => aVal.fullPathInternalLink));
         } else if (this._rawFmValueType === "noteId") {
             await AM.repository.noteR.updateFmAttr(this.tFile, this.fmKey, this._newValue.map(aVal => aVal.id));
         } else {
             throw new NotImplementedError();
-            // OEM.throwNotImplementedError();
         }
 
         this._value = this.newValue ? [...this.newValue] : [];
@@ -305,13 +301,14 @@ export class FmAttrCreatedNotes extends FmAttrLinkedNoteList {
         this._storeSetter(this.value);
     }
 
-    getView(): ReactNode {
+    getView(options?: { header?: string, headerWidth: number }): ReactNode {
         if (!this._store) return null;
         return (<>
             <FmAttrDailyLinkedNoteListDisplay
                 store={this._store}
                 selector={(state) => state.fmAttrCreatedNotes}
-                header={this.fmKey}
+                header={options?.header}
+                headerWidth={options?.headerWidth}
             />
         </>)
     }
@@ -349,13 +346,14 @@ export class FmAttrModifiedNotes extends FmAttrLinkedNoteList {
         this._storeSetter(this.value);
     }
 
-    getView(): ReactNode {
+    getView(options?: { header?: string, headerWidth: number }): ReactNode {
         if (!this._store) return null;
         return (<>
             <FmAttrDailyLinkedNoteListDisplay
                 store={this._store}
                 selector={(state) => state.fmAttrModifiedNotes}
-                header={this.fmKey}
+                header={options?.header}
+                headerWidth={options?.headerWidth}
             />
         </>)
     }
@@ -393,13 +391,14 @@ export class FmAttrResolvedNotes extends FmAttrLinkedNoteList {
         this._storeSetter(this.value);
     }
 
-    getView(): ReactNode {
+    getView(options?: { header?: string, headerWidth: number }): ReactNode {
         if (!this._store) return null;
         return (<>
             <FmAttrDailyLinkedNoteListDisplay
                 store={this._store}
                 selector={(state) => state.fmAttrResolvedNotes}
-                header={this.fmKey}
+                header={options?.header}
+                headerWidth={options?.headerWidth}
             />
         </>)
     }
@@ -409,6 +408,51 @@ export class FmAttrResolvedNotes extends FmAttrLinkedNoteList {
             <FmAttrDailyLinkedNoteListEditor
                 store={this._store}
                 selector={(s) => s.fmAttrResolvedNotes}
+                fmAttr={this}
+            />
+        </>)
+    }
+}
+
+export class FmAttrDoneNotes extends FmAttrLinkedNoteList {
+    protected _store: StoreApi<DailyNoteState> | null;
+    constructor(
+        tFile: TFile,
+        _value: string[] | null | undefined,
+    ) {
+        super(
+            tFile,
+            "doneNotes",
+            _value || [],
+            "noteId"
+        )
+    }
+
+    setStore(store: StoreApi<DailyNoteState>): void {
+        this._store = store;
+        const state = store.getState();
+        this._storeGetter = () => state.fmAttrDoneNotes;
+        this._storeSetter = (value: StdNote[]) => state.setFmAttrDoneNotes(value);
+        this._storeSetter(this.value);
+    }
+
+    getView(options?: { header?: string, headerWidth: number }): ReactNode {
+        if (!this._store) return null;
+        return (<>
+            <FmAttrDailyLinkedNoteListDisplay
+                store={this._store}
+                selector={(state) => state.fmAttrDoneNotes}
+                header={options?.header}
+                headerWidth={options?.headerWidth}
+            />
+        </>)
+    }
+    getEditableView(): ReactNode {
+        if (!this._store) return null;
+        return (<>
+            <FmAttrDailyLinkedNoteListEditor
+                store={this._store}
+                selector={(s) => s.fmAttrDoneNotes}
                 fmAttr={this}
             />
         </>)

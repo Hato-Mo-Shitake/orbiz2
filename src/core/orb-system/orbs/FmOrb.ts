@@ -1,12 +1,12 @@
 import { FmAttrIsClosed } from "src/core/orb-system/services/fm-attrs/FmAttrBoolean";
-import { FmAttrDue, FmAttrResolved, FmAttrTheDay } from "src/core/orb-system/services/fm-attrs/FmAttrDate";
+import { FmAttrDone, FmAttrDue, FmAttrResolved, FmAttrTheDay } from "src/core/orb-system/services/fm-attrs/FmAttrDate";
 import { FmAttrAmountSpent, FmAttrRank, FmAttrScore } from "src/core/orb-system/services/fm-attrs/FmAttrNumber";
 import { FmAttrAspect, FmAttrContext, FmAttrDiaryNoteType, FmAttrId, FmAttrLogNoteType, FmAttrMyNoteType, FmAttrRoleKind, FmAttrStatus, FmAttrType } from "src/core/orb-system/services/fm-attrs/FmAttrString";
 import { FmAttrAliases, FmAttrCategories, FmAttrTags, FmAttrTemplateDone } from "src/core/orb-system/services/fm-attrs/FmAttrStringList";
 import { StdNoteType } from "../../../orbits/schema/frontmatters/NoteType";
 import { FmAttr } from "../services/fm-attrs/FmAttr";
 import { FmAttrRoleHub } from "../services/fm-attrs/FmAttrLinkedNote";
-import { FmAttrBelongsTo, FmAttrCreatedNotes, FmAttrModifiedNotes, FmAttrReferences, FmAttrRelatesTo, FmAttrResolvedNotes } from "../services/fm-attrs/FmAttrLinkedNoteList";
+import { FmAttrBelongsTo, FmAttrCreatedNotes, FmAttrDoneNotes, FmAttrModifiedNotes, FmAttrReferences, FmAttrRelatesTo, FmAttrResolvedNotes } from "../services/fm-attrs/FmAttrLinkedNoteList";
 
 export abstract class BaseFmOrb {
     public readonly attrs: FmAttr[] = [];
@@ -55,6 +55,7 @@ export class MyFmOrb extends StdFmOrb {
         public readonly categories: FmAttrCategories,
         public readonly roleKind: FmAttrRoleKind,
         public readonly roleHub: FmAttrRoleHub,
+        public readonly done: FmAttrDone,
     ) {
         super(
             type,
@@ -123,6 +124,7 @@ export class DailyFmOrb extends DiaryFmOrb {
         readonly theDay: FmAttrTheDay,
         readonly createdNotes: FmAttrCreatedNotes,
         readonly modifiedNotes: FmAttrModifiedNotes,
+        readonly doneNotes: FmAttrDoneNotes,
         readonly resolvedNotes: FmAttrResolvedNotes,
         readonly amountSpent: FmAttrAmountSpent,
         readonly templateDone: FmAttrTemplateDone,

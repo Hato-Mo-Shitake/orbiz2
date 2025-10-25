@@ -19,7 +19,7 @@ export type FmKeyMap = {
     stdLinkedNoteList: FmKeyForStdLinkedNoteList,
     roleHub: FmKeyForRoleHub,
     dailyLinkedNoteList: FmKeyForDailyLinkedNoteList,
-    linkedNoteList: FmKeyForLinkedNoteList
+    linkedNoteList: FmKeyForLinkedNoteList,
     all: AllFmKey
 };
 export type FmKeyKind = keyof FmKeyMap;

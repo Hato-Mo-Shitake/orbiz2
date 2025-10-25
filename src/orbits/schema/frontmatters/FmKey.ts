@@ -12,10 +12,6 @@ export const fmKeysForNote = [
 export type FmKeyForNote = typeof fmKeysForNote[number];
 
 const subType = "subType" as const;
-const rank = "rank" as const;
-const roleKind = "roleKind" as const;
-const roleHub = "roleHub" as const;
-const aspect = "aspect" as const;
 const belongsTo = "belongsTo" as const;
 const relatesTo = "relatesTo" as const;
 const references = "references" as const;
@@ -31,8 +27,13 @@ export const fmKeysForStdNote = [
 ] as const;
 export type FmKeyForStdNote = typeof fmKeysForStdNote[number];
 
+const rank = "rank" as const;
+const roleKind = "roleKind" as const;
+const roleHub = "roleHub" as const;
+const aspect = "aspect" as const;
 const aliases = "aliases" as const;
 const categories = "categories" as const;
+const done = "done" as const;
 
 export const fmKeysForJustMyNote = [
     rank,
@@ -41,6 +42,7 @@ export const fmKeysForJustMyNote = [
     aspect,
     roleKind,
     roleHub,
+    done, // optional
 ] as const;
 export const fmKeysForMyNote = [
     ...fmKeysForStdNote,
@@ -79,6 +81,7 @@ export type FmKeyForDiaryNote = typeof fmKeysForDiaryNote[number];
 const theDay = "theDay" as const;
 const createdNotes = "createdNotes" as const;
 const modifiedNotes = "modifiedNotes" as const;
+const doneNotes = "doneNotes" as const;
 const resolvedNotes = "resolvedNotes" as const;
 const amountSpent = "amountSpent" as const;
 const templateDone = "templateDone" as const;
@@ -86,6 +89,7 @@ export const fmKeysForJustDailyNote = [
     theDay,
     createdNotes,
     modifiedNotes,
+    doneNotes,
     resolvedNotes,
     amountSpent,
     templateDone
@@ -176,6 +180,7 @@ export type FmKeyForRoleHub = typeof roleHub;
 export const fmKeysForDailyLinkedNoteList = [
     createdNotes,
     modifiedNotes,
+    doneNotes,
     resolvedNotes
 ] as const;
 export type FmKeyForDailyLinkedNoteList = typeof fmKeysForDailyLinkedNoteList[number];
@@ -202,5 +207,6 @@ export const fmKeysDate = [
     due,
     resolved,
     theDay,
+    done,
 ] as const;
 export type FmKeyForDate = typeof fmKeysDate[number];

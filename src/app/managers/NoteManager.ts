@@ -1,6 +1,6 @@
 import { App, FrontMatterCache, TFile } from "obsidian";
 import { AM } from "src/app/AppManager";
-import { extractLinkTarget } from "src/assistance/utils/filter";
+import { extractNoteNameFromInternalLink } from "src/assistance/utils/link";
 import { getBasenameFromPath } from "src/assistance/utils/path";
 import { isMyNote, MyNote } from "src/core/domain/MyNote";
 import { StdNote } from "src/core/domain/StdNote";
@@ -17,8 +17,6 @@ export class NoteManager {
 
     static getInstance(): NoteManager {
         if (!this._instance) throw new NotInitializedError();
-        // OEM.throwNotInitializedError(OrbizNoteManager);
-
         return this._instance;
     }
 
@@ -28,7 +26,6 @@ export class NoteManager {
 
     private get app(): App {
         return AM.obsidian.app
-        // return OAM().app
     }
 
     get activeStdNote(): StdNote | null {
@@ -54,12 +51,21 @@ export class NoteManager {
             noteId = src.noteId;
         } else if (src.internalLink) {
             // 内部リンクとみなす。
-            const path = extractLinkTarget(src.internalLink);
-            if (!path) return null;
-            // const tmp = AM.note.getNoteIdByPath(path);
-            const tmp = this.getNoteIdByPath(path);
-            if (!tmp) return null;
-            noteId = tmp;
+
+
+            // linkTargetがpathである保証はない。（ファイル名変更したときは自動的に親ディレクトリ無くなったりするし、これに依存するのはまずい）
+            // TODO: 他にも同様の問題を抱えているところがないかチェックしないと、、、
+            // const path = extractLinkTarget(src.internalLink);
+            // if (!path) return null;
+            // const tmp = this.getNoteIdByPath(path);
+            // if (!tmp) return null;
+
+            const name = extractNoteNameFromInternalLink(src.internalLink);
+            if (!name) return null;
+            const tmpId = AM.cache.getStdNoteIdByName(name);
+            if (!tmpId) return null;
+
+            noteId = tmpId;
         } else {
             throw new UnexpectedError();
             // throw new UnexpectedError();

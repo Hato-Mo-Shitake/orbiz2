@@ -30,12 +30,11 @@ const handlePromptAdaptToNewTFileToNote: EventHandlerForVault<"create"> = async 
 }
 const handleRecordTodayNoteIds: EventHandlerForVault<"modify"> = (file) => {
     if (file instanceof TFile) {
-
         if (!AM.orbiz.isVaultPath(file.path)) return;
-
         const id = AM.note.getNoteIdByTFile(file);
         if (!id) return;
-        AM.diary.todayRecordNoteIds.mIds.add(id);
+        AM.diary.addDailyLogNoteIds("modifiedNotes", id);
+        // AM.diary.todayRecordNoteIds.mIds.add(id);
     }
 }
 

@@ -28,6 +28,7 @@ export const MyFmZObj = StdFmZObj.extend({
     aspect: z.string().nullable(),
     roleKind: z.string().nullable(),
     roleHub: z.string().nullable(),
+    done: z.number().nullable().optional(),
 })
 export type MyFm = z.infer<typeof MyFmZObj>;
 export function isMyFm(fm: any): fm is MyFm {
@@ -59,6 +60,7 @@ export const DailyFmZObj = DiaryFmZObj.extend({
     theDay: z.number().nullable(), // タイムスタンプ（ms）
     createdNotes: z.array(z.string()).nullable(),
     modifiedNotes: z.array(z.string()).nullable(),
+    doneNotes: z.array(z.string()).nullable().optional(), // この辺りはそのうち統一したいが、、、
     resolvedNotes: z.array(z.string()).nullable(),
     amountSpent: z.number().nullable(),
     templateDone: z.array(z.string()).nullable(),

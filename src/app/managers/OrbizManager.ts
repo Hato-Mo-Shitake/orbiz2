@@ -44,9 +44,6 @@ export class OrbizManager {
         if (input.startsWith("/")) return false;
         const parts = input.split("/");
 
-        // if (parts[0] + "/" != OAM().rootDir) {
-        //     return false;
-        // }
         if (parts[0] + "/" != AM.orbiz.rootDir) {
             return false;
         }

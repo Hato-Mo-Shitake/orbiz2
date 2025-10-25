@@ -89,6 +89,7 @@ export class DailyFmBuilder<TFm extends DailyFm = DailyFm> extends DiaryFmBuilde
         this._fm["theDay"] = (new Date()).getTime();
         this._fm["createdNotes"] = [];
         this._fm["modifiedNotes"] = [];
+        this._fm["doneNotes"] = [];
         this._fm["resolvedNotes"] = [];
         this._fm["amountSpent"] = null;
         this._fm["templateDone"] = [];

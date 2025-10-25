@@ -141,7 +141,12 @@ export class NoteCreator {
     }
 
     async createDailyNote(date?: Date): Promise<DailyNoteOrb> {
+        // TODO: これ、すでに同名のものがあるときは弾くようにしたいな
+
         const tFile = await this.noteR.createDailyTFile(date);
+
+
+
         const fmB = new DailyFmBuilder();
         const fm = fmB.build();
         await this.noteR.updateFmAttrs(tFile, fm);

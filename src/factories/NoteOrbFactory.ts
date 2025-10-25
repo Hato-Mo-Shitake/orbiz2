@@ -196,6 +196,7 @@ export class NoteOrbFactory {
         fmOrb.aspect.setStore(store);
         fmOrb.roleKind.setStore(store);
         fmOrb.roleHub.setStore(store);
+        fmOrb.done.setStore(store);
     }
     private _initializeLogStore(store: StoreApi<LogNoteState>, fmOrb: LogFmOrb, source: StdNoteSource) {
         this._initializeStdStore(store, fmOrb, source);
@@ -209,8 +210,6 @@ export class NoteOrbFactory {
 
     private _initializeDiaryStore(store: StoreApi<DiaryNoteState>, fmOrb: DiaryFmOrb) {
         this._initializeBaseStore(store, fmOrb);
-
-        // fmOrb.subType.setStore(store);
         fmOrb.score.setStore(store);
         fmOrb.isClosed.setStore(store);
     }
@@ -219,6 +218,7 @@ export class NoteOrbFactory {
         fmOrb.theDay.setStore(store);
         fmOrb.createdNotes.setStore(store);
         fmOrb.modifiedNotes.setStore(store);
+        fmOrb.doneNotes.setStore(store);
         fmOrb.resolvedNotes.setStore(store);
         fmOrb.amountSpent.setStore(store);
         fmOrb.templateDone.setStore(store);

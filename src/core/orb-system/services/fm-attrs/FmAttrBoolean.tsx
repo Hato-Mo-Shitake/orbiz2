@@ -38,11 +38,13 @@ export class FmAttrIsClosed extends FmAttrBoolean {
         }
     }
 
-    getView(): ReactNode {
+    getView(options?: { header?: string, headerWidth?: number }): ReactNode {
         if (!this._store) return null;
         return (<>
             <FmAttrIsClosedDisplay
                 store={this._store}
+                header={options?.header}
+                headerWidth={options?.headerWidth}
             />
         </>)
     }

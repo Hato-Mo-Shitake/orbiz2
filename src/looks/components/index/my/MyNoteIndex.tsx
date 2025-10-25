@@ -8,7 +8,6 @@ import { MyNoteMenu } from "../../menu/my/MyNoteMenu";
 import { MainNav } from "../../menu/navigate/MainNav";
 import { NoteList } from "../../searchlights/sub/NoteList";
 
-
 export function MyNoteIndex({
     subType,
     closeModal
@@ -17,10 +16,12 @@ export function MyNoteIndex({
     closeModal?: () => void;
 }) {
     const [category, setCategory] = useState("all");
+    const [excludeDone, setExcludeDone] = useState<boolean>(true);
 
     const filter = useCallback((t: TFile): boolean => {
         const fmCache = AM.obsidian.metadataCache.getFileCache(t)?.frontmatter;
         if (!fmCache) return false;
+        if (excludeDone && fmCache["done"]) return false;
 
         if (category === "all") return true;
 
@@ -28,7 +29,7 @@ export function MyNoteIndex({
         if (Array.isArray(categories) && categories.includes(category)) return true;
 
         return false;
-    }, [category]);
+    }, [category, excludeDone]);
 
     return (<>
         <MainNav
@@ -37,6 +38,16 @@ export function MyNoteIndex({
         <hr />
         <MyNoteMenu isHorizon={true} closeModal={closeModal} />
         <h1>{subType || "my note"} index</h1>
+        <label className="orbiz__item--flex-small">
+            <div>
+                exclude done
+            </div>
+            <input
+                type="checkbox"
+                checked={excludeDone}
+                onChange={() => setExcludeDone(done => !done)}
+            />
+        </label>
         <div className="orbiz__item--flex-small">
             <div>category filter： </div>
             <SelectBox

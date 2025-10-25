@@ -6,11 +6,13 @@ import { UnexpectedError } from "src/errors/UnexpectedError";
 import { FmAttrTheDayEditor } from "src/looks/components/note-metadata-edit/daily/FmAttrTheDayEditor";
 import { FmAttrDueEditor } from "src/looks/components/note-metadata-edit/log/FmAttrDueEditor";
 import { FmAttrResolvedEditor } from "src/looks/components/note-metadata-edit/log/FmAttrResolvedEditor";
+import { FmAttrDoneEditor } from "src/looks/components/note-metadata-edit/my/FmAttrDoneEditor";
 import { FmAttrTheDayDisplay } from "src/looks/components/note-metadata-view/daily/FmAttrTheDayDisplay";
 import { FmAttrDueDisplay } from "src/looks/components/note-metadata-view/log/FmAttrDueDisplay";
 import { FmAttrResolvedDisplay } from "src/looks/components/note-metadata-view/log/FmAttrResolvedDisplay";
+import { FmAttrDoneDisplay } from "src/looks/components/note-metadata-view/my/FmAttrDoneDisplay";
 import { FmKey } from "src/orbits/contracts/fmKey";
-import { DailyNoteState, LogNoteState } from "src/orbits/schema/NoteState";
+import { DailyNoteState, LogNoteState, MyNoteState } from "src/orbits/schema/NoteState";
 import { StoreApi } from "zustand";
 import { FmAttr } from "./FmAttr";
 
@@ -64,6 +66,58 @@ abstract class FmAttrDate extends FmAttr<Date | null> {
         await AM.repository.noteR.updateFmAttr(this.tFile, this.fmKey, newTimestamp);
         this._value = newTimestamp ? new Date(newTimestamp) : null;
         this.afterCommit();
+    }
+}
+
+export class FmAttrDone extends FmAttrDate {
+    protected _store: StoreApi<MyNoteState> | null;
+    constructor(
+        tFile: TFile,
+        timestamp: number | null | undefined,
+    ) {
+        super(
+            tFile,
+            "done",
+            timestamp,
+        );
+    }
+
+    setStore(store: StoreApi<MyNoteState>): void {
+        this._store = store;
+        const state = store.getState();
+        this._storeGetter = () => state.fmAttrDone;
+        this._storeSetter = (value: Date) => state.setFmAttrDone(value);
+
+        if (this._value) {
+            this._storeSetter(this._value);
+        }
+    }
+
+    getView(options?: { header?: string, headerWidth?: number }): ReactNode {
+        if (!this._store) return null;
+        return (<>
+            <FmAttrDoneDisplay
+                store={this._store}
+                header={options?.header}
+                headerWidth={options?.headerWidth}
+            />
+        </>)
+    }
+    getEditableView(): ReactNode {
+        if (!this._store) return null;
+        return (<>
+            <FmAttrDoneEditor
+                store={this._store}
+                fmAttr={this}
+            />
+        </>)
+    }
+
+    protected afterCommit(): void {
+        super.afterCommit();
+        const id = AM.note.getNoteIdByTFile(this.tFile);
+        if (!id) throw new UnexpectedError();
+        AM.diary.addDailyLogNoteIds("doneNotes", id);
     }
 }
 
@@ -163,7 +217,8 @@ export class FmAttrResolved extends FmAttrDate {
         super.afterCommit();
         const id = AM.note.getNoteIdByTFile(this.tFile);
         if (!id) throw new UnexpectedError();
-        AM.diary.todayRecordNoteIds.rIds.add(id);
+        AM.diary.addDailyLogNoteIds("resolvedNotes", id);
+        // AM.diary.todayRecordNoteIds.rIds.add(id);
     }
 }
 
@@ -198,11 +253,13 @@ export class FmAttrTheDay extends FmAttrDate {
         }
     }
 
-    getView(): ReactNode {
+    getView(options?: { header?: string, headerWidth?: number }): ReactNode {
         if (!this._store) return null;
         return (<>
             <FmAttrTheDayDisplay
                 store={this._store}
+                header={options?.header}
+                headerWidth={options?.headerWidth}
             />
         </>)
     }

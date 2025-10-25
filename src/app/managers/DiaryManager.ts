@@ -1,17 +1,17 @@
 import { TFolder } from "obsidian";
 import { AM } from "src/app/AppManager";
 import { dateFormat } from "src/assistance/utils/date";
+import { debugConsole } from "src/assistance/utils/debug";
 import { getBasenameFromPath } from "src/assistance/utils/path";
-import { recordValues } from "src/assistance/utils/record";
 import { DailyNoteOrb } from "src/core/orb-system/orbs/NoteOrb";
 import { NotInitializedError } from "src/errors/NotInitializedError";
 import { UnexpectedError } from "src/errors/UnexpectedError";
+import { FmKey } from "src/orbits/contracts/fmKey";
 
 export class DiaryManager {
     private static _instance: DiaryManager | null = null;
 
-    static setInstance(
-    ): void {
+    static setInstance(): void {
         this._instance = new DiaryManager();
     }
 
@@ -23,14 +23,12 @@ export class DiaryManager {
 
     /** ------------ */
 
-    readonly todayRecordNoteIds = {
-        cIds: new Set<string>(),
-        mIds: new Set<string>(),
-        rIds: new Set<string>()
-    }
-    private constructor(
-
-    ) {
+    // readonly todayRecordNoteIds = {
+    //     cIds: new Set<string>(),
+    //     mIds: new Set<string>(),
+    //     rIds: new Set<string>()
+    // }
+    private constructor() {
         this._today = new Date();
     }
 
@@ -42,6 +40,7 @@ export class DiaryManager {
         const tFile = AM.tFile.getDailyNoteTFile(noteId);
 
         if (tFile) {
+            debugConsole(tFile);
             const orb = AM.factory.noteOrbF.forDaily(tFile);
             if (!orb) throw new UnexpectedError();
             todayOrb = orb;
@@ -72,24 +71,49 @@ export class DiaryManager {
             this._today = date;
             this._createDailyNote();
             alert("The date has changed, and daily note has created.");
-            this.writeDailyLogNoteIds();
+            // this.writeDailyLogNoteIds();
             alert("writeDailyLogNoteIdsを実行。")
         }
     }
 
-    async writeDailyLogNoteIds() {
-        await this.todayNoteOrb.editor.writeDailyRecordNoteIds(this.todayRecordNoteIds);
-
-        recordValues(this.todayRecordNoteIds).forEach(ids => {
-            ids.clear();
-        });
+    async addDailyLogNoteIds(fmKey: FmKey<"dailyLinkedNoteList">, noteId: string) {
+        switch (fmKey) {
+            case ("createdNotes"):
+                this.todayNoteOrb.editor.addCommitCreatedNotes(noteId);
+                break;
+            case ("modifiedNotes"):
+                this.todayNoteOrb.editor.addCommitModifiedNotes(noteId);
+                break;
+            case ("resolvedNotes"):
+                this.todayNoteOrb.editor.addCommitResolvedNotes(noteId);
+                break;
+            case ("doneNotes"):
+                this.todayNoteOrb.editor.addCommitDoneNotes(noteId);
+                break;
+        }
     }
+
+    // async writeDailyLogNoteIds() {
+
+    //     // TODO: ここ、インターバルイベントで書き込むんじゃなくて、対象のノートが出現するたびに書き込む感じでいい気がしてきたな、、、
+    //     // modifiedは更新頻度多いけど、dailyNoteの対象カラムにすでに存在するときは、returnして永続化処理は起こらないわけだし、そんなに重い処理でもない。
+    //     // あと、myNoteのdoneのやつもdailyに書き込むように
+    //     // あと、スマホとかちあって、dailyNoteが二つつくられてしまう問題はどうにかしないとな。。。。
+    //     // 検知したらモーダル警告出して、統合処理を実行するか聞く感じにするか？？？
+
+
+
+    //     await this.todayNoteOrb.editor.writeDailyRecordNoteIds(this.todayRecordNoteIds);
+
+    //     recordValues(this.todayRecordNoteIds).forEach(ids => {
+    //         ids.clear();
+    //     });
+    // }
 
     getDailyTFile(src: string | Date) {
         const path = this.getDailyNotePath(src);
         if (!path) return;
         return AM.obsidian.vault.getFileByPath(path);
-        // return OAM().app.vault.getFileByPath(path);
     }
 
     // stringはid

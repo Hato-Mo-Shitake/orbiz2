@@ -3,9 +3,9 @@ import { AM } from "src/app/AppManager";
 import { isLiteral } from "src/assistance/utils/validation";
 import { DailyFmOrb, LogFmOrb, MyFmOrb } from "src/core/orb-system/orbs/FmOrb";
 import { FmAttrIsClosed } from "src/core/orb-system/services/fm-attrs/FmAttrBoolean";
-import { FmAttrDue, FmAttrResolved, FmAttrTheDay } from "src/core/orb-system/services/fm-attrs/FmAttrDate";
+import { FmAttrDone, FmAttrDue, FmAttrResolved, FmAttrTheDay } from "src/core/orb-system/services/fm-attrs/FmAttrDate";
 import { FmAttrRoleHub } from "src/core/orb-system/services/fm-attrs/FmAttrLinkedNote";
-import { FmAttrBelongsTo, FmAttrCreatedNotes, FmAttrModifiedNotes, FmAttrReferences, FmAttrRelatesTo, FmAttrResolvedNotes } from "src/core/orb-system/services/fm-attrs/FmAttrLinkedNoteList";
+import { FmAttrBelongsTo, FmAttrCreatedNotes, FmAttrDoneNotes, FmAttrModifiedNotes, FmAttrReferences, FmAttrRelatesTo, FmAttrResolvedNotes } from "src/core/orb-system/services/fm-attrs/FmAttrLinkedNoteList";
 import { FmAttrAmountSpent, FmAttrRank, FmAttrScore } from "src/core/orb-system/services/fm-attrs/FmAttrNumber";
 import { FmAttrAspect, FmAttrContext, FmAttrDiaryNoteType, FmAttrId, FmAttrLogNoteType, FmAttrMyNoteType, FmAttrRoleKind, FmAttrStatus, FmAttrType } from "src/core/orb-system/services/fm-attrs/FmAttrString";
 import { FmAttrAliases, FmAttrCategories, FmAttrTags, FmAttrTemplateDone } from "src/core/orb-system/services/fm-attrs/FmAttrStringList";
@@ -54,6 +54,7 @@ export class FmOrbFactory {
             new FmAttrCategories(tFile, fm["categories"]),
             new FmAttrRoleKind(tFile, fm["roleKind"]),
             new FmAttrRoleHub(tFile, fm["roleHub"]),
+            new FmAttrDone(tFile, fm["done"])
         );
 
         return fmOrb;
@@ -126,6 +127,7 @@ export class FmOrbFactory {
             new FmAttrTheDay(tFile, fm["theDay"]),
             new FmAttrCreatedNotes(tFile, fm["createdNotes"]),
             new FmAttrModifiedNotes(tFile, fm["modifiedNotes"]),
+            new FmAttrDoneNotes(tFile, fm["doneNotes"]),
             new FmAttrResolvedNotes(tFile, fm["resolvedNotes"]),
             new FmAttrAmountSpent(tFile, fm["amountSpent"]),
             new FmAttrTemplateDone(tFile, fm["templateDone"]),
