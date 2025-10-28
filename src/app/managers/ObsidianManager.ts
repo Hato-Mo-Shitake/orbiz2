@@ -6,11 +6,9 @@ export class ObsidianManager {
 
     static setInstance(
         app: App,
-        // OrbizPlugin: OrbizPlugin
     ): void {
         this._instance = new ObsidianManager(
             app,
-            // OrbizPlugin
         );
     }
 
@@ -19,21 +17,14 @@ export class ObsidianManager {
         return this._instance;
     }
 
-    /** ------------ */
-
     private constructor(
         private readonly _app: App,
-        // private readonly _OrbizPlugin: OrbizPlugin,
     ) {
     }
 
     get app(): App {
         return this._app;
     }
-
-    // get OrbizPlugin(): OrbizPlugin {
-    //     return this._OrbizPlugin;
-    // }
 
     get vault(): Vault {
         return this._app.vault;

@@ -152,102 +152,13 @@ export abstract class StdNoteReader<TFm extends StdFm = StdFm> extends BaseNoteR
     getInLinkIds(key: FmKey<"stdLinkedNoteList">): string[] {
         return this.getInLinkedNoteList(key).map(n => n.id);
     }
-    // getInLinkIds(key: FmKey<"stdLinkedNoteList">): string[] {
-    //     const results: string[] = [];
-    //     // const sources = AM.cache.noteSources;
-    //     const thisNoteName = this.note.baseName;
-    //     this.note.source.inLinkIds.forEach(id => {
-    //         const source = AM.cache.getStdNoteSourceById(id);
-    //         if (!source) throw new Error("sourceがない: getInLinkIds()")
-
-    //         const fm = AM.note.getFmCacheByPath(source.path);
-    //         if (!fm) throw new Error("fm cacheがない: getInLinkIds()")
-
-    //         const iLinks = fm[key];
-    //         if (Array.isArray(iLinks)) {
-    //             iLinks.forEach(iLink => {
-    //                 if (thisNoteName == extractNoteNameFromInternalLink(iLink)) {
-    //                     results.push(id);
-    //                 }
-    //             });
-    //         }
-    //     });
-
-    //     return results;
-    // }
 
     getOutLinkedStdNoteTreeList(key: FmKey<"stdLinkedNoteList">): RecursiveTree<StdNote>[] {
-        // return startIds.map(id => build(id, new Set()));
         return this.fmOrb[key].value?.map(note => StdNoteReader.buildRecursiveStdNoteTree(note.id, key, "out"))
-
-        // StdNoteReader.buildRecursiveTree(this.getOutLinkIds(key), key, true);
     }
 
     getInLinkedStdNoteTreeList(key: FmKey<"stdLinkedNoteList">): RecursiveTree<StdNote>[] {
         const inLinkedNoteList = this.getInLinkedNoteList(key);
         return inLinkedNoteList.map(note => StdNoteReader.buildRecursiveStdNoteTree(note.id, key, "in"));
-        // return StdNoteReader.buildRecursiveTree(inLinkIds, key, false);
     }
-
-    // このロジックをstaticに切り分けて、Viewerのフックと共有する。
-    // というか、最新を保つことを念頭に置くなら、Readerもstore基準で値を読み取るべきなような。
-    // で、store基準で値を構成する。リロードのタイミングはEditorやキャッシュ更新時に指示。
-    // private buildRecursiveTree(
-    //     startIds: string[],
-    //     key: FmKey<"stdLinkedNoteList">,
-    //     isParentSearch: boolean
-    // ): RecursiveTree<string>[] {
-    //     const build = (id: string, chain: Set<string>): RecursiveTree<string> => {
-    //         if (chain.has(id)) {
-    //             console.warn(`循環参照を検出: ${id}`);
-    //             return { hub: id, nodes: [] };
-    //         }
-
-    //         const source = AM.cache.getStdNoteSourceById(id);
-    //         if (!source) return { hub: id, nodes: [] };
-
-    //         const fm = AM.note.getFmCacheByPath(source.path);
-    //         if (!fm) return { hub: id, nodes: [] };
-
-    //         const nextChain = new Set(chain);
-    //         nextChain.add(id);
-
-    //         let nextIds: string[] = [];
-
-    //         if (isParentSearch) {
-    //             const iLinks = fm[key];
-    //             if (Array.isArray(iLinks)) {
-    //                 nextIds = iLinks.flatMap(link => {
-    //                     const name = extractNoteNameFromInternalLink(link);
-    //                     return name ? (AM.cache.getStdNoteIdByName(name) ?? []) : [];
-    //                 });
-    //             }
-    //         } else {
-    //             const thisName = getBasenameFromPath(source.path);
-
-    //             nextIds = [...source.inLinkIds].flatMap(otherId => {
-    //                 const otherSource = AM.cache.getStdNoteSourceById(otherId);
-    //                 if (!otherSource) return [];
-
-    //                 const otherFm = AM.note.getFmCacheByPath(otherSource.path);
-    //                 if (!otherFm) return [];
-
-    //                 const iLinks = otherFm[key];
-    //                 if (!Array.isArray(iLinks)) return [];
-
-    //                 const hasLink = iLinks.some(link => {
-    //                     const name = extractNoteNameFromInternalLink(link);
-    //                     return name && name == thisName;
-    //                 });
-
-    //                 return hasLink ? [otherId] : [];
-    //             });
-    //         }
-
-    //         const nodes = nextIds.map(nextId => build(nextId, nextChain));
-    //         return { hub: id, nodes };
-    //     };
-
-    //     return startIds.map(id => build(id, new Set()));
-    // }
 }

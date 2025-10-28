@@ -122,8 +122,6 @@ export class Prompt {
 
         if (!options?.newLeaf || Platform.isMobileApp) {
             await AM.looks.openNote(orb.note);
-            // const mdView = OAM().app.workspace.getActiveViewOfType(MarkdownView);
-            // if (mdView) AM.looks.mountOrUpdateNoteTopSection(mdView);
         } else {
             await AM.looks.openNote(orb.note, options?.newLeaf || "split");
         }
@@ -146,8 +144,6 @@ export class Prompt {
 
         if (!options?.newLeaf || Platform.isMobileApp) {
             await AM.looks.openNote(orb.note);
-            // const mdView = OAM().app.workspace.getActiveViewOfType(MarkdownView);
-            // if (mdView) AM.looks.mountOrUpdateNoteTopSection(mdView);
         } else {
             await AM.looks.openNote(orb.note, options?.newLeaf || "split");
         }

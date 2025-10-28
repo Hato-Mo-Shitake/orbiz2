@@ -24,8 +24,6 @@ export class CacheManager {
         return this._instance;
     }
 
-    /** ------------------------------------------------------------------- */
-
     /** id -> NoteSource */
     private _stdNoteSourceMapById = new Map<string, StdNoteSource>();
 
@@ -95,10 +93,8 @@ export class CacheManager {
         this._diaryNoteOrbMapById.set(noteId, orb);
     }
 
-    // updateNoteOrbCaches = debounce(this._updateNoteOrbCaches, 3000, true);
     private readonly _deletedCacheNoteIdList = new Set<string>();
     updateNoteOrbCaches(): void {
-        // const leaves = OAM().app.workspace.getLeavesOfType("markdown");
         const leaves = AM.obsidian.workspace.getLeavesOfType("markdown");
         const aliveNoteIds = new Set<string>();
         const stdCacheMap = this._stdNoteOrbMapById;
@@ -125,7 +121,6 @@ export class CacheManager {
                 }
             } else {
                 throw new UnexpectedError();
-                // throw new UnexpectedError();
             }
 
             aliveNoteIds.add(noteId);
@@ -133,8 +128,7 @@ export class CacheManager {
 
         for (const id of stdCacheMap.keys()) {
             if (!aliveNoteIds.has(id)) {
-                // Note: 二回削除候補に上がったら消す的な。
-                // 一旦これで、新規作成先のノートに、実在する親ノートがTopSectionに表示されない問題は解決したけど、まだ色々とTopSection表示周りは不安定な気がする。ルートノートの子ノート表示が、新規作成先のものしか表示されない時あるし。
+                // Note: 二回削除候補に上がったら消す。
                 if (this._deletedCacheNoteIdList.has(id)) {
                     stdCacheMap.delete(id);
                     this._deletedCacheNoteIdList.delete(id);
@@ -155,7 +149,6 @@ export class CacheManager {
 
     initialize(): void {
         debugConsole('cache initializing start.');
-        // const { app } = OAM();
         const { app } = AM.obsidian;
 
         AM.tFile.allStdTFiles.forEach(file => {
@@ -164,13 +157,11 @@ export class CacheManager {
             const id = AM.note.getNoteIdByTFile(file);
             if (!id) {
                 console.warn("missing note id. path: ", file.path);
-                // OEM.reportMissingNoteId(file.path);
                 return;
             }
 
             if (this._stdNoteSourceMapById.has(id)) {
                 console.warn("note id conflict. id, path: ", id, file.path);
-                // OEM.reportNoteIdConflict(id, file.path)
                 return;
             }
             this._stdNoteSourceMapById.set(id, {
@@ -182,7 +173,6 @@ export class CacheManager {
 
             if (this._stdNoteIdMapByName.has(name)) {
                 console.warn("file name conflict. name, path: ", name, file.path);
-                // OEM.reportFileNameConflict(name, file.path);
                 return;
             }
 
@@ -238,13 +228,6 @@ export class CacheManager {
         if (!id) throw new NoIdNoteError(tFile.path);
 
         this._updateCacheWhenPathChanged(tFile, oldName, newName, id);
-        // if (!this._prePathChangedId || this._prePathChangedId === id) {
-        // if (this._prePathChangedId === id) {
-        //     this._debouncedUpdateCacheWhenPathChanged(tFile, oldName, newName, id);
-        // } else {
-        //     this._prePathChangedId = id;
-        //     this._updateCacheWhenPathChanged(tFile, oldName, newName, id);
-        // }
     }
     // private _debouncedUpdateCacheWhenPathChanged = debounce(this._updateCacheWhenPathChanged, 1500, true);
     private _updateCacheWhenPathChanged(tFile: TFile, oldName: string, newName: string, id: string): void {
@@ -283,10 +266,6 @@ export class CacheManager {
         if (currentNoteId.startsWith("diary_")) return;
         if (typeof currentNoteId !== "string") throw new Error("invalid note id");
 
-
-
-        // 新規ノート作成時のTopSectionが切り替わらない問題、でバウンス関係ない？
-        // そもそもfmCacheがうまく取れてないのが問題なんだもんなぁ。
         const editWatcher = AM.eventWatch.userEditWatcher;
         if (editWatcher.editedNoteIds.includes(currentNoteId)) {
             editWatcher.watchOnceAfterEdit(currentNoteId, (editor: Editor) => {
@@ -337,21 +316,6 @@ export class CacheManager {
 
 
         if (editor) {
-            // ノート内にリンク先の存在しない内部リンクが作成されたとき。
-            // if (newOutLinkIds.size) {
-            // ここでトリガーを引きたいが、そのためにはeditorが必要？
-            // alert("ノート内にリンク先の存在しない内部リンクが作成されました。consoleを確認してね。");
-
-
-            // TODO: この機能は削除します。代わりに、createメソッド以外の経由、
-            // 特に、未解決リンクをクリックしてノート作成を行なった際に
-            // そのノートに、どこから開かれたかも踏まえた上の（履歴を活用）、メタ情報を保持させた、ノート作成ボタンを設置するようにする。
-
-            // vault on create メソッドを使って、pathをチェックして判定する。
-
-            // await this._promptCreateNewNoteForUnresolvedLinks(notHasIdLinks, noteOrb, editor);
-            // }
-
             // ノート内にfmのlinkedNoteに存在しない内部リンクが置かれた時。
             const linkedNoteIds = noteOrb.reader.linkedNoteIds;
             const unlinkedStdNoteIds: Set<string> = new Set();
@@ -363,12 +327,6 @@ export class CacheManager {
 
             if (unlinkedStdNoteIds.size) {
                 await this._locateButtonAddLinkedNotes([...unlinkedStdNoteIds], noteOrb, editor);
-
-                // 未解決リンクのことは気にせずに、stdとして存在するが、現在ノートに関連していない内部リンクが置かれた時にだけ発火させる。
-                // 隣にボタンを設置する形式で、行こうかな。。。？
-
-                // alert("ノート内に関連ノート外のstd内部リンクが作成されたよ。consoleを確認してね。");
-                // debugConsole(editor.getValue());
             }
         }
 
@@ -384,19 +342,13 @@ export class CacheManager {
         for (const unlinkedStdNoteId of unlinkedStdNoteIds) {
             iterateNoteLines(editor, (line, lineText) => {
                 if (!lineText) return;
-                // const unlinkedStdNoteSource = AM.cache.getStdNoteSourceById(unlinkedStdNoteId);
                 const unlinkedStdNoteSource = this.getStdNoteSourceById(unlinkedStdNoteId);
                 if (!unlinkedStdNoteSource) return;
 
                 const linkedNoteName = getBasenameFromPath(unlinkedStdNoteSource.path);
-                // debugConsole(line, lineText);
                 if (!lineText.includes(`[[${linkedNoteName}]]`)) return;
-
-                // debugConsole("置換");
                 const escapedLink = `[[${linkedNoteName}]]`.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-                // debugConsole("escapedLink", escapedLink)
                 const regex = new RegExp(escapedLink, "g");
-                // debugConsole("regex", regex)
 
                 const newLine = lineText.replace(
                     regex,
@@ -449,7 +401,6 @@ export class CacheManager {
             outLinkNoteSource?.inLinkIds.delete(noteId);
         });
 
-        // const noteR = AM.repository.noteR;
         const noteR = AM.repository.noteR;
         const deletedFm: Record<string, FmValue> = {};
         for (const [key, value] of Object.entries(fmCache)) {
@@ -467,7 +418,6 @@ export class CacheManager {
     private _initializeNewNote(noteSource: StdNoteSource) {
         delete noteSource.unCacheInitialized;
         AM.diary.addDailyLogNoteIds("createdNotes", noteSource.id);
-        // AM.diary.todayRecordNoteIds.cIds.add(noteSource.id);
     }
 
     private _getNewOutLinkIds(cache: CachedMetadata): { newOutLinkIds: Set<string>, notHasIdLinks: Set<string> } {
@@ -477,7 +427,6 @@ export class CacheManager {
         // まとめてリンク処理
         // アウトリンク先のノートIDを newOutLinkIds に追加している。
         // fileNameToIdMapに名前が見つからないものはスルー。
-
         [...(cache.frontmatterLinks || []), ...(cache.links || [])].forEach((linkObj: FrontmatterLinkCache | LinkCache) => {
             const fileName = getBasenameFromPath(linkObj.link);
             const id = this.getStdNoteIdByName(fileName);

@@ -10,21 +10,17 @@ export function getBasenameFromPath(path: string): string {
 
 export function createMyNotePath(baseName: string, subType: MyNoteType): string {
     return `${AM.orbiz.rootPath}/galaxies/${subType}/${getCurrentYearMonth()}/${baseName}.md`;
-    // return `${OAM().rootPath}/galaxies/${subType}/${getCurrentYearMonth()}/${baseName}.md`;
 }
 
 export function createLogNotePath(baseName: string, subType: LogNoteType): string {
     return `${AM.orbiz.rootPath}/logs/${subType}/${getCurrentYearMonth()}/${baseName}.md`;
-    // return `${OAM().rootPath}/logs/${subType}/${getCurrentYearMonth()}/${baseName}.md`;
 }
 
 export function createDailyNotePath(date?: Date): string {
     const y = date ? dateFormat(date, "Y") : AM.diary.getToday("Y");
-    // const y = date ? dateFormat(date, "Y") : AM.diary.getToday("Y");
     const m = date ? dateFormat(date, "m") : AM.diary.getToday("m");
     const ymd = date ? dateFormat(date, "Y-m-d") : AM.diary.getToday("Y-m-d");
     return `${AM.orbiz.rootPath}/diaries/daily/${y}/${m}/${ymd}.md`;
-    // return `${OAM().rootPath}/diaries/daily/${y}/${m}/${ymd}.md`;
 }
 
 export function getParentPath(path: string): string {

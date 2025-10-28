@@ -21,13 +21,6 @@ export class DiaryManager {
         return this._instance;
     }
 
-    /** ------------ */
-
-    // readonly todayRecordNoteIds = {
-    //     cIds: new Set<string>(),
-    //     mIds: new Set<string>(),
-    //     rIds: new Set<string>()
-    // }
     private constructor() {
         this._today = new Date();
     }
@@ -93,23 +86,6 @@ export class DiaryManager {
         }
     }
 
-    // async writeDailyLogNoteIds() {
-
-    //     // TODO: ここ、インターバルイベントで書き込むんじゃなくて、対象のノートが出現するたびに書き込む感じでいい気がしてきたな、、、
-    //     // modifiedは更新頻度多いけど、dailyNoteの対象カラムにすでに存在するときは、returnして永続化処理は起こらないわけだし、そんなに重い処理でもない。
-    //     // あと、myNoteのdoneのやつもdailyに書き込むように
-    //     // あと、スマホとかちあって、dailyNoteが二つつくられてしまう問題はどうにかしないとな。。。。
-    //     // 検知したらモーダル警告出して、統合処理を実行するか聞く感じにするか？？？
-
-
-
-    //     await this.todayNoteOrb.editor.writeDailyRecordNoteIds(this.todayRecordNoteIds);
-
-    //     recordValues(this.todayRecordNoteIds).forEach(ids => {
-    //         ids.clear();
-    //     });
-    // }
-
     getDailyTFile(src: string | Date) {
         const path = this.getDailyNotePath(src);
         if (!path) return;
@@ -146,9 +122,7 @@ export class DiaryManager {
     }
 
     getExistingDailyNoteYearsBetween(): [number, number] {
-        // const folderPath = `${OAM().rootPath}/diaries/daily`;
         const folderPath = `${AM.orbiz.rootPath}/diaries/daily`;
-        //  const folder = OAM().app.vault.getFolderByPath(folderPath);
         const folder = AM.obsidian.vault.getFolderByPath(folderPath);
         if (!folder) throw new UnexpectedError();
         const yearFolders: TFolder[] = folder.children.filter(t => t instanceof TFolder);
@@ -170,10 +144,8 @@ export class DiaryManager {
         return [start, end]
     }
     getExistingDailyNoteMonthsBetween(year: number): [number, number] | null {
-        // const folderPath = `${OAM().rootPath}/diaries/daily/${year}`;
         const folderPath = `${AM.orbiz.rootPath}/diaries/daily/${year}`;
         const folder = AM.obsidian.vault.getFolderByPath(folderPath);
-        // const folder = OAM().app.vault.getFolderByPath(folderPath);
         if (!folder) return null;
         const monthFolders: TFolder[] = folder.children.filter(t => t instanceof TFolder);
         const names = monthFolders.map(t => getBasenameFromPath(t.path));

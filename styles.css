@@ -9,7 +9,7 @@ If your plugin does not need CSS, delete this file.
 
 
 /* orbiz */
-/* TODO: これ、なんかの変数に対象の文字列を格納して補完効くようにしたいな */
+/* TODO: これ、なんかの変数に対象の文字列を格納して補完効くようにしたい */
 
 .orbiz__item--flex-small {
     display: flex;

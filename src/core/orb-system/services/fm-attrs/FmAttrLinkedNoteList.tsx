@@ -133,12 +133,6 @@ export abstract class FmAttrLinkedNoteList extends FmAttr<StdNote[]> implements 
     get noteIds(): string[] {
         return this.value.map(note => note.id);
     }
-
-    // getEditBox(): ReactNode {
-    //     return <FmLinkedNoteListEditBox
-    //         fmAttr={this}
-    //     />
-    // }
 }
 
 export class FmAttrBelongsTo extends FmAttrLinkedNoteList {

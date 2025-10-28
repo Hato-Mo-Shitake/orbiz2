@@ -5,7 +5,6 @@ import { AM } from "../AppManager";
 export class ViewRegistrar {
     register(): void {
         const { plugin } = AM.orbiz;
-        // const { OrbizPlugin } = OAM();
 
         plugin.registerView(
             VIEW_TYPE_EXAMPLE,

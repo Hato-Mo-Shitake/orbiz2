@@ -88,14 +88,12 @@ export class NoteCreator {
         }
 
         await newNoteOrb.editor.commitNewFm();
-        // AM.cache.setStdNoteOrbCache(newNoteOrb.note.id, newNoteOrb);
         AM.cache.setStdNoteOrbCache(newNoteOrb.note.id, newNoteOrb);
         return newNoteOrb;
     }
 
     async createLogNote(conf: NewLogNoteConf, options?: { tFile?: TFile }): Promise<LogNoteOrb> {
-
-        // ここの処理の仕方はもうちょっと検討したいが、一旦これで、、、
+        // TODO: ここの処理の仕方はもうちょっと検討したいが、一旦これで、、、
         conf.baseName = conf.baseName + `〈-${conf.subType}-〉`;
 
         let tFile: TFile;
@@ -135,17 +133,13 @@ export class NoteCreator {
 
         await newNoteOrb.editor.commitNewFm();
 
-        // AM.cache.setStdNoteOrbCache(newNoteOrb.note.id, newNoteOrb);
         AM.cache.setStdNoteOrbCache(newNoteOrb.note.id, newNoteOrb);
         return newNoteOrb;
     }
 
     async createDailyNote(date?: Date): Promise<DailyNoteOrb> {
-        // TODO: これ、すでに同名のものがあるときは弾くようにしたいな
-
+        // TODO: これ、すでに同名のものがあるときは弾くようにしたい
         const tFile = await this.noteR.createDailyTFile(date);
-
-
 
         const fmB = new DailyFmBuilder();
         const fm = fmB.build();
@@ -183,9 +177,7 @@ export class NoteCreator {
             inLinkIds: new Set<string>(),
             unCacheInitialized: true
         };
-        // AM.cache.setStdNoteSource(id, source);
         AM.cache.setStdNoteSource(id, source);
-        // AM.cache.setStdNoteIdByName(baseName, id);
         AM.cache.setStdNoteIdByName(baseName, id);
 
         return fm;
@@ -199,7 +191,6 @@ export class NoteCreator {
         if (direction === "out") {
             newNoteOrb.editor.addLinkedNote(rootNoteOrb.note, conf.key);
         } else if (direction === "in") {
-            // ここで上書きになってます？ なってないわ。。？？？？？ 謎すぎる。
             rootNoteOrb.editor.addLinkedNote(newNoteOrb.note, conf.key);
             await rootNoteOrb.editor.commitNewFm();
         } else {

@@ -24,12 +24,4 @@ export class NoteEditorFactory {
     forDaily(note: DailyNote, fmOrb: DailyFmOrb): DailyNoteEditor {
         return new DailyNoteEditor(note, fmOrb);
     }
-
-    // forStdNote(note: StdNote): StdNoteEditor {
-    //     return new StdNoteEditor(note);
-    // }
-
-    // forNote(note: Note): NoteEditor {
-    //     return new NoteEditor(note);
-    // }
 }

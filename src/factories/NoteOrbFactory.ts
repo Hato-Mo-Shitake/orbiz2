@@ -43,8 +43,6 @@ export class NoteOrbFactory {
 
         if (!(src instanceof TFile)) return null;
         const tFile = src;
-
-        // const fmCache = OAM().app.metadataCache.getFileCache(tFile)?.frontmatter;
         const fmCache = AM.obsidian.metadataCache.getFileCache(tFile)?.frontmatter;
 
         if (isMyFm(fmCache)) {
@@ -69,8 +67,6 @@ export class NoteOrbFactory {
 
         if (!(src instanceof TFile)) return null;
         const tFile = src;
-
-        // const fmCache = OAM().app.metadataCache.getFileCache(tFile)?.frontmatter;
         const fmCache = AM.obsidian.metadataCache.getFileCache(tFile)?.frontmatter;
 
         if (isDailyFm(fmCache)) {
@@ -81,7 +77,6 @@ export class NoteOrbFactory {
 
         return null;
     }
-
 
     // NOTE: 新規ノート作成時は、fmCacheに依存できないので、オプションでfmを渡してやる必要がある。
     forMy(src: TFile | MyNote, options?: { fm: MyFm }): MyNoteOrb | null {
@@ -96,7 +91,6 @@ export class NoteOrbFactory {
         } else {
             note = src;
             tFile = src.tFile;
-            // fm = note.fm;
         }
 
         const store = createMyNoteState();
@@ -125,7 +119,6 @@ export class NoteOrbFactory {
         } else {
             note = src;
             tFile = src.tFile;
-            // fm = note.fm;
         }
 
         const store = createLogNoteState();
@@ -154,7 +147,6 @@ export class NoteOrbFactory {
         } else {
             note = src;
             tFile = src.tFile;
-            // fm = note.fm;
         }
 
         const store = createDailyNoteState();

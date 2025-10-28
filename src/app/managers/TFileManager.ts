@@ -17,22 +17,17 @@ export class TFileManager {
 
     static getInstance(): TFileManager {
         if (!this._instance) throw new NotInitializedError();
-        // OEM.throwNotInitializedError(OrbizTFileManager);
-
         return this._instance;
     }
 
-    /** ------------ */
     private constructor(
     ) { }
 
     private get app(): App {
         return AM.obsidian.app;
-        // return OAM().app
     }
 
     get activeTFile(): TFile | null {
-        // const { app } = OAM();
         const tFile = this.app.workspace.getActiveFile();
         if (!tFile) return null;
         return tFile;
@@ -84,23 +79,19 @@ export class TFileManager {
         )
     }
     isMyTFilePath(path: string): boolean {
-        // const rootDir = OAM().rootPath + "/";
         const rootDir = AM.orbiz.rootPath + "/";
         return path.startsWith(rootDir + "galaxies");
     }
     isLogTFilePath(path: string) {
-        // const rootDir = OAM().rootPath + "/";
         const rootDir = AM.orbiz.rootPath + "/";
         return path.startsWith(rootDir + "logs");
     }
     isDiaryTFilePath(path: string) {
-        // const rootDir = OAM().rootDir;
         const rootDir = AM.orbiz.rootDir;
         return path.startsWith(rootDir + "diaries");
     }
 
     getTFileByPath(path: string): TFile | null {
-        // const tFile = OAM().app.vault.getFileByPath(path);
         const tFile = AM.obsidian.vault.getFileByPath(path);
         if (!tFile) return null;
         return tFile;
@@ -124,7 +115,6 @@ export class TFileManager {
         if (id.startsWith("diary_")) {
             path = AM.diary.getDiaryNotePath(id);
         } else {
-            // path = AM.cache.getStdNoteSourceById(id)?.path;
             path = AM.cache.getStdNoteSourceById(id)?.path;
         }
 
@@ -136,8 +126,6 @@ export class TFileManager {
     getDailyNoteTFile(src: string | Date): TFile | null {
         const path = AM.diary.getDailyNotePath(src);
         if (!path) return null;
-
-        // const tFile = AM.tFile.getMdTFileByPath(path);
         const tFile = this.getMdTFileByPath(path);
         if (!tFile) return null;
         return tFile;
@@ -149,7 +137,6 @@ export class TFileManager {
         return this.getMdTFileByPath(path);
     }
     getNoteTFileByNoteName(noteName: string): TFile | null {
-        // const id = AM.cache.getStdNoteIdByName(noteName);
         const id = AM.cache.getStdNoteIdByName(noteName);
         if (!id) return null;
         return this.getNoteTFileById(id);

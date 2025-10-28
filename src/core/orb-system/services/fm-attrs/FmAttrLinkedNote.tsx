@@ -79,21 +79,10 @@ export abstract class FmAttrLinkedNote<TNote extends StdNote = StdNote> extends 
             await AM.repository.noteR.updateFmAttr(this.tFile, this.fmKey, this._newValue.id);
         } else {
             throw new NotImplementedError();
-            // OEM.throwNotImplementedError();
         }
 
         this.afterCommit();
     }
-
-    // getLooks(): ReactNode {
-    //     return <div>{this.fmKey}: {this.value?.internalLink || ""}</div>;
-    // }
-
-    // getEditBox(): ReactNode {
-    //     return <FmLinkedNoteEditBox
-    //         fmAttr={this}
-    //     />
-    // }
 }
 
 export class FmAttrRoleHub extends FmAttrLinkedNote<MyNote> {

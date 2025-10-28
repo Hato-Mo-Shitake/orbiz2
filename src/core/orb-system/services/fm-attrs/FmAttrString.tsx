@@ -266,14 +266,6 @@ export class FmAttrDiaryNoteType<TDiaryType extends DiaryNoteType = DiaryNoteTyp
     }
     setStore(store: StoreApi<DiaryNoteState>): void {
         throw new UnexpectedError();
-        // this._store = store;
-        // const state = store.getState();
-        // this._storeGetter = () => state.fmAttrDiaryNoteType;
-        // this._storeSetter = (value: DiaryNoteType) => state.setFmAttrDiaryNoteType(value);
-
-        // if (this._value) {
-        //     this._storeSetter(this._value);
-        // }
     }
     getView(options?: { header?: string, headerWidth?: number }): ReactNode {
         if (!this._store) return null;
@@ -287,62 +279,8 @@ export class FmAttrDiaryNoteType<TDiaryType extends DiaryNoteType = DiaryNoteTyp
     }
     getEditableView(): ReactNode {
         throw new UnexpectedError();
-        // if (!this._store) return null;
-        // return (<>
-        //     <FmAttrDiaryNoteEditor
-        //         store={this._store}
-        //         fmAttr={this}
-        //     />
-        // </>)
     }
 }
-
-// これ、MyNoteTypeとかで分けた方が良さそう
-// forcedEditで強制変更できるようにして
-// export class FmAttrSubType<TSubType extends MyNoteType | LogNoteType | DiaryNoteType = MyNoteType | LogNoteType | DiaryNoteType> extends FmAttrString<TSubType> {
-//     protected _store: StoreApi<MyNoteState> | null;
-//     constructor(
-//         tFile: TFile,
-//         _value: TSubType,
-//     ) {
-//         super(
-//             tFile,
-//             "subType",
-//             _value,
-//             {
-//                 isImmutable: true,
-//             }
-//         )
-//     }
-//     setStore(store: StoreApi<any>): void {
-//         this._store = store;
-//         const state = store.getState();
-//         this._storeGetter = () => state.;
-//         this._storeSetter = (value: string) => state.setFmAttrRoleKind(value);
-
-//         if (this._value) {
-//             this._storeSetter(this._value);
-//         }
-//     }
-//     getView(options?: { header?: string, headerWidth?: number }): ReactNode {
-//         return (<>
-//             <FmAttrSubTypeDisplay
-//                 fmAttr={this}
-//                 header={options?.header}
-//                 headerWidth={options?.headerWidth}
-//             />
-//         </>)
-//     }
-//     getEditableView(): ReactNode {
-//         if (!this._store) return null;
-//         return (<>
-//             <FmAttrMyNoteEditor
-//                 store={this._store}
-//                 fmAttr={this}
-//             />
-//         </>)
-//     }
-// }
 
 export class FmAttrRoleKind extends FmAttrString {
     protected _store: StoreApi<MyNoteState> | null;
@@ -491,19 +429,6 @@ export class FmAttrStatus extends FmAttrString<LogNoteStatus> {
             />
         </>)
     }
-
-    // getEditBox(): ReactNode {
-    //     const options = logNoteStatusList.map(a => {
-    //         return {
-    //             label: a,
-    //             value: a,
-    //         }
-    //     })
-    //     return <FmAttrSelectBox
-    //         fmEditor={this}
-    //         options={options}
-    //     />
-    // }
 }
 
 export class FmAttrContext extends FmAttrString {

@@ -21,8 +21,6 @@ export class OrbizSettingManager {
     static getInstance(): OrbizSettingManager {
         const instance = OrbizSettingManager._instance;
         if (!instance) throw new NotInitializedError();
-        // OEM.throwNotInitializedError();
-
         return instance;
     }
 
@@ -63,7 +61,6 @@ export class OrbizSettingManager {
         const newSettings = structuredClone(this._savedSettings);
         newSettings.sampleSetting = setting;
         this._unsavedSettings = newSettings;
-        // this._setSettings(newSettings);
     }
     setSpaceType(type: "my" | "test") {
         const newSettings = structuredClone(this._savedSettings);
@@ -97,8 +94,7 @@ export class OrbizSettingManager {
         await this._OrbizPlugin.saveData(this._savedSettings);
 
         if (this.spaceType != preSpaceType) {
-
-            // やっぱりなんか色々と怪しいな。
+            // TODO: スペースタイプを切り替えるタイミングで、それに適応した環境として更新させたいが、現状なっていない、、、
             const plugin = this._OrbizPlugin;
             plugin.load();
             debugConsole(`OrbizSpaceType: ${preSpaceType} -> ${this.spaceType}`);

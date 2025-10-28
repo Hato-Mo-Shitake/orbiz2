@@ -35,7 +35,6 @@ export class MyNoteViewer<
         return <RoleNodesDisplay
             store={this.store}
             rootNote={this.note}
-        // header={"Role Nodes"}
         />
     }
 }

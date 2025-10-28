@@ -1,25 +1,4 @@
 
-// export class fmAttrFilter {
-//     static internalLink(link: string): string | null {
-//         if (fmAttrValidator.internalLink(link)) return link;
-//         if (isVaultPath(link)) return `[[${link}]]`;
-//         if (!link.includes("/")) {
-//             const map = AM.cache.fileNameToIdMap;
-//             const noteId = map.get(link);
-//             if (!noteId) return null;
-//             const source = AM.cache.getStdNoteSourceById(noteId);
-//             if (!source) return null;
-
-//             const parts = source.path.split("/");
-
-//             const filtered = parts.map(sanitizeFileName).join("/");
-
-//             return `[[${filtered}]]`;
-//         }
-//         return null;
-//     }
-// }
-
 export function trimFull(str: string): string {
     return str.replace(/^[\s\u3000]+|[\s\u3000]+$/g, "");
 }

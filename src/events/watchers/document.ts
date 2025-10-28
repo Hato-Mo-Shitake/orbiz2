@@ -5,8 +5,6 @@ import { EventHandlerForDocument } from "../handlers/document";
 export class DocumentEventWatcher {
     private get _OrbizPlugin(): OrbizPlugin {
         return AM.orbiz.plugin;
-        // return AM.obsidian.OrbizPlugin;
-        // return OAM().OrbizPlugin;
     }
 
     public watchOnClick(callback: EventHandlerForDocument<"click">) {

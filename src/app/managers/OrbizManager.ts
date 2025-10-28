@@ -14,8 +14,6 @@ export class OrbizManager {
         return this._instance;
     }
 
-    /** ------------ */
-
     private readonly _myRoot = "my-space";
     private readonly _testRoot = "test-space"
 

@@ -11,11 +11,6 @@ import { StoreApi } from "zustand";
 import { FmAttrSimpleValue } from "./FmAttrSimpleValue";
 
 export abstract class FmAttrNumber<TValue extends number = number> extends FmAttrSimpleValue<TValue> {
-    // getEditBox(): ReactNode {
-    //     return <FmNumberEditBox
-    //         fmEditor={this}
-    //     />
-    // }
 }
 
 export class FmAttrRank extends FmAttrNumber {

@@ -22,12 +22,4 @@ export class NoteReaderFactory {
     forDaily(note: DailyNote, fmOrb: DailyFmOrb): DailyNoteReader {
         return new DailyNoteReader(note, fmOrb);
     }
-
-    // forStdNote(note: StdNote): StdNoteReader {
-    //     return new StdNoteReader(note);
-    // }
-
-    // forNote(note: Note): NoteReader {
-    //     return new NoteReader(note);
-    // }
 }

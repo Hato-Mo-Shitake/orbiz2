@@ -29,7 +29,7 @@ export function SubmitInputForm({
             <button type="submit">{btnName}</button>
             <AutoSuggestInput
                 input={input}
-                setInput={setInput}
+                onChange={setInput}
                 suggestions={suggestions || []}
                 placeholder={placeholder || ""}
             />

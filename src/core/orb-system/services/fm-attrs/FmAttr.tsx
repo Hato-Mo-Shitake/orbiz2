@@ -22,7 +22,6 @@ export abstract class FmAttr<TValue = any, TNoteState extends BaseNoteState = Ba
         readonly fmKey: FmKey,
         readonly isImmutable: boolean,
         protected _value: TValue | null,
-        // protected _store?: StoreApi<NoteMetadataState<TValue>>,
     ) {
         if ((_value !== null) && !this.validate(_value)) {
             throw Error(`validation error. in FmAttr constructor. fmKey is ${fmKey}`);
@@ -31,9 +30,6 @@ export abstract class FmAttr<TValue = any, TNoteState extends BaseNoteState = Ba
     }
 
     get value(): TValue | null {
-        // if (this._storeGetter) {
-        //     return this._storeGetter();
-        // }
         return this._value;
     }
 
@@ -88,25 +84,10 @@ export abstract class FmAttr<TValue = any, TNoteState extends BaseNoteState = Ba
         }
         await AM.repository.noteR.updateFmAttr(this.tFile, this.fmKey, filteredValue);
         this._value = structuredClone(filteredValue) || null;
-        this._newValue = filteredValue; // TODO: うーーーーん。とりあえず。store更新の都合でこう、、、、
+
+        this._newValue = filteredValue; // TODO: とりあえず。store更新の都合でこう、、、、
         this.afterCommit();
     }
-
-    // getLooks(): ReactNode {
-    //     // NOTE: 結局、メタデータの更新時は全部リロードすることにする。inLinksの感知が難しいため。
-
-
-    //     // ここでstoreがあればstoreを使う。
-
-    //     // TODO: もうFmAttrにLooksを持たせるのはやめようか。
-    //     // storeを持たないといけなくなるけど、fmAttr自身は,stdとかmyとか知らないから管理しづらい。
-
-    //     return <div>{this.fmKey}: {String(this.value)}</div>;
-
-
-
-    // }
-    // abstract getEditBox(): ReactNode;
 
     addListener(listener: Listener<TValue>): void {
         this._listeners.add(listener);
@@ -121,10 +102,8 @@ export abstract class FmAttr<TValue = any, TNoteState extends BaseNoteState = Ba
     }
 
     protected afterCommit() {
-        // this._value = this._newValue || null;
         if (this._newValue) {
             this._storeSetter?.(this._newValue);
-            // this._store?.setState(this._newValue);
         }
         this._newValue = undefined;
         this.notify();

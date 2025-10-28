@@ -12,7 +12,6 @@ export class FactoryManager {
 
     static setInstance(): void {
         const fmOrbF = new FmOrbFactory();
-        // const noteFmBuilderF = new NoteFmBuilderFactory(noteFmF);
         const noteF = new NoteFactory();
         const noteReaderF = new NoteReaderFactory();
         const noteEditorF = new NoteEditorFactory();
@@ -45,7 +44,6 @@ export class FactoryManager {
     }
 
     private constructor(
-        // public readonly noteFmBuilderF: NoteFmBuilderFactory,
         public readonly noteF: NoteFactory,
         public readonly fmOrbF: FmOrbFactory,
         public readonly noteReaderF: NoteReaderFactory,

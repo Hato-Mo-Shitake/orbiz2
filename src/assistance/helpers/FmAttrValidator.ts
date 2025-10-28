@@ -9,8 +9,7 @@ export class FmAttrValidator {
     static internalLink(link: string): boolean {
         const path = extractLinkTarget(link);
         if (!path) return false;
-        // 名前オンリーのリンクだとここで落ちるんだ。
+        // NOTE: 名前オンリーのリンクだとここで落ちる。
         return AM.orbiz.isVaultPath(path);
-        // return OAM().isVaultPath(path);
     }
 }

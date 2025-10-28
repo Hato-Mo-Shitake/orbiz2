@@ -48,7 +48,6 @@ export function EditableItemList({
         onChange(labels.filter(label => label != deletedLabel));
     }
 
-    // debugConsole("labels in EditableItemList", labels);
     return (
         <div>
             <div style={{ display: "flex" }}>
@@ -64,15 +63,12 @@ export function EditableItemList({
             </div>
             <ul style={{ listStyle: "none", paddingLeft: 0 }}>
                 {labels.map(label =>
-                    // return (
                     <Fragment key={label}>
                         <li style={{ display: "flex", gap: "0.5em", alignItems: "center" }}>
                             <button onClick={() => handleDelete(label)}>削除</button>
                             <span>- {label}</span>
                         </li>
                     </Fragment>
-
-                    // )
                 )}
             </ul>
         </div>

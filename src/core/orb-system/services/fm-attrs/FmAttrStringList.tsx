@@ -34,9 +34,6 @@ export abstract class FmAttrStringList<TAVal extends string = string> extends Fm
     }
 
     get value(): TAVal[] {
-        // if (this._storeGetter) {
-        //     return this._storeGetter() || [];
-        // }
         return this._value || [];
     }
 
@@ -87,12 +84,6 @@ export abstract class FmAttrStringList<TAVal extends string = string> extends Fm
         this._value = this.newValue ? [...this.newValue] : [];
         this.afterCommit();
     }
-
-    // getEditBox(): ReactNode {
-    //     return <FmStringListEditBox
-    //         fmEditor={this}
-    //     />
-    // }
 }
 
 export class FmAttrTags extends FmAttrStringList {
@@ -138,18 +129,6 @@ export class FmAttrTags extends FmAttrStringList {
             />
         </>)
     }
-
-    // getLooks(): ReactNode {
-    //     return (
-    //         <div>
-    //             <a onClick={() => {
-    //                 TagSearchlightModal.open()
-    //             }}>tags: </a>
-
-    //             {String(this.value)}
-    //         </div>
-    //     );
-    // }
 }
 
 export class FmAttrAliases extends FmAttrStringList {
@@ -255,25 +234,6 @@ export class FmAttrCategories extends FmAttrStringList {
             />
         </>)
     }
-
-    // getLooks(): ReactNode {
-    //     return (
-    //         <div>
-    //             <a onClick={() => {
-    //                 CategorySearchlightModal.open()
-    //             }}>categories: </a>
-
-    //             {String(this.value)}
-    //         </div>
-    //     );
-    // }
-
-    // getEditBox(): ReactNode {
-    //     return <FmAttrSelectableList
-    //         fmEditor={this}
-    //         selections={AM.orbizSetting.categories}
-    //     />
-    // }
 }
 
 export class FmAttrTemplateDone extends FmAttrStringList {

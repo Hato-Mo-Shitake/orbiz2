@@ -26,7 +26,6 @@ export class UserEditEventWatcher {
 
         const timerId = window.setTimeout(() => {
             // console.log("入力終了!");
-
             try {
                 const cb = this._callbackOnceAfterEdit.get(noteId);
                 if (cb) cb(editor);

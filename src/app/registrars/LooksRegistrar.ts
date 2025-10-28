@@ -5,7 +5,6 @@ export class LooksRegistrar {
     register(): void {
         const { app } = AM.obsidian;
         const { plugin } = AM.orbiz;
-        // const { app, OrbizPlugin } = OAM();
 
         plugin.addRibbonIcon('dice', 'Activate view', () => {
             AM.useCase.viewActivator.activateExampleView();

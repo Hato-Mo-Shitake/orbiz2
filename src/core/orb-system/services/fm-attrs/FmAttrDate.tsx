@@ -218,7 +218,6 @@ export class FmAttrResolved extends FmAttrDate {
         const id = AM.note.getNoteIdByTFile(this.tFile);
         if (!id) throw new UnexpectedError();
         AM.diary.addDailyLogNoteIds("resolvedNotes", id);
-        // AM.diary.todayRecordNoteIds.rIds.add(id);
     }
 }
 

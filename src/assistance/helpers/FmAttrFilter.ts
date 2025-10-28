@@ -7,7 +7,6 @@ export class FmAttrFilter {
         if (FmAttrValidator.internalLink(link)) return link;
 
         if (AM.orbiz.isVaultPath(link)) return `[[${link}]]`;
-        // if (OAM().isVaultPath(link)) return `[[${link}]]`;
 
         const noteId = AM.cache.getStdNoteIdByName(link);
 
@@ -22,21 +21,5 @@ export class FmAttrFilter {
         const filtered = parts.map(sanitizeFileName).join("/");
 
         return `[[${filtered}]]`;
-
-
-        // if (!link.includes("/")) {
-        //     const noteId = AM.cache.getStdNoteIdByName(link);
-
-        //     if (!noteId) return null;
-        //     const source = AM.cache.getStdNoteSourceById(noteId);
-        //     if (!source) return null;
-
-        //     const parts = source.path.split("/");
-
-        //     const filtered = parts.map(sanitizeFileName).join("/");
-
-        //     return `[[${filtered}]]`;
-        // }
-        // return null;
     }
 }

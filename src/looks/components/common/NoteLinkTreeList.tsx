@@ -6,7 +6,6 @@ import { NoteLinkTree } from "./NoteLinkTree";
 
 export function NoteLinkTreeList({
     noteTrees,
-    // rootNotePath = OAM().rootPath,
     rootNotePath = AM.orbiz.rootPath,
     cutSlug
 }: {

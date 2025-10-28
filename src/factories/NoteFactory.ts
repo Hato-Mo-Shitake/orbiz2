@@ -32,7 +32,6 @@ export class NoteFactory {
             }
         }
 
-        // const app = OAM().app;
         const { app } = AM.obsidian;
         const fmCache = app.metadataCache.getFileCache(tFile)?.frontmatter;
         if (!fmCache) return null;
@@ -50,7 +49,6 @@ export class NoteFactory {
             return new MyNote(src);
         }
         const fmCache = AM.obsidian.metadataCache.getFileCache(src)?.frontmatter;
-        // const fmCache = OAM().app.metadataCache.getFileCache(src)?.frontmatter;
         if (!fmCache) return null;
 
         if (isMyFm(fmCache)) {
@@ -63,7 +61,6 @@ export class NoteFactory {
         if (isLogFm(src)) {
             return new LogNote(src);
         }
-        // const fmCache = OAM().app.metadataCache.getFileCache(src)?.frontmatter;
         const fmCache = AM.obsidian.metadataCache.getFileCache(src)?.frontmatter;
         if (!fmCache) return null;
 

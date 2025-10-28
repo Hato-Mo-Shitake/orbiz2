@@ -17,12 +17,8 @@ export class OrbManager {
 
     static getInstance(): OrbManager {
         if (!this._instance) throw new NotInitializedError();
-        // OEM.throwNotInitializedError(OrbizOrbManager);
-
         return this._instance;
     }
-
-    /** --------------------------------------------------------------------- */
 
     private constructor(
     ) {
@@ -44,11 +40,8 @@ export class OrbManager {
 
             const diaryOrb = this.getDiaryNoteOrb({ noteId: src.noteId });
             return diaryOrb;
-
-            // OEM.throwNotImplementedError();
         } else {
             throw new UnexpectedError();
-            // throw new UnexpectedError();
         }
     }
 
@@ -66,13 +59,11 @@ export class OrbManager {
             if (!tmp) return null;
             noteId = tmp;
         } else if (src.noteId) {
-            // const tmp = AM.tFile.getNoteTFileById(src.noteId);
             const tmp = AM.tFile.getNoteTFileById(src.noteId);
             if (!tmp) return null;
             tFile = tmp;
             noteId = src.noteId;
         } else if (src.noteName) {
-            // const tmpId = AM.cache.getStdNoteIdByName(src.noteName);
             const tmpId = AM.cache.getStdNoteIdByName(src.noteName);
             if (!tmpId) return null;
             noteId = tmpId;
@@ -81,11 +72,9 @@ export class OrbManager {
             tFile = tmp;
         } else {
             throw new UnexpectedError();
-            // throw new UnexpectedError();
         }
 
         const cached = AM.cache.getStdNoteOrb(noteId);
-        // console.warn("noteId", noteId, "cached", cached);
         if (cached) return cached;
 
         const newOrb = AM.factory.noteOrbF.tryStdFrom(tFile);
@@ -113,7 +102,6 @@ export class OrbManager {
             noteId = src.noteId;
         } else {
             throw new UnexpectedError();
-            // throw new UnexpectedError();
         }
 
         if (noteId === AM.diary.todayNoteOrb.note.id) {
@@ -121,7 +109,6 @@ export class OrbManager {
         }
 
         const cached = AM.cache.getDiaryNoteOrb(noteId);
-        // console.warn("noteId", noteId, "cached", cached);
         if (cached) return cached;
 
         const newOrb = AM.factory.noteOrbF.tryDiaryFrom(tFile);
@@ -131,12 +118,6 @@ export class OrbManager {
 
         return newOrb;
     }
-
-    // getStdNoteOrb(source: NoteSource | TFile): StdNoteOrb | null {
-    //     const orb = this.getNoteOrb(source);
-    //     if (!isStdNoteOrb(orb)) return null;
-    //     return orb;
-    // }
 
     getMyNoteOrb(src: { tFile?: TFile, noteId?: string }): MyNoteOrb | null {
         const orb = this.getStdNoteOrb(src);
@@ -151,7 +132,6 @@ export class OrbManager {
     }
 
     getActiveStdNoteOrb(): StdNoteOrb | null {
-        // const { app } = OAM();
         const { app } = AM.obsidian;
         const tFile = app.workspace.getActiveFile();
         if (!tFile) return null;

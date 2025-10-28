@@ -20,8 +20,6 @@ export function SelectableItemList({
 }) {
     const [input, setInput] = useState(selections[0]);
     const handleAdd = (input: string) => {
-        // const inputLabel = trimFull(input);
-
         for (const selected of selectedList) {
             if (selected == input) {
                 alert("already exist.");

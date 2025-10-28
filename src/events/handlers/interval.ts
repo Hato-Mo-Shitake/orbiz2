@@ -12,19 +12,11 @@ const handleJudgeDateChange: TimeAutoAndIntervalHandler = [
         AM.diary.judgeDateChange(new Date());
     }
 ];
-const handleWriteDailyLogNoteIds: TimeAutoAndIntervalHandler = [
-    30 * 60 * 1000,
-    () => {
-        debugConsole("writeDailyLogNoteIds");
-        AM.diary.writeDailyLogNoteIds();
-    }
-];
 
 /*-------------------------------*/
 
 const handleList: TimeAutoAndIntervalHandler[] = [
     handleJudgeDateChange,
-    handleWriteDailyLogNoteIds
 ];
 
 /*-------------------------------*/

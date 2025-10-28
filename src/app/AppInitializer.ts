@@ -39,34 +39,5 @@ export class AppInitializer {
 
     private async _build(): Promise<void> {
         AM.initialize(this.app, this.orbizPlugin);
-        // ObsidianManager.setInstance(this.app);
-        // OrbizManager.setInstance(this.orbizPlugin);
-        // CacheManager.setInstance();
-        // DiaryManager.setInstance();
-        // EventWatchManager.setInstance();
-        // FactoryManager.setInstance();
-        // NoteManager.setInstance();
-        // NoteHistoryManager.setInstance();
-
-
-
-
-
-        // OrbizSettingManager.setInstance(this.orbizPlugin);
-        // OrbizAppManager.setInstance(this.app, this.OrbizPlugin);
-
-        // OrbizDiaryManager.setInstance();
-        // OrbizFactoryManager.setInstance();
-        // OrbizRepositoryManager.setInstance();
-        // OrbizUseCaseManager.setInstance();
-        // OrbizTFileManager.setInstance();
-        // OrbizTFolderManager.setInstance();
-        // OrbizNoteManager.setInstance();
-        // OrbizCacheManager.setInstance();
-        // OrbizOrbManager.setInstance();
-        // OrbizViewManager.setInstance();
-        // OrbizEventWatchManager.setInstance();
-
-        // OrbizNoteHistoryManager.setInstance();
     }
 }

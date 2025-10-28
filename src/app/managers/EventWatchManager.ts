@@ -23,7 +23,6 @@ export class EventWatchManager {
 
     static getInstance(): EventWatchManager {
         if (!this._instance) throw new NotInitializedError();
-        // OEM.throwNotInitializedError(OrbizEventWatchManager);
 
         return this._instance;
     }
@@ -31,7 +30,6 @@ export class EventWatchManager {
     /** ------------ */
 
     private constructor(
-        // private readonly _register: EventRegistrar,
         readonly workspaceWatcher: WorkspaceEventWatcher,
         readonly vaultWatcher: VaultEventWatcher,
         readonly metadataCacheWatcher: MetadataCacheEventWatcher,
@@ -41,7 +39,3 @@ export class EventWatchManager {
     ) {
     }
 }
-
-// export const OEwM = () => {
-//     return OrbizEventWatchManager.getInstance();
-// }

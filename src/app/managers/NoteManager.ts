@@ -52,14 +52,12 @@ export class NoteManager {
         } else if (src.internalLink) {
             // 内部リンクとみなす。
 
-
             // linkTargetがpathである保証はない。（ファイル名変更したときは自動的に親ディレクトリ無くなったりするし、これに依存するのはまずい）
             // TODO: 他にも同様の問題を抱えているところがないかチェックしないと、、、
             // const path = extractLinkTarget(src.internalLink);
             // if (!path) return null;
             // const tmp = this.getNoteIdByPath(path);
             // if (!tmp) return null;
-
             const name = extractNoteNameFromInternalLink(src.internalLink);
             if (!name) return null;
             const tmpId = AM.cache.getStdNoteIdByName(name);

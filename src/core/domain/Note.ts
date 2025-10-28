@@ -19,13 +19,9 @@ export abstract class BaseNote<TFm extends BaseFm = BaseFm> {
 
     get name(): string {
         return `${this.baseName}.md`;
-
-        // return this.tFile.name;
     }
 
     get baseName(): string {
-        // debugConsole("path in note", this.path);
-        // debugConsole("baseName", getBasenameFromPath(this.path))
         return getBasenameFromPath(this.path);
     }
 
@@ -65,7 +61,7 @@ export abstract class BaseNote<TFm extends BaseFm = BaseFm> {
         return _tFile;
     }
 
-    // なるべく最新の状態を返すために、fmは自身に持たないようにする。
+    // なるべく最新の状態を返すためにこう
     get fmCache(): FrontMatterCache {
         const fmCache = this.metadata.frontmatter;
         if (!fmCache) return this._initialFm;
@@ -74,8 +70,6 @@ export abstract class BaseNote<TFm extends BaseFm = BaseFm> {
 
     get metadata(): CachedMetadata {
         const cache = AM.obsidian.metadataCache.getFileCache(this.tFile);
-        // const cache = OAM().app.metadataCache.getFileCache(this.tFile);
-
         if (!cache) {
             throw new Error("not cache is empty.");
         }
@@ -84,11 +78,9 @@ export abstract class BaseNote<TFm extends BaseFm = BaseFm> {
 
     read(): Promise<string> {
         return AM.obsidian.vault.cachedRead(this.tFile);
-        // return OAM().app.vault.cachedRead(this.tFile);
     }
 
     readActual(): Promise<string> {
         return AM.obsidian.vault.read(this.tFile);
-        // return OAM().app.vault.read(this.tFile);
     }
 }

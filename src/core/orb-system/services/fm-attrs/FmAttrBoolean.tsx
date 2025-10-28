@@ -7,11 +7,6 @@ import { StoreApi } from "zustand";
 import { FmAttrSimpleValue } from "./FmAttrSimpleValue";
 
 export abstract class FmAttrBoolean<TValue extends boolean = boolean> extends FmAttrSimpleValue<TValue> {
-    // getEditBox(): ReactNode {
-    //     return <FmBoolEditBox
-    //         fmEditor={this}
-    //     />
-    // }
 }
 
 export class FmAttrIsClosed extends FmAttrBoolean {

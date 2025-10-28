@@ -12,7 +12,6 @@ export class RepositoryManager {
 
     static getInstance(): RepositoryManager {
         if (!this._instance) throw new NotInitializedError();
-        // OEM.throwNotInitializedError();
         return this._instance;
     }
 

@@ -19,8 +19,6 @@ export class LooksManager {
     static getInstance(): LooksManager {
         const instance = LooksManager._instance;
         if (!instance) throw new NotInitializedError();
-        //  OEM.throwNotInitializedError();
-
         return instance;
     }
 
@@ -28,7 +26,6 @@ export class LooksManager {
     private constructor() { }
 
     async openNote(note: Note, newLeaf?: PaneType | boolean): Promise<WorkspaceLeaf> {
-        // const leaf = OAM().app.workspace.getLeaf(newLeaf);
         const leaf = AM.obsidian.workspace.getLeaf(newLeaf);
         await leaf.openFile(note.tFile);
 

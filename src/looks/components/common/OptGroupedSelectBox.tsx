@@ -28,4 +28,4 @@ export function OptGroupedSelectBox({ value, setValue, groupedOptions }: SelectB
             ))}
         </select>
     );
-};
+}

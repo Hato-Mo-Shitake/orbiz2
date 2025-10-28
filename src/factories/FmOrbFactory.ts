@@ -21,7 +21,6 @@ export class FmOrbFactory {
             fm = options.fm;
         } else {
             const fmCache: FrontMatterCache | undefined = AM.obsidian.metadataCache.getFileCache(tFile)?.frontmatter;
-            // const fmCache: FrontMatterCache | undefined = OAM().app.metadataCache.getFileCache(tFile)?.frontmatter;
             if (!isMyFm(fmCache)) return null;
             fm = fmCache;
         }
@@ -43,7 +42,6 @@ export class FmOrbFactory {
             new FmAttrType<"myNote">(tFile, type),
             new FmAttrId(tFile, fm["id"]),
             new FmAttrTags(tFile, fm["tags"]),
-            // new FmAttrSubType<MyNoteType>(tFile, subType),
             new FmAttrMyNoteType(tFile, subType),
             new FmAttrBelongsTo(tFile, fm["belongsTo"]),
             new FmAttrRelatesTo(tFile, fm["relatesTo"]),
@@ -87,7 +85,6 @@ export class FmOrbFactory {
             new FmAttrType<"logNote">(tFile, type),
             new FmAttrId(tFile, fm["id"]),
             new FmAttrTags(tFile, fm["tags"]),
-            // new FmAttrSubType<LogNoteType>(tFile, subType),
             new FmAttrLogNoteType(tFile, subType),
             new FmAttrBelongsTo(tFile, fm["belongsTo"]),
             new FmAttrRelatesTo(tFile, fm["relatesTo"]),
@@ -105,7 +102,6 @@ export class FmOrbFactory {
             fm = options.fm;
         } else {
             const fmCache: FrontMatterCache | undefined = AM.obsidian.metadataCache.getFileCache(tFile)?.frontmatter;
-            // const fmCache: FrontMatterCache | undefined = OAM().app.metadataCache.getFileCache(tFile)?.frontmatter;
             if (!isDailyFm(fmCache)) return null;
             fm = fmCache;
         }
@@ -120,7 +116,6 @@ export class FmOrbFactory {
             new FmAttrType<"diaryNote">(tFile, type),
             new FmAttrId(tFile, fm["id"]),
             new FmAttrTags(tFile, fm["tags"]),
-            // new FmAttrSubType<"daily">(tFile, subType),
             new FmAttrDiaryNoteType<"daily">(tFile, subType),
             new FmAttrScore(tFile, fm["score"]),
             new FmAttrIsClosed(tFile, fm["isClosed"]),

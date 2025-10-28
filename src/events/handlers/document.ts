@@ -17,14 +17,12 @@ const handleAddLinkedNote: EventHandlerForDocument<"click"> = async (evt: MouseE
     const unlinkedNoteId = btn?.dataset.unlinkedNoteId;
     const rootNoteId = btn?.dataset.rootNoteId;
     if (!unlinkedNoteId || !rootNoteId) return;
-    // const unlinkedNote = AM.note.getStdNote({ noteId: unlinkedNoteId })!;
     const unlinkedNote = AM.note.getStdNote({ noteId: unlinkedNoteId })!;
     const rootNote = AM.note.getStdNote({ noteId: rootNoteId })!;
     const success = await AM.useCase.prompt.addLinkedNote(unlinkedNote, rootNote);
 
     if (!success) return;
 
-    // const mdView = OAM().app.workspace.getActiveViewOfType(MarkdownView);
     const mdView = AM.obsidian.workspace.getActiveViewOfType(MarkdownView);
 
     const tFile = mdView?.file;

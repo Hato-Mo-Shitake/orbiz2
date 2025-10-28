@@ -21,7 +21,6 @@ export function shitDate(date: Date, shitDays: number): Date {
 }
 
 // ローカル地域基準
-// console.log(formatDate(ts, "Y-m-d_D_H:i")); // "2025-09-19_Fri_13:04"
 type DateFormatType = "Y-m-d" | "Y-m" | "Y" | "m" | "d" | "D" | "Y-m-d_D" | "Y-m-d_H:i" | "Y-m-d_H:i_D";
 export function dateFormat(timeSource: number | Date, format: DateFormatType): string {
     let date: Date;

@@ -8,7 +8,6 @@ import { NoteLink } from "./NoteLink";
 export function NoteLinkTree({
     noteTree,
     openTree = false,
-    // rootNotePath = OAM().rootPath,
     rootNotePath = AM.orbiz.rootPath,
     cutSlug,
     filter,

@@ -34,7 +34,6 @@ const handleRecordTodayNoteIds: EventHandlerForVault<"modify"> = (file) => {
         const id = AM.note.getNoteIdByTFile(file);
         if (!id) return;
         AM.diary.addDailyLogNoteIds("modifiedNotes", id);
-        // AM.diary.todayRecordNoteIds.mIds.add(id);
     }
 }
 

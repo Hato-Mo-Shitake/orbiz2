@@ -117,7 +117,6 @@ export class DailyFmOrb extends DiaryFmOrb {
         type: FmAttrType<StdNoteType>,
         id: FmAttrId,
         tags: FmAttrTags,
-        // subType: FmAttrSubType<"daily">,
         readonly subType: FmAttrDiaryNoteType<"daily">,
         score: FmAttrScore,
         isClosed: FmAttrIsClosed,

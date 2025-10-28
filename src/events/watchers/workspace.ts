@@ -6,12 +6,9 @@ import { EventHandlerForWorkspace } from "../handlers/workspace";
 export class WorkspaceEventWatcher {
     private get _OrbizPlugin(): OrbizPlugin {
         return AM.orbiz.plugin;
-        // return AM.obsidian.OrbizPlugin;
-        // return OAM().OrbizPlugin;
     }
     private get _workspace(): Workspace {
         return AM.obsidian.workspace;
-        // return OAM().app.workspace;
     }
 
     public watchOnActiveLeafChange(callback: EventHandlerForWorkspace<"activeLeafChange">) {

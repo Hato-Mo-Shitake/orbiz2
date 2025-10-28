@@ -23,26 +23,6 @@ export class LogNoteViewer<
         super(note, fmOrb, reader, editor, store);
     }
 
-    // getFmAttrs(): React.ReactNode {
-    //     return (<>
-    //         {super.getFmAttrs()}
-    //         {this.fmOrb.status.getView()}
-    //         {this.fmOrb.due.getView()}
-    //         {this.fmOrb.resolved.getView()}
-    //         {this.fmOrb.context.getView()}
-    //     </>)
-    // }
-    // getFmAttrsEditor(): React.ReactNode {
-    //     return (<>
-    //         {super.getFmAttrsEditor()}
-    //         {this.fmOrb.status.getEditableView()}
-    //         {this.fmOrb.due.getEditableView()}
-    //         {/* TODO: ここもっと綺麗にループ処理でまとめるように */}
-    //         {!this.fmOrb.resolved.isImmutable && this.fmOrb.resolved.getEditableView()}
-    //         {this.fmOrb.context.getEditableView()}
-    //     </>)
-    // }
-
     getTopSection(): React.ReactNode {
         return <LogNoteTopSectionDefault
             viewer={this}

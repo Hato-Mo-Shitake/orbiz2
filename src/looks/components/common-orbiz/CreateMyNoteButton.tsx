@@ -15,9 +15,7 @@ export function CreateMyNoteButton({
         AM.useCase.prompt.createMyNote({ rootNote: rootNote });
     }
     return (
-        <span
-        // className="orbiz__item--flex-small" 
-        >
+        <span>
             <button onClick={handleOpenFmEdit}  >
                 {label}
             </button>

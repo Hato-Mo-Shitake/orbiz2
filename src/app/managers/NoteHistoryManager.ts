@@ -12,8 +12,6 @@ export class NoteHistoryManager {
         return this._instance;
     }
 
-    /** ------------ */
-
     private openedNotes = new Set<string>();
     private idHistory: string[] = [];
     private constructor() { }
