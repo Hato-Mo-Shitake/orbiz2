@@ -83,7 +83,7 @@ export class Gemini {
             requestObj["nextSteps"] = nextStepTFiles.map(t => {
                 const fm = getFmCache(t)!;
                 // const due = ("targetDate" in fm) ? fm["targetDate"] : null;
-                const due = fm["targetDate"];
+                const due = fm["type"] == "myNote" ? fm["targetDate"] : fm["due"];
                 return {
                     "noteType": fm["subType"],
                     "noteId": fm["id"],
