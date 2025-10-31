@@ -1,6 +1,5 @@
 import { CachedMetadata, FrontMatterCache, TFile } from "obsidian";
 import { AM } from "src/app/AppManager";
-import { debugConsole } from "src/assistance/utils/debug";
 import { getBasenameFromPath } from "src/assistance/utils/path";
 import { UnexpectedError } from "src/errors/UnexpectedError";
 import { BaseFm } from "src/orbits/schema/frontmatters/fm";
@@ -29,7 +28,6 @@ export abstract class BaseNote<TFm extends BaseFm = BaseFm> {
         return `[[${this.path}|${this.name}]]`
     }
     get fullPathInternalLink(): string {
-        debugConsole("???");
         return `[[${this.path}]]`
     }
 

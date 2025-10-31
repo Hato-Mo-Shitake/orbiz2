@@ -80,6 +80,7 @@ export function LogNoteIndex({
                 cutSlug={`〈-${subType}-〉`}
                 closeModal={closeModal}
                 filter={filter}
+                isDisplayNoteCount={true}
             />
         </ScrollableBox>
     </>)

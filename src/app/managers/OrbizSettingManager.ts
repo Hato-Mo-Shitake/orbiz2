@@ -9,6 +9,9 @@ interface OrbizPluginSettings {
     categories: string[];
     roleKinds: string[];
     templateDone: string[];
+    googleGeminiApiKey?: string;
+    enableGoogleGemini?: boolean;
+    todayClosingEvaluationGoogleGeminiAdditionalPrompt?: string | null
 }
 
 export class OrbizSettingManager {
@@ -56,6 +59,15 @@ export class OrbizSettingManager {
     get templateDone(): string[] {
         return this._savedSettings.templateDone;
     }
+    get googleGeminiApiKey(): string | null {
+        return this._savedSettings.googleGeminiApiKey || null;
+    }
+    get enableGoogleGemini(): boolean {
+        return this._savedSettings.enableGoogleGemini || false;
+    }
+    get todayClosingEvaluationGoogleGeminiAdditionalPrompt(): string | null {
+        return this._savedSettings.todayClosingEvaluationGoogleGeminiAdditionalPrompt || null;
+    }
 
     setSampleSetting(setting: string) {
         const newSettings = structuredClone(this._savedSettings);
@@ -80,6 +92,22 @@ export class OrbizSettingManager {
     setTemplateDone(templateDone: string[]) {
         const newSettings = structuredClone(this._savedSettings);
         newSettings.templateDone = [...templateDone];
+        this._unsavedSettings = newSettings;
+    }
+    setGoogleGeminiApiKey(googleGeminiApiKey: string) {
+        const newSettings = structuredClone(this._savedSettings);
+        newSettings.googleGeminiApiKey = googleGeminiApiKey;
+        this._unsavedSettings = newSettings;
+    }
+
+    setEnableGoogleGemini(enable: boolean) {
+        const newSettings = structuredClone(this._savedSettings);
+        newSettings.enableGoogleGemini = enable;
+        this._unsavedSettings = newSettings;
+    }
+    setTodayClosingEvaluationGoogleGeminiAdditionalPrompt(additionalInfo: string) {
+        const newSettings = structuredClone(this._savedSettings);
+        newSettings.todayClosingEvaluationGoogleGeminiAdditionalPrompt = additionalInfo;
         this._unsavedSettings = newSettings;
     }
 

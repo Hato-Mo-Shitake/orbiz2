@@ -33,7 +33,10 @@ const roleHub = "roleHub" as const;
 const aspect = "aspect" as const;
 const aliases = "aliases" as const;
 const categories = "categories" as const;
+const start = "start" as const;
+const targetDate = "targetDate" as const;
 const done = "done" as const;
+
 
 export const fmKeysForJustMyNote = [
     rank,
@@ -42,7 +45,9 @@ export const fmKeysForJustMyNote = [
     aspect,
     roleKind,
     roleHub,
-    done, // optional
+    start, // optional
+    targetDate, // optional
+    done, // option
 ] as const;
 export const fmKeysForMyNote = [
     ...fmKeysForStdNote,
@@ -207,6 +212,8 @@ export const fmKeysDate = [
     due,
     resolved,
     theDay,
+    start,
     done,
+    targetDate,
 ] as const;
 export type FmKeyForDate = typeof fmKeysDate[number];

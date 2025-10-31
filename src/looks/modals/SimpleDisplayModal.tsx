@@ -7,6 +7,8 @@ import { LogNoteType, MyNoteType } from "src/orbits/schema/frontmatters/NoteType
 import { DailyNoteIndex } from "../components/index/diary/DailyNoteIndex";
 import { DailyNoteIndexByMonth } from "../components/index/diary/DailyNoteIndexByMonth";
 import { LogNoteIndex } from "../components/index/log/LogNoteIndex";
+import { UnresolvedLogNoteIndex } from "../components/index/log/UnresolvedLogNoteIndex";
+import { InProgressMyNoteIndex } from "../components/index/my/InProgressMyNoteIndex";
 import { MyNoteIndex } from "../components/index/my/MyNoteIndex";
 import { LogNoteMenu } from "../components/menu/log/LogNoteMenu";
 import { MainMenu } from "../components/menu/MainMenu";
@@ -47,7 +49,6 @@ export class SimpleDisplayModal extends Modal {
         contentEl.empty();
     }
 }
-
 
 type CloseModal = () => void;
 export const changeModal = (closeModal: CloseModal, openModal: () => void) => {
@@ -93,5 +94,9 @@ export const openModalDailyNoteIndexByMonth = (y: number, m: number) => {
 export const openModalNoteSearchlight = () => openModal(NoteSearchlight);
 
 export const openModalSettingsIndex = () => openModal(SettingsIndex);
+export const openModalUnresolvedLogNoteIndex = () => openModal(UnresolvedLogNoteIndex);
+export const openModalInProgressMyNoteIndex = () => openModal(InProgressMyNoteIndex);
+
+
 export const openModalCategoriesSetting = () => openModal(CategoriesSetting);
 export const openModalRoleKindsSetting = () => openModal(RoleKindsSetting)

@@ -3,7 +3,7 @@ import { App, PluginSettingTab, Setting } from "obsidian";
 import { AM } from "src/app/AppManager";
 import { isOrbizSpaceType } from "src/orbits/contracts/orbiz-space-type";
 
-export class SampleSettingTab extends PluginSettingTab {
+export class OrbizSettingTab extends PluginSettingTab {
     plugin: OrbizPlugin;
 
     constructor(app: App, plugin: OrbizPlugin) {
@@ -46,5 +46,36 @@ export class SampleSettingTab extends PluginSettingTab {
                         await AM.orbizSetting.save();
                     })
             );
+
+        new Setting(containerEl)
+            .setName('google gemini api key')
+            .setDesc('Enter your api key')
+            .addText(text => text
+                .setPlaceholder('Enter your api key')
+                .setValue(AM.orbizSetting.googleGeminiApiKey || "")
+                .onChange(async (value) => {
+                    AM.orbizSetting.setGoogleGeminiApiKey(value);
+                    await AM.orbizSetting.save();
+                }));
+
+        new Setting(containerEl)
+            .setName('enable google gemini')
+            .setDesc('toggle google gemini')
+            .addToggle(enable => enable
+                .setValue(AM.orbizSetting.enableGoogleGemini)
+                .onChange(async (enable) => {
+                    AM.orbizSetting.setEnableGoogleGemini(enable);
+                    await AM.orbizSetting.save();
+                }));
+
+        new Setting(containerEl)
+            .setName('today closing evaluation google gemini additional info')
+            .addTextArea(text => text
+                .setPlaceholder('Enter prompt additional info')
+                .setValue(AM.orbizSetting.todayClosingEvaluationGoogleGeminiAdditionalPrompt || "")
+                .onChange(async (value) => {
+                    AM.orbizSetting.setTodayClosingEvaluationGoogleGeminiAdditionalPrompt(value);
+                    await AM.orbizSetting.save();
+                }));
     }
 }

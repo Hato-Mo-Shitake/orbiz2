@@ -65,6 +65,7 @@ export function MyNoteIndex({
                 cutSlug={`〈-${subType}-〉`}
                 closeModal={closeModal}
                 filter={filter}
+                isDisplayNoteCount={true}
             />
         </ScrollableBox>
     </>)

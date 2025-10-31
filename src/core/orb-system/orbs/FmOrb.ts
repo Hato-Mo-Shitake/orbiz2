@@ -1,5 +1,5 @@
 import { FmAttrIsClosed } from "src/core/orb-system/services/fm-attrs/FmAttrBoolean";
-import { FmAttrDone, FmAttrDue, FmAttrResolved, FmAttrTheDay } from "src/core/orb-system/services/fm-attrs/FmAttrDate";
+import { FmAttrDone, FmAttrDue, FmAttrResolved, FmAttrStart, FmAttrTargetDate, FmAttrTheDay } from "src/core/orb-system/services/fm-attrs/FmAttrDate";
 import { FmAttrAmountSpent, FmAttrRank, FmAttrScore } from "src/core/orb-system/services/fm-attrs/FmAttrNumber";
 import { FmAttrAspect, FmAttrContext, FmAttrDiaryNoteType, FmAttrId, FmAttrLogNoteType, FmAttrMyNoteType, FmAttrRoleKind, FmAttrStatus, FmAttrType } from "src/core/orb-system/services/fm-attrs/FmAttrString";
 import { FmAttrAliases, FmAttrCategories, FmAttrTags, FmAttrTemplateDone } from "src/core/orb-system/services/fm-attrs/FmAttrStringList";
@@ -55,6 +55,8 @@ export class MyFmOrb extends StdFmOrb {
         public readonly categories: FmAttrCategories,
         public readonly roleKind: FmAttrRoleKind,
         public readonly roleHub: FmAttrRoleHub,
+        public readonly start: FmAttrStart,
+        public readonly targetDate: FmAttrTargetDate,
         public readonly done: FmAttrDone,
     ) {
         super(

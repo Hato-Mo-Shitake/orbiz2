@@ -1,6 +1,7 @@
 import { AM } from "src/app/AppManager";
 import { shitDate } from "src/assistance/utils/date";
 import { DailyNoteViewer } from "src/core/orb-system/services/viewers/DailyNoteViewer";
+import { openModalInProgressMyNoteIndex, openModalUnresolvedLogNoteIndex } from "src/looks/modals/SimpleDisplayModal";
 import { CreateLogNoteButton } from "../../common-orbiz/CreateLogNoteButton";
 import { CreateMyNoteButton } from "../../common-orbiz/CreateMyNoteButton";
 import { DateDisplay } from "../../common/DateDisplay";
@@ -35,9 +36,19 @@ export function DailyNoteTopSectionDefault({ viewer }: { viewer: DailyNoteViewer
                 </span>
             }
         </div>
-        <hr />
-        <div style={{ margin: "0.4rem 0" }} >
+        <hr style={{ margin: "1rem 0" }} />
+        <div className="orbiz__item--flex-middle">
+            <button onClick={openModalInProgressMyNoteIndex}>
+                my notes in progress
+            </button>
+            <button onClick={openModalUnresolvedLogNoteIndex}>
+                unresolved log notes
+            </button>
+        </div>
+        <hr style={{ margin: "1rem 0" }} />
+        <div style={{ margin: "0.1rem 0" }} >
             {viewer.getDailyLogNoteList()}
         </div>
+        <h1>Note</h1>
     </>)
 }

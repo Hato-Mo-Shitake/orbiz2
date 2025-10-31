@@ -1,5 +1,8 @@
 import { Command } from "obsidian";
 import { AM } from "src/app/AppManager";
+import { getFmCache } from "src/assistance/aliaseFn/frontmatter";
+import { isDailyNoteOrb } from "src/core/orb-system/orbs/NoteOrb";
+import { UnexpectedError } from "src/errors/UnexpectedError";
 import { FmForcedEditableModal } from "src/looks/modals/FmForcedEditableModal";
 import { FSuggestModal } from "src/looks/modals/FSuggestModal";
 import { openModalMainMenu } from "src/looks/modals/SimpleDisplayModal";
@@ -18,6 +21,26 @@ const CommandScript = {
         const orb = AM.orb.getActiveStdNoteOrb();
         if (!orb) return;
         FmForcedEditableModal.openNew(orb.viewer);
+    },
+    execGeminiTodayClosingEvaluation: async () => {
+        const ym = AM.diary.getToday("Y-m").split("-");
+        const y = Number(ym[0]);
+        const m = Number(ym[1]);
+        const dailyNoteId = await AM.useCase.prompt.selectFromList(
+            [
+                ...AM.tFile.getDailyTFilesByMonth(y, m),
+                ...AM.tFile.getDailyTFilesByMonth(y, m - 1)
+            ].map(t => {
+                const fm = getFmCache(t)!;
+                return fm["id"];
+            })
+        );
+        const dailyOrb = AM.orb.getDiaryNoteOrb({ noteId: dailyNoteId });
+        if (!isDailyNoteOrb(dailyOrb)) throw new UnexpectedError();
+
+        alert(`geminiにリクエストを送ります。回答が得られるまで時間がかかります。${dailyOrb.note.baseName}に本日の総評が書き込まれます。`);
+        await AM.useCase.noteModifier.appendGeminiTodayClosingEvaluation(dailyOrb);
+        alert(`geminiからレスポンスを受け取りました。${dailyOrb.note.baseName}に本日の総評が書き込まれました。`);
     },
     softDeleteNote: () => {
         const tFile = AM.tFile.activeTFile;

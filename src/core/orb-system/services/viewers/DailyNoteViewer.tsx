@@ -1,5 +1,4 @@
 import { ReactNode } from "react";
-import { debugConsole } from "src/assistance/utils/debug";
 import { DailyNote } from "src/core/domain/DailyNote";
 import { UnexpectedError } from "src/errors/UnexpectedError";
 import { DailyLogNoteListDisplay } from "src/looks/components/note-metadata-view/daily/DailyLogNoteListDisplay";
@@ -36,7 +35,6 @@ export class DailyNoteViewer<
     }
 
     getDailyLogNoteDisplay(fmKey: FmKey<"dailyLinkedNoteList">): ReactNode {
-        debugConsole(fmKey);
         switch (fmKey) {
             case ("createdNotes"):
                 return (<>

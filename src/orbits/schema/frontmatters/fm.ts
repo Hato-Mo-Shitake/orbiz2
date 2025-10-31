@@ -28,6 +28,8 @@ export const MyFmZObj = StdFmZObj.extend({
     aspect: z.string().nullable(),
     roleKind: z.string().nullable(),
     roleHub: z.string().nullable(),
+    start: z.number().nullable().optional(),
+    targetDate: z.number().nullable().optional(),
     done: z.number().nullable().optional(),
 })
 export type MyFm = z.infer<typeof MyFmZObj>;

@@ -188,6 +188,8 @@ export class NoteOrbFactory {
         fmOrb.aspect.setStore(store);
         fmOrb.roleKind.setStore(store);
         fmOrb.roleHub.setStore(store);
+        fmOrb.start.setStore(store);
+        fmOrb.targetDate.setStore(store);
         fmOrb.done.setStore(store);
     }
     private _initializeLogStore(store: StoreApi<LogNoteState>, fmOrb: LogFmOrb, source: StdNoteSource) {

@@ -1,4 +1,4 @@
-import { SampleSettingTab } from "src/looks/plugin-setting-tabs/SampleSettingTab";
+import { OrbizSettingTab } from "src/looks/plugin-setting-tabs/OrbizSettingTab";
 import { AM } from "../AppManager";
 
 export class LooksRegistrar {
@@ -13,6 +13,6 @@ export class LooksRegistrar {
         const statusBarItemEl = plugin.addStatusBarItem();
         statusBarItemEl.setText('Status Bar Text!');
 
-        plugin.addSettingTab(new SampleSettingTab(app, plugin));
+        plugin.addSettingTab(new OrbizSettingTab(app, plugin));
     }
 }

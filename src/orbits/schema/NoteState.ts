@@ -43,6 +43,10 @@ export interface MyNoteState extends StdNoteState {
     setFmAttrRoleKind: (kind: string) => void,
     fmAttrRoleHub: MyNote | null;
     setFmAttrRoleHub: (hub: MyNote) => void;
+    fmAttrStart: Date | null;
+    setFmAttrStart: (start: Date) => void;
+    fmAttrTargetDate: Date | null;
+    setFmAttrTargetDate: (targetDate: Date) => void;
     fmAttrDone: Date | null;
     setFmAttrDone: (done: Date) => void;
 }
@@ -139,6 +143,10 @@ function buildMyNoteState<T extends MyNoteState>(
         setFmAttrRoleKind: (kind: string) => set({ fmAttrRoleKind: kind } as Partial<T>),
         fmAttrRoleHub: null,
         setFmAttrRoleHub: (note: MyNote) => set({ fmAttrRoleHub: note } as Partial<T>),
+        fmAttrStart: null,
+        setFmAttrStart: (start: Date) => set({ fmAttrStart: start } as Partial<T>),
+        fmAttrTargetDate: null,
+        setFmAttrTargetDate: (targetDate: Date) => set({ fmAttrTargetDate: targetDate } as Partial<T>),
         fmAttrDone: null,
         setFmAttrDone: (done: Date) => set({ fmAttrDone: done } as Partial<T>),
     };

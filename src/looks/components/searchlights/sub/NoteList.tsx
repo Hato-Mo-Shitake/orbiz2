@@ -9,7 +9,8 @@ export function NoteList({
     chunk = 50,
     cutSlug,
     closeModal,
-    filter
+    filter,
+    isDisplayNoteCount = false,
 }: {
     tFileList: TFile[],
     beginningPath?: string,
@@ -17,6 +18,7 @@ export function NoteList({
     cutSlug?: string,
     closeModal?: () => void,
     filter?: (tFile: TFile) => void
+    isDisplayNoteCount?: boolean
 }) {
     const filteredSorted = (tFiles: TFile[]): TFile[] => {
         return filter
@@ -31,14 +33,10 @@ export function NoteList({
     const [sorted, setSorted] = useState<TFile[]>(filteredSorted(tFileList));
     const [sliced, setSliced] = useState<TFile[]>(
         sorted.slice(0, chunk)
-    )
+    );
     const isPagination = sorted.length > chunk ? true : false;
 
-
-    // const sourcePath = beginningPath || AM.orbiz.rootPath;
-
     const ws = AM.obsidian.app.workspace;
-
     const handleNoteLinkClick = (evt: React.MouseEvent, linkText: string) => {
         closeModal?.()
         if (evt.metaKey) {
@@ -79,6 +77,7 @@ export function NoteList({
                 </div>
             }
             </>
+            {isDisplayNoteCount && <div>count: {sorted.length}</div>}
             <ul>
                 {sliced.map(t =>
                     <li key={t.path}>

@@ -3,6 +3,9 @@ import { NoteSoftDeleter } from "src/app/use-cases/NoteSoftDeleter";
 import { Prompt } from "src/app/use-cases/Prompt";
 import { ViewActivator } from "src/app/use-cases/ViewActivator";
 import { NotInitializedError } from "src/errors/NotInitializedError";
+import { DailyNoteCloser } from "../use-cases/DailyNoteCloser";
+import { Gemini } from "../use-cases/Gemini";
+import { NoteModifier } from "../use-cases/NoteModifier";
 
 export class UseCaseManager {
     private static _instance: UseCaseManager | null;
@@ -11,8 +14,11 @@ export class UseCaseManager {
         UseCaseManager._instance = new UseCaseManager(
             new ViewActivator(),
             new NoteCreator(),
+            new NoteModifier(),
             new NoteSoftDeleter(),
             new Prompt(),
+            new DailyNoteCloser(),
+            new Gemini(),
         );
     }
 
@@ -26,7 +32,10 @@ export class UseCaseManager {
     private constructor(
         public readonly viewActivator: ViewActivator,
         public readonly noteCreator: NoteCreator,
+        public readonly noteModifier: NoteModifier,
         public readonly noteSoftDeleter: NoteSoftDeleter,
         public readonly prompt: Prompt,
+        public readonly dailyNoteCloser: DailyNoteCloser,
+        public readonly gemini: Gemini,
     ) { }
 }

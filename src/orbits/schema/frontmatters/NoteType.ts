@@ -49,9 +49,9 @@ export function isMyNoteType(type: any): type is MyNoteType {
 export const logNoteTypeList = [
     "todo",
     "schedule",
-    "memo",
     "notice",
-    "plan"
+    "plan",
+    "memo",
 ] as const;
 export const LogNoteTypeZEnum = z.enum(logNoteTypeList);
 export const LogNoteTypes = LogNoteTypeZEnum.Enum;

@@ -3,7 +3,7 @@ import { AM } from "src/app/AppManager";
 import { isLiteral } from "src/assistance/utils/validation";
 import { DailyFmOrb, LogFmOrb, MyFmOrb } from "src/core/orb-system/orbs/FmOrb";
 import { FmAttrIsClosed } from "src/core/orb-system/services/fm-attrs/FmAttrBoolean";
-import { FmAttrDone, FmAttrDue, FmAttrResolved, FmAttrTheDay } from "src/core/orb-system/services/fm-attrs/FmAttrDate";
+import { FmAttrDone, FmAttrDue, FmAttrResolved, FmAttrStart, FmAttrTargetDate, FmAttrTheDay } from "src/core/orb-system/services/fm-attrs/FmAttrDate";
 import { FmAttrRoleHub } from "src/core/orb-system/services/fm-attrs/FmAttrLinkedNote";
 import { FmAttrBelongsTo, FmAttrCreatedNotes, FmAttrDoneNotes, FmAttrModifiedNotes, FmAttrReferences, FmAttrRelatesTo, FmAttrResolvedNotes } from "src/core/orb-system/services/fm-attrs/FmAttrLinkedNoteList";
 import { FmAttrAmountSpent, FmAttrRank, FmAttrScore } from "src/core/orb-system/services/fm-attrs/FmAttrNumber";
@@ -52,7 +52,9 @@ export class FmOrbFactory {
             new FmAttrCategories(tFile, fm["categories"]),
             new FmAttrRoleKind(tFile, fm["roleKind"]),
             new FmAttrRoleHub(tFile, fm["roleHub"]),
-            new FmAttrDone(tFile, fm["done"])
+            new FmAttrStart(tFile, fm["start"]),
+            new FmAttrTargetDate(tFile, fm["targetDate"]),
+            new FmAttrDone(tFile, fm["done"]),
         );
 
         return fmOrb;

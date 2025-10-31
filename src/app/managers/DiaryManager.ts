@@ -1,7 +1,6 @@
 import { TFolder } from "obsidian";
 import { AM } from "src/app/AppManager";
 import { dateFormat } from "src/assistance/utils/date";
-import { debugConsole } from "src/assistance/utils/debug";
 import { getBasenameFromPath } from "src/assistance/utils/path";
 import { DailyNoteOrb } from "src/core/orb-system/orbs/NoteOrb";
 import { NotInitializedError } from "src/errors/NotInitializedError";
@@ -33,7 +32,6 @@ export class DiaryManager {
         const tFile = AM.tFile.getDailyNoteTFile(noteId);
 
         if (tFile) {
-            debugConsole(tFile);
             const orb = AM.factory.noteOrbF.forDaily(tFile);
             if (!orb) throw new UnexpectedError();
             todayOrb = orb;
@@ -51,25 +49,30 @@ export class DiaryManager {
     }
 
     private _today: Date;
+    get todayMs(): number {
+        return this._today.getTime();
+    }
     getToday(format: "Y-m-d" | "Y-m-d_D" | "Y-m" | "Y" | "m" | "d" | "D" = "Y-m-d"): string {
-        if (format === "Y-m-d") {
-            return dateFormat(this._today, "Y-m-d");
-        }
-
         return dateFormat(this._today, format);
     }
-    judgeDateChange(date: Date) {
+    async judgeDateChange(date: Date) {
         const targetDay = dateFormat(date, "Y-m-d");
         if (this.getToday() !== targetDay) {
             this._today = date;
+            alert("The date has changed.");
+            await AM.useCase.dailyNoteCloser.exec(this.todayNoteOrb);
+
             this._createDailyNote();
-            alert("The date has changed, and daily note has created.");
-            // this.writeDailyLogNoteIds();
-            alert("writeDailyLogNoteIdsを実行。")
         }
     }
 
     async addDailyLogNoteIds(fmKey: FmKey<"dailyLinkedNoteList">, noteId: string) {
+
+        // とりあえず記録するのはstdノートのみ。
+        if (noteId.startsWith("diary_")) {
+            return;
+        }
+
         switch (fmKey) {
             case ("createdNotes"):
                 this.todayNoteOrb.editor.addCommitCreatedNotes(noteId);

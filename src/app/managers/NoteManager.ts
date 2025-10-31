@@ -2,8 +2,10 @@ import { App, FrontMatterCache, TFile } from "obsidian";
 import { AM } from "src/app/AppManager";
 import { extractNoteNameFromInternalLink } from "src/assistance/utils/link";
 import { getBasenameFromPath } from "src/assistance/utils/path";
+import { DiaryNote } from "src/core/domain/DiaryNote";
 import { isMyNote, MyNote } from "src/core/domain/MyNote";
 import { StdNote } from "src/core/domain/StdNote";
+import { NotImplementedError } from "src/errors/NotImplementedError";
 import { NotInitializedError } from "src/errors/NotInitializedError";
 import { UnexpectedError } from "src/errors/UnexpectedError";
 
@@ -66,13 +68,37 @@ export class NoteManager {
             noteId = tmpId;
         } else {
             throw new UnexpectedError();
-            // throw new UnexpectedError();
         }
 
         const orb = AM.cache.getStdNoteOrb(noteId);
         if (orb) return orb.note;
 
         return AM.factory.noteF.tryStdFrom({ noteId });
+    }
+
+    getDiaryNote(src: { noteId?: string, internalLink?: string }): DiaryNote | null {
+        let noteId: string;
+        if (src.noteId) {
+            noteId = src.noteId;
+        } else if (src.internalLink) {
+            throw new NotImplementedError();
+        } else {
+            throw new UnexpectedError();
+        }
+
+        const orb = AM.cache.getDiaryNoteOrb(noteId);
+        if (orb) return orb.note;
+
+        // TODO: この辺り雑すぎる
+        if (noteId.startsWith("diary_daily_")) {
+            // const splitNoteId = noteId.split("_");
+            // const path = createDailyNotePath(new Date(Number(splitNoteId[2]), Number(splitNoteId[3]) - 1, Number(splitNoteId[4])));
+            const tFile = AM.tFile.getNoteTFileById(noteId);
+            if (!tFile) return null;
+            return AM.factory.noteF.forDaily({ tFile });
+        }
+
+        return null;
     }
 
     getMyNote(src: { noteId?: string, internalLink?: string }): MyNote | null {

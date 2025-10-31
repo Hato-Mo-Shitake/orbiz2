@@ -1,10 +1,8 @@
 import { App, FrontMatterCache, TFile } from "obsidian";
 import { AM } from "src/app/AppManager";
 import { getAllTFilesInFolder } from "src/assistance/utils/TAbstractFile";
-import { debugConsole } from "src/assistance/utils/debug";
 import { extractLinkTarget } from "src/assistance/utils/filter";
 import { NotInitializedError } from "src/errors/NotInitializedError";
-import { UnexpectedError } from "src/errors/UnexpectedError";
 import { LogNoteType, MyNoteType } from "src/orbits/schema/frontmatters/NoteType";
 
 export class TFileManager {
@@ -56,16 +54,14 @@ export class TFileManager {
     getAllLogTFilesForSubType(subType: LogNoteType): TFile[] {
         const folderPath = `${AM.orbiz.rootPath}/logs/${subType}`;
         const folder = AM.obsidian.vault.getFolderByPath(folderPath);
-        debugConsole("folderPath", folderPath);
         if (!folder) return [];
         return getAllTFilesInFolder(folder);
     }
 
-
     getDailyTFilesByMonth(y: number, m: number): TFile[] {
         const folderPath = `${AM.orbiz.rootPath}/diaries/daily/${y}/${String(m).padStart(2, "0")}`;
         const folder = AM.obsidian.vault.getFolderByPath(folderPath);
-        if (!folder) throw new UnexpectedError();
+        if (!folder) return [];
         return getAllTFilesInFolder(folder);
     }
 
