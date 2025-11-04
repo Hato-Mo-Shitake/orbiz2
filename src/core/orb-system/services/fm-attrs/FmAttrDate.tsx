@@ -119,9 +119,9 @@ export class FmAttrStart extends FmAttrDate {
 
     protected afterCommit(): void {
         super.afterCommit();
-        const id = AM.note.getNoteIdByTFile(this.tFile);
-        if (!id) throw new UnexpectedError();
-        AM.diary.addDailyLogNoteIds("doneNotes", id);
+        // const id = AM.note.getNoteIdByTFile(this.tFile);
+        // if (!id) throw new UnexpectedError();
+        // AM.diary.addDailyLogNoteIds("doneNotes", id);
     }
 }
 
@@ -171,9 +171,9 @@ export class FmAttrTargetDate extends FmAttrDate {
 
     protected afterCommit(): void {
         super.afterCommit();
-        const id = AM.note.getNoteIdByTFile(this.tFile);
-        if (!id) throw new UnexpectedError();
-        AM.diary.addDailyLogNoteIds("doneNotes", id);
+        // const id = AM.note.getNoteIdByTFile(this.tFile);
+        // if (!id) throw new UnexpectedError();
+        // AM.diary.addDailyLogNoteIds("doneNotes", id);
     }
 }
 

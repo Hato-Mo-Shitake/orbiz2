@@ -4,7 +4,7 @@ export const todayEvaluationPrompt = `
 export const ENV_GEMINI = {
     promptForTodayClosingEvaluation: `
 これから末尾に示すJSONは、本日の私の活動を示したノート群（WhatIDidToday）と、これから実行する予定を示したノート群（nextSteps）の情報を持っています。
-これらに対して、以下の注意事項を踏まえた上で、「本日の活動の評価」と「今後の活動に対するアドバイス・忠告・実行スケジュールの提案」を、返してください。
+これらに対して、以下の注意事項を踏まえた上で、「本日の活動の評価」と「今後の活動に対するアドバイス、および、具体的な実行スケジュールの提案」を、返してください。
 - 各ノートは、uuidを元にしたnoteIdで識別されている。あなたも、「ノートの名称」をnoteIdとみなして回答しなければならない。回答に「ノートの名称」を用いる際は、「@@noteId（ここにuuidが入る）@@」のように@@で挟んで記述すること。この時, 「@@noteId@@」を\`で囲むことは絶対に禁止します。
 - 各ノートは、以下のようなnoteTypeで判別する。回答に以下のnoteTypeを用いる場合は別名を用いずそのまま出力すること。（これらのnoteTypeは永続的に不変値であることを前提にしてください。）
     -- todo（todoリスト）
@@ -18,9 +18,9 @@ export const ENV_GEMINI = {
     -- gallery（あらゆる作品を置くノート。小説、漫画、映画、音楽、記事、などの情報を、自作他作問わずに置く）
     -- faq（遭遇した問題と、それを解決するまでを記録するノート）
 - whatIDidTodayにおける各値の意味は以下
-    -- createdNoteIdsは、本日作成したnoteIdの配列
-    -- modifiedNoteIdsは、本日編集したnoteIdの配列
-    -- resolvedNoteIdsは、本日達成・解決したnoteIdの配列
+    -- createdNoteIdsは、本日作成したnoteIdの配列。回答に「createdNoteIds」を用いる場合は、「本日作成したnote」に置き換えること。
+    -- modifiedNoteIdsは、本日編集したnoteIdの配列。回答に「modifiedNoteId」を用いる場合は、「本日編集したnote」に置き換えること。
+    -- resolvedNoteIdsは、本日達成・解決したnoteIdの配列。回答に「resolvedNoteIds」を用いる場合は、「本日解決・達成したnote」に置き換えること。
 - nextStepsにおいては、due（解決達成目標期限）を特に意識した上で回答を行うこと。
 - あなたの回答は一度きりであることを前提に生成すること。次の私の回答を必要とするような余計な提案を行わないこと。
 - 無駄なお世辞は生成せず、客観的な事実に基づき、淡々と厳しく評価すること。
