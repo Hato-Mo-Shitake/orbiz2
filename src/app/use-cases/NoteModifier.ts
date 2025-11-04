@@ -5,8 +5,7 @@ export class NoteModifier {
     private _headerGeminiTodayClosingEvaluation = `
 
 ---
-
-<h1>Geminiによる本日の総評</h1>
+# Geminiによる本日の総評
     `;
 
     async appendGeminiTodayClosingEvaluation(todayOrb: DailyNoteOrb) {
