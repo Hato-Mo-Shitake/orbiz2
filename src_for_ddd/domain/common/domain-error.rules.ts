@@ -1,6 +1,6 @@
 export const domainErrorKindList = [
-    "DOMAIN_KIND",
-    "VALUE_OBJECT_KIND"
+    "DOMAIN_ERROR_KIND",
+    "VALUE_OBJECT_ERROR_KIND"
 ] as const;
 
 export type DomainErrorKind = typeof domainErrorKindList[number];

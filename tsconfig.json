@@ -1,6 +1,17 @@
 {
   "compilerOptions": {
-    "baseUrl": ".",
+    // "baseUrl": ".",
+    // "paths": {
+    //   "@/*": [
+    //     "src_for_ddd/*"
+    //   ]
+    // },
+    "baseUrl": "src_for_ddd",
+    "paths": {
+      "@/*": [
+        "*"
+      ]
+    },
     "inlineSourceMap": true,
     "inlineSources": true,
     "module": "ESNext",

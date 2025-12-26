@@ -6,6 +6,10 @@
 //     gender: Gender;
 // }
 
+function test(value: any) {
+
+}
+
 // class Student implements Person {
 //     constructor(
 //         readonly name: string,
