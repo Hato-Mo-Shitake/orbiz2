@@ -1,0 +1,82 @@
+## ディレクトリ構成
+src/
+    domain/                 # ドメイン層: ビジネスルールや値オブジェクト
+        {domain_name}/
+            index.ts        # 外部に公開する API（このドメインの入口）
+            internal/       # 内部専用ファイル（ValueObject, Policyなど）
+        common/             # 全domain間で共通して扱うもの
+    application/            # アプリケーション層: ユースケースやサービス
+        controllers/
+        use-cases/
+    infrastructure/         # インフラ層: DB, API, 外部サービス接続
+        query-services/
+        repositories/
+        obsidian-adapters/  # ObsidianAPIはここだけで使う
+    presentation/           # UI層: React
+        components/
+        hooks/
+        contexts/
+        styles/
+
+## 命名規則
+定数
+- SCREAMING_SNAKE_CASE
+
+## ドメイン層
+### index.ts
+- ここに公開APIを定義する。
+- 実装上の都合・分類等は、絶対に公開しない。
+- ビジネスルールに沿った意味のある内容は公開する。ユビキタス言語。
+    - 例えば。`myNoteKindList`をドメイン領域内の処理の都合上で定義した場合は公開しないが、ドメイン的に意味のある値で、アプリケーション層やプレゼン層でも同じ意味で使うなら公開する。
+    - 逆に、stdNoteListは、表でわざわざstdという括りを使う必要性がなく、たまたまnote構造の一部が一致しているからstdというキーワードで括っているだけであって、これは処理の都合で定義しているから公開しない。
+    - 要するに、myやlogは業務上・ビジネスロジック上、意味のあるワードで、stdは単に処理の都合でつけているだけの名前。この違い。
+    - まあ、UI主体の設計で、UIに自然とその概念が出てくるか否か。
+
+### Value Object
+#### NoteKindの例
+is()は自分自身の値に関する振る舞いで、isMy()は値の集合に対する解釈になってしまっているから。ここじゃない。->ポリシー
+**VOが持つのは、その値“単体”から、必然的に導ける事実**
+isMy()はUI仕様変更の影響を受け得る。多分この時点で値オブジェクトとしてよくない。
+#### MEMO
+- _validate()は、privateのクラスメソッドではなく、ファイル内スコープで定義する。継承の際、オーバーライドとかの必要があって訳わからんことになるから。
+
+### Policy
+- ドメイン内部に閉じる。
+- 判断を行う。ドメインの中で「どう振る舞うべきか」「何が許されるか」を判断するための“ルールそのもの”を表現したもの。
+- 状態を持たず、なるべく純粋関数的に設計する。
+
+## プレゼンテーション層
+- 「表示」と「入力」が仕事
+- この層でエンティティや値オブジェクトを使うと、本来の仕事以外のロジックが混ざり込む。
+- DTO的・読み取り専用で「参照」することはある。
+    - NoteからNoteViewModelみたいなものを作ったり
+
+
+---
+
+### 実装
+#### Note
+ノート（ユーザーの自由記述が可能なmarkdown形式のファイル）を管理する。
+#### NoteKind
+- std
+    - my
+        - knowledge
+        - wip
+        - creatorium
+        - faq
+    - log
+        - todo
+        - schedule
+        - memo
+        - notice
+        - plan
+- diary
+    - daily
+    - weekly
+    - monthly
+    - yearly
+
+#### Tag
+タグ（メタデータ・意味ラベル）を管理する。
+
+## 

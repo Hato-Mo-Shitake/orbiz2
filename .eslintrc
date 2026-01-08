@@ -34,7 +34,7 @@
         "patterns": [
           {
             "group": [
-              "**/domain/**/internal/**"
+              "**/internal/**"
             ],
             "message": "Do not import domain internals directly."
           }

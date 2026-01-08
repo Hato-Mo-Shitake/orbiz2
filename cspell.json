@@ -10,6 +10,8 @@
         "Linkpath",
         "Linktext",
         "orbiz",
-        "skyblue"
+        "skyblue",
+        "outlink",
+        "inlink"
     ]
 }
