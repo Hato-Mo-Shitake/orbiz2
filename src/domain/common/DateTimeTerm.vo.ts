@@ -43,4 +43,22 @@ export class DateTimeTerm extends ValueObject<DateTimeTermValue> {
     toString(): string {
         return `[${this._value.start.toString()}, ${this._value.end.toString()}]`;
     }
+
+    withStart(start: DateTime): DateTimeTerm {
+        return new DateTimeTerm({
+            start,
+            end: this.getEnd(),
+        });
+    }
+
+    withEnd(end: DateTime): DateTimeTerm {
+        return new DateTimeTerm({
+            start: this.getStart(),
+            end,
+        });
+    }
+
+    withRange(start: DateTime, end: DateTime): DateTimeTerm {
+        return new DateTimeTerm({ start, end });
+    }
 }

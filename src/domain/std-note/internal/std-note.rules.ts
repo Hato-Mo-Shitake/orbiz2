@@ -1,6 +1,3 @@
-import { TagName } from "../../tag";
-import { StdNoteId } from "./StdNoteId.vo";
-import { StdNoteKind } from "./StdNoteKind.vo";
 
 export const myNoteKindValueList = [
     "KNOWLEDGE",
@@ -45,23 +42,23 @@ export function validateStdNoteKindValue(value: string): asserts value is StdNot
     }
 }
 
-export type OutlinkStdNoteIdListValue = {
-    parent: StdNoteId[]
-    relating: StdNoteId[]
-    referencing: StdNoteId[]
-}
+// export type OutlinkStdNoteIdListValue = {
+//     parent: StdNoteId[]
+//     relating: StdNoteId[]
+//     referencing: StdNoteId[]
+// }
 
-export type InlinkStdNoteIdListValue = {
-    child: StdNoteId[]
-    related: StdNoteId[]
-    referenced: StdNoteId[]
-}
+// export type InlinkStdNoteIdListValue = {
+//     child: StdNoteId[]
+//     related: StdNoteId[]
+//     referenced: StdNoteId[]
+// }
 
-export type StdNoteFrontmatter = {
-    id: StdNoteId,
-    tags: TagName[],
-    kind: StdNoteKind,
-    belongsTo: StdNoteId[],
-    relateTo: StdNoteId[],
-    references: StdNoteId[],
-}
+// export type StdNoteFrontmatter = {
+//     id: StdNoteId,
+//     tags: TagName[],
+//     kind: StdNoteKind,
+//     belongsTo: StdNoteId[],
+//     relateTo: StdNoteId[],
+//     references: StdNoteId[],
+// }
