@@ -1,6 +1,6 @@
 import { MarkdownView, Plugin } from 'obsidian';
-import { AppInitializer } from './src_old/app/AppInitializer';
-import { AM } from './src_old/app/AppManager';
+import { AppInitializer } from './src/app/AppInitializer';
+import { AM } from './src/app/AppManager';
 
 export default class OrbizPlugin extends Plugin {
 	async onload() {

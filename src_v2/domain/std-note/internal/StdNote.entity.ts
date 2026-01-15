@@ -33,6 +33,9 @@ export class StdNote {
         private readonly _kind: StdNoteKind,
         private _tagIds: TagIdList,
         private _term: DateTimeTerm,
+        // outLinkNoteIdsは備えない。
+        // → 代わりに、outlinkNoteIdsは必ず、belongsTo, relatesTo, referencesのいずれかに入れるルールを外部で設定して、
+        // その制約の中で、belongsTo, relatesTo, referencesを注入する。
         private _belongsTo: StdNoteIdList,
         private _relatesTo: StdNoteIdList,
         private _references: StdNoteIdList,

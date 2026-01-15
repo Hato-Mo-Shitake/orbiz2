@@ -1,11 +1,11 @@
 import { App, FileManager, Vault } from "obsidian";
-import { IFileWriter } from "../file/IFileWriter";
-import { IMarkdownFileEditableFeature } from "../markdown-file/IMarkdownFileEditableFeature";
-import { Frontmatter, FrontmatterAttrs, MarkdownFileMetadata } from "../markdown-file/markdown-file.rules";
-import { extractMarkdownFileFrontmatterBlock } from "../markdown-file/markdown-file.utils";
-import { getObsidianMarkdownFile } from "./obsidian-file.utils";
+import { FileWriter } from "../../file/FileWriter";
+import { MarkdownFileEditableFeature } from "../../markdown-file/MarkdownFileEditableFeature";
+import { Frontmatter, FrontmatterAttrs, MarkdownFileMetadata } from "../../markdown-file/markdown-file.rules";
+import { extractMarkdownFileFrontmatterBlock } from "../../markdown-file/markdown-file.utils";
+import { getObsidianMarkdownFile } from "./obsidian-markdown-file.helpers";
 
-export class ObsidianMarkdownFileCacheWriter implements IFileWriter<MarkdownFileMetadata>, IMarkdownFileEditableFeature {
+export class ObsidianMarkdownFileCacheWriter implements FileWriter<MarkdownFileMetadata>, MarkdownFileEditableFeature {
     constructor(
         private readonly _app: App,
     ) {

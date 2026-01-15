@@ -22,4 +22,8 @@ export class StdNoteId extends ValueObject<string> {
     static generate(): StdNoteId {
         return StdNoteId.from(v4())
     }
+
+    toString(): string {
+        return this._value;
+    }
 }

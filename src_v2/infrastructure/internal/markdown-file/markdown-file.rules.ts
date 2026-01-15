@@ -1,6 +1,6 @@
-import { IFileReader } from "../file/IFileReader";
-import { IFileWriter } from "../file/IFileWriter";
-import { IMarkdownFileEditableFeature } from "./IMarkdownFileEditableFeature";
+import { IFileReader } from "../file/FileReader";
+import { IFileWriter } from "../file/FileWriter";
+import { IMarkdownFileEditableFeature } from "./MarkdownFileEditableFeature";
 
 export type FrontmatterValue = string | number | boolean | string[] | number[] | boolean[];
 export type FrontmatterAttrs = Record<string, FrontmatterValue>;

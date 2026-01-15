@@ -1,10 +1,11 @@
-import { App, MetadataCache, TFile, Vault } from "obsidian";
-import { IFileReader } from "../file/IFileReader";
-import { MarkdownFileMetadata } from "../markdown-file/markdown-file.rules";
-import { extractMarkdownFileBody } from "../markdown-file/markdown-file.utils";
-import { findObsidianMarkdownFile } from "./obsidian-file.utils";
+import { App, TFile, Vault } from "obsidian";
+import { FileReader } from "../../file/FileReader";
+import { MarkdownFileMetadata } from "../../markdown-file/markdown-file.rules";
+import { extractMarkdownFileBody, validateFrontmatter } from "../../markdown-file/markdown-file.utils";
+import { findObsidianMarkdownFile } from "./obsidian-markdown-file.helpers";
+import { parseObsidianFrontmatter } from "./obsidian-markdown-file.utils";
 
-export class ObsidianMarkdownFileCacheReader implements IFileReader<MarkdownFileMetadata> {
+export class ObsidianMarkdownFileDirectReader implements FileReader<MarkdownFileMetadata> {
     constructor(
         private readonly _app: App
     ) {
@@ -12,10 +13,6 @@ export class ObsidianMarkdownFileCacheReader implements IFileReader<MarkdownFile
 
     private get _vault(): Vault {
         return this._app.vault;
-    }
-
-    private get _metadataCache(): MetadataCache {
-        return this._app.metadataCache;
     }
 
     async exists(path: string): Promise<boolean> {
@@ -27,19 +24,20 @@ export class ObsidianMarkdownFileCacheReader implements IFileReader<MarkdownFile
         if (file === null) {
             throw new Error(`obsidian markdown file not found: ${path}`);
         }
-        return this._vault.cachedRead(file);
+        return this._vault.read(file);
     }
 
     async readMeta(path: string): Promise<MarkdownFileMetadata> {
-        const file = this._findMarkdownFile(path);
-        if (!file) {
-            throw new Error(`obsidian markdown file not found: ${path}`);
+        const content = await this.readContent(path);
+        const fm = parseObsidianFrontmatter(content);
+
+        if (!validateFrontmatter(fm)) {
+            console.error(fm);
+            throw new Error("Invalid Markdown File Frontmatter");
         }
 
-        const metadata = this._metadataCache.getFileCache(file);
-
         return {
-            frontmatter: metadata?.frontmatter,
+            frontmatter: fm,
         };
     }
 

@@ -197,7 +197,11 @@ export class CacheManager {
 
             const outLinkIds: Set<string> = new Set<string>();
             for (const targetPath of Object.keys(targets)) {
-                if (!AM.note.isStdNotePath(sourcePath)) continue;
+
+                if (!AM.note.isStdNotePath(targetPath)) continue;
+                // if (!AM.note.isStdNotePath(sourcePath)) continue; 
+
+
                 const targetId = AM.note.getNoteIdByPath(targetPath);
                 if (!targetId) continue;
 

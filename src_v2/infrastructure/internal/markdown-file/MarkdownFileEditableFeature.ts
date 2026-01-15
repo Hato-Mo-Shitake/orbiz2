@@ -1,6 +1,6 @@
 import { Frontmatter, FrontmatterAttrs } from "./markdown-file.rules";
 
-export interface IMarkdownFileEditableFeature {
+export interface MarkdownFileEditableFeature {
     saveFrontmatter(
         path: string,
         frontmatter: Frontmatter

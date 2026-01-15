@@ -1,4 +1,4 @@
-export interface IFileReader<TMetadata> {
+export interface FileReader<TMetadata> {
     exists(path: string): Promise<boolean>;
     readContent(path: string): Promise<string>;
     readMeta(path: string): Promise<TMetadata>;

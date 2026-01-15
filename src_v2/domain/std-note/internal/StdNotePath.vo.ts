@@ -57,4 +57,8 @@ export class StdNotePath extends NotePath {
         const noteNameValue = last.slice(0, -3);
         return StdNoteName.from(noteNameValue);
     }
+
+    toString(): string {
+        return this._value;
+    }
 }

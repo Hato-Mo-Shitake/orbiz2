@@ -1,18 +1,18 @@
-import { IStdNoteQueryService, StdNote, StdNoteId } from "../../domain/std-note";
+import { IStdNoteQueryService, StdNote, StdNoteId } from "../../../domain/std-note";
 import { MarkdownFileReader } from "../markdown-file/markdown-file.rules";
-import { IStdNoteStore, StdNoteSourceMap } from "./IStdNoteCacheMaintainer";
-
+import { StdNoteCacheReader } from "./StdNoteCacheReader";
 
 
 export class StdNoteQueryService implements IStdNoteQueryService {
-    private readonly _sourceMap: StdNoteSourceMap;
+    // private readonly _sourceMap: StdNoteSourceMap;
 
     private constructor(
-        private readonly _reader: MarkdownFileReader,
-        private readonly _store: IStdNoteStore,
+        private readonly _fileReader: MarkdownFileReader,
+        private readonly _cacheReader: StdNoteCacheReader,
+        // private readonly _store: IStdNoteStore,
         // private readonly _appEnvReader: IAppEnvReader,
     ) {
-        this._sourceMap = _store.buildSourceMap();
+
     }
 
     // static initialize(

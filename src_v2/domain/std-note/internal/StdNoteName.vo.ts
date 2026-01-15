@@ -70,4 +70,8 @@ export class StdNoteName extends NoteName {
         const [core, context] = this._value.split("@");
         return [core, context];
     }
+
+    toString(): string {
+        return this._value;
+    }
 }

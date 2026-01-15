@@ -1,23 +1,5 @@
-import { MetadataCache, parseYaml, Plugin, TFile, Vault } from "obsidian";
+import { MetadataCache, Plugin, TFile, Vault } from "obsidian";
 import { Frontmatter } from "../../markdown-file/markdown-file.rules";
-import { extractMarkdownFileFrontmatterBlock } from "../../markdown-file/markdown-file.utils";
-
-export function parseObsidianFrontmatter(
-    content: string
-): Record<string, unknown> | undefined {
-    const block = extractMarkdownFileFrontmatterBlock(content);
-    if (!block) return undefined;
-
-    try {
-        const data = parseYaml(block);
-        if (typeof data !== "object" || data === null) {
-            return undefined;
-        }
-        return data as Record<string, unknown>;
-    } catch {
-        return undefined;
-    }
-}
 
 export function findObsidianMarkdownFile(
     vault: Vault,
@@ -40,11 +22,11 @@ export function getObsidianMarkdownFile(
     return file;
 }
 
-export async function getEnvData(plugin: Plugin): Promise<Record<string, unknown>> {
+export async function getObsidianEnvData(plugin: Plugin): Promise<Record<string, unknown>> {
     return await plugin.loadData();
 }
 
-export function getAllFilesByFolderPath(
+export function getObsidianFilesByFolderPath(
     vault: Vault,
     folderPath: string
 ): TFile[] {
@@ -62,7 +44,7 @@ export function getAllFilesByFolderPath(
     return files;
 }
 
-export function getFrontmatterByTFile(
+export function getObsidianFrontmatterByFile(
     metadataCache: MetadataCache,
     file: TFile,
 ): Frontmatter {
