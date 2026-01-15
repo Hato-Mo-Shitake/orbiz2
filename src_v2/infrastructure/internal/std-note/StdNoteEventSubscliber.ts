@@ -1,11 +1,14 @@
+import { MarkdownFilePath } from "../../../domain/common/MarkdownFilePath.vo";
 import { MarkdownFileMetadata } from "../markdown-file/markdown-file.rules";
 import { MarkdownFileEventWatcher } from "../markdown-file/MarkdownFileEventWatcher";
-import { StdNoteCacheMaintainer } from "./StdNoteCacheMaintainer";
+import { StdNoteCacheUpdater } from "./StdNoteCacheUpdater";
+import { StdNoteIdTranslator } from "./StdNoteIdTranslator";
 
 export class StdNoteEventSubscriber {
     constructor(
         private readonly _watcher: MarkdownFileEventWatcher,
-        private readonly _cacheMaintainer: StdNoteCacheMaintainer,
+        private readonly _cacheMaintainer: StdNoteCacheUpdater,
+        private readonly _idTranslator: StdNoteIdTranslator,
         private readonly eventBus: any,
     ) {
     }
@@ -16,18 +19,16 @@ export class StdNoteEventSubscriber {
     }
 
     private _subscribeMetadataChanged(): void {
-        this._watcher.onMarkdownFileMetadataChanged(async (path: string, metadata: MarkdownFileMetadata) => {
+        this._watcher.onMarkdownFileMetadataChanged(async (path: MarkdownFilePath, metadata: MarkdownFileMetadata) => {
+            const noteId = this._idTranslator.fromMarkdownFilePath(path);
+            if (noteId === null) return;
 
+            const outLinkIdList = this._idTranslator.fromMarkdownFileMetadata(metadata);
 
-
-
-            // ここでmetadataってワード使うのもどうなんだろ
-            this._cacheMaintainer.updateByChangedNoteMetadata(
-
+            this._cacheMaintainer.updateByChangedNoteLinkId(
+                noteId,
+                outLinkIdList
             );
-
-
-
         });
     }
 

@@ -1,5 +1,6 @@
-import { StdNoteCacheMaintainer } from "./StdNoteCacheMaintainer";
+import { StdNoteCacheInitializer } from "./StdNoteCacheInitializer";
 import { StdNoteCacheReader } from "./StdNoteCacheReader";
+import { StdNoteCacheUpdater } from "./StdNoteCacheUpdater";
 
 export type StdNoteSource = {
     id: string
@@ -16,9 +17,9 @@ export type StdNoteSourcesById = Map<string, StdNoteSource>;
 
 export type StdNoteIdsByName = Map<string, string>;
 
-export type StdNoteCache = {
+export type StdNoteCacheValue = {
     sourceMap: StdNoteSourcesById,
     idMap: StdNoteIdsByName
 };
 
-export type StdNoteCacheManager = StdNoteCacheReader & StdNoteCacheMaintainer;
+export type StdNoteCache = StdNoteCacheInitializer & StdNoteCacheReader & StdNoteCacheUpdater;

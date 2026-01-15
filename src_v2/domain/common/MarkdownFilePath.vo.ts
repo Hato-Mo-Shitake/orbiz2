@@ -21,8 +21,24 @@ export class MarkdownFilePath extends FilePath {
      * 
      * @param value 
      */
-    constructor(value: string, brand = _brand) {
+    private constructor(value: string, brand = _brand) {
         _validate(value);
         super(value, brand);
+    }
+
+    static from(value: string): MarkdownFilePath {
+        return new MarkdownFilePath(value);
+    }
+
+    static tryFrom(value: string): MarkdownFilePath | null {
+        try {
+            return MarkdownFilePath.from(value);
+        } catch (e) {
+            return null;
+        }
+    }
+
+    toString(): string {
+        return this._value;
     }
 }

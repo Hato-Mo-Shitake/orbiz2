@@ -1,6 +1,7 @@
-import { IFileReader } from "../file/FileReader";
-import { IFileWriter } from "../file/FileWriter";
-import { IMarkdownFileEditableFeature } from "./MarkdownFileEditableFeature";
+import { MarkdownFilePath } from "../../../domain/common/MarkdownFilePath.vo";
+import { FileReader } from "../file/FileReader";
+import { FileWriter } from "../file/FileWriter";
+import { MarkdownFileEditableFeature } from "./MarkdownFileEditableFeature";
 
 export type FrontmatterValue = string | number | boolean | string[] | number[] | boolean[];
 export type FrontmatterAttrs = Record<string, FrontmatterValue>;
@@ -8,10 +9,12 @@ export type Frontmatter = FrontmatterAttrs;
 
 export interface MarkdownFileMetadata {
     frontmatter?: Frontmatter;
+    markdownFileLinks?: MarkdownFilePath[];
+    otherLinks?: string[];
     // list?:
     // taskList?: 
     // footnotes?:
 }
 
-export type MarkdownFileReader = IFileReader<MarkdownFileMetadata>;
-export type MarkdownFileWriter = IFileWriter<MarkdownFileMetadata> & IMarkdownFileEditableFeature;
+export type MarkdownFileReader = FileReader<MarkdownFileMetadata>;
+export type MarkdownFileWriter = FileWriter<MarkdownFileMetadata> & MarkdownFileEditableFeature;

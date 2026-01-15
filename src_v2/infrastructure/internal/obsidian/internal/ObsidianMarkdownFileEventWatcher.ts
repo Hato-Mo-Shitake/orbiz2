@@ -1,4 +1,5 @@
 import { App, CachedMetadata, MetadataCache, Plugin, TAbstractFile, TFile, Vault } from "obsidian";
+import { MarkdownFilePath } from "../../../../domain/common/MarkdownFilePath.vo";
 import { MarkdownFileMetadata } from "../../markdown-file/markdown-file.rules";
 import { MarkdownFileEventWatcher } from "../../markdown-file/MarkdownFileEventWatcher";
 
@@ -18,10 +19,12 @@ export class ObsidianMarkdownFileEventWatcher implements MarkdownFileEventWatche
         return this._app.vault;
     }
 
-    onMarkdownFileMetadataChanged(callback: (path: string, metadata: MarkdownFileMetadata) => Promise<void>): void {
+    onMarkdownFileMetadataChanged(callback: (path: MarkdownFilePath, metadata: MarkdownFileMetadata) => Promise<void>): void {
         const ref = this._metadataCache.on("changed", async (file: TFile, data: string, cache: CachedMetadata) => {
 
-            const path = file.path;
+            const path = MarkdownFilePath.tryFrom(file.path);
+            if (path === null) return;
+
             const fm = cache?.frontmatter;
             const metadata: MarkdownFileMetadata = {
                 frontmatter: fm,
@@ -33,12 +36,16 @@ export class ObsidianMarkdownFileEventWatcher implements MarkdownFileEventWatche
         this._plugin.registerEvent(ref);
     }
 
-    onMarkdownFilePathChanged(callback: (newPath: string, oldPath: string) => Promise<void>): void {
+    onMarkdownFilePathChanged(callback: (newPath: MarkdownFilePath, oldPath: MarkdownFilePath) => Promise<void>): void {
         const ref = this._vault.on("rename", async (file: TAbstractFile, oldPath: string) => {
 
-            const newPath = file.path;
+            const newMdPath = MarkdownFilePath.tryFrom(file.path);
+            if (newMdPath === null) return;
 
-            await callback(newPath, oldPath);
+            const oldMdPath = MarkdownFilePath.tryFrom(file.path);
+            if (oldMdPath === null) return;
+
+            await callback(newMdPath, oldMdPath);
         });
 
         this._plugin.registerEvent(ref);

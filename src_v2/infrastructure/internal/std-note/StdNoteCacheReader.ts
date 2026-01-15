@@ -1,5 +1,11 @@
-import { StdNoteCache } from "./std-note-cache.rules.ts";
+import { StdNoteId } from "../../../domain/std-note";
+import { StdNoteCacheValue, StdNoteSource } from "./std-note-cache.rules.ts";
 
 export interface StdNoteCacheReader {
-    cache: StdNoteCache;
+    cache: StdNoteCacheValue;
+    sourceMap: Map<string, StdNoteSource>;
+    idMap: Map<string, string>;
+
+    findSourceById(noteId: StdNoteId): StdNoteSource | null;
+    getSourceById(noteId: StdNoteId): StdNoteSource;
 }

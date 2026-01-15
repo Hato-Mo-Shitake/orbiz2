@@ -1,13 +1,14 @@
 import { App, MetadataCache, TFile, Vault } from "obsidian";
 import { StdNote, StdNoteId, StdNoteIdList, StdNotePath } from "../../../../domain/std-note";
 import { AppEnvRules } from "../../app/AppEnvRules";
-import { StdNoteCache, StdNoteIdsByName, StdNoteSource, StdNoteSourcesById } from "../../std-note/std-note-cache.rules.ts";
-import { StdNoteCacheMaintainer } from "../../std-note/StdNoteCacheMaintainer";
+import { StdNoteCacheValue, StdNoteIdsByName, StdNoteSource, StdNoteSourcesById } from "../../std-note/std-note-cache.rules.ts";
+import { StdNoteCacheInitializer } from "../../std-note/StdNoteCacheInitializer";
 import { StdNoteCacheReader } from "../../std-note/StdNoteCacheReader";
+import { StdNoteCacheUpdater } from "../../std-note/StdNoteCacheUpdater";
 import { getObsidianFilesByFolderPath, getObsidianFrontmatterByFile, getObsidianMarkdownFile } from "./obsidian-markdown-file.helpers";
 
-export class ObsidianStdNoteCacheManager implements StdNoteCacheReader, StdNoteCacheMaintainer {
-    private _cache: StdNoteCache | null = null;
+export class ObsidianStdNoteCache implements StdNoteCacheInitializer, StdNoteCacheReader, StdNoteCacheUpdater {
+    private _cache: StdNoteCacheValue | null = null;
 
     constructor(
         private readonly _app: App,
@@ -23,12 +24,20 @@ export class ObsidianStdNoteCacheManager implements StdNoteCacheReader, StdNoteC
         return this._app.metadataCache;
     }
 
-    get cache(): StdNoteCache {
+    get cache(): StdNoteCacheValue {
         if (this._cache === null) {
             throw new Error("Not built ObsidianStdNoteCache.");
         }
 
         return this._cache;
+    }
+
+    get sourceMap(): Map<string, StdNoteSource> {
+        return this.cache.sourceMap;
+    }
+
+    get idMap(): Map<string, string> {
+        return this.cache.idMap;
     }
 
     findSourceById(noteId: StdNoteId): StdNoteSource | null {
@@ -43,14 +52,14 @@ export class ObsidianStdNoteCacheManager implements StdNoteCacheReader, StdNoteC
         return source;
     }
 
-    async build(): Promise<void> {
+    async initialize(): Promise<void> {
         const sourcesById: StdNoteSourcesById = new Map<string, StdNoteSource>();
         const idsByName: StdNoteIdsByName = new Map<string, string>();
 
         const files = await this._getAllStdFiles();
 
         files.forEach(file => {
-            const id = this._getNoteId(file);
+            const id = this._findRawNoteIdByTFile(file);
             if (id === null) return;
             sourcesById.set(id, {
                 id,
@@ -73,7 +82,7 @@ export class ObsidianStdNoteCacheManager implements StdNoteCacheReader, StdNoteC
 
             const file = getObsidianMarkdownFile(this._vault, notePath);
 
-            const noteId = this._getNoteId(file);
+            const noteId = this._findRawNoteIdByTFile(file);
             if (noteId === null) continue;
 
             const source = sourcesById.get(noteId);
@@ -87,7 +96,7 @@ export class ObsidianStdNoteCacheManager implements StdNoteCacheReader, StdNoteC
             for (const targetPath of Object.keys(targets)) {
                 if (!this._appEnvRules.isStdFilePath(targetPath)) continue;
                 const file = getObsidianMarkdownFile(this._vault, targetPath);
-                const targetId = this._getNoteId(file);
+                const targetId = this._findRawNoteIdByTFile(file);
                 if (targetId === null) continue;
 
                 outLinkIds.add(targetId);
@@ -215,7 +224,7 @@ export class ObsidianStdNoteCacheManager implements StdNoteCacheReader, StdNoteC
         return myFiles.concat(logFiles);
     }
 
-    private _getNoteId(file: TFile): string | null {
+    private _findRawNoteIdByTFile(file: TFile): string | null {
         const fm = getObsidianFrontmatterByFile(this._metadataCache, file);
 
         const id = fm["id"];

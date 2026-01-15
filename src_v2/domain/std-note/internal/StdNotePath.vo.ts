@@ -46,6 +46,14 @@ export class StdNotePath extends NotePath {
         return new StdNotePath(value);
     }
 
+    static tryFrom(value: string): StdNotePath | null {
+        try {
+            return StdNotePath.from(value);
+        } catch (e) {
+            return null;
+        }
+    }
+
     getNoteName(): StdNoteName {
         const segments = this._value.split("/");
         const last = segments.at(-1)!;
