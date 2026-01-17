@@ -1,9 +1,9 @@
-import { IStdNoteQueryService, StdNote, StdNoteId } from "../../../domain/std-note";
+import { StdNote, StdNoteId, StdNoteQueryService } from "../../../domain/std-note";
 import { MarkdownFileReader } from "../markdown-file/markdown-file.rules";
 import { StdNoteCacheReader } from "./StdNoteCacheReader";
 
 
-export class StdNoteQueryService implements IStdNoteQueryService {
+export class StdNoteQueryServiceImpl implements StdNoteQueryService {
     // private readonly _sourceMap: StdNoteSourceMap;
 
     private constructor(

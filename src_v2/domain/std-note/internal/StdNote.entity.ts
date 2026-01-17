@@ -35,7 +35,7 @@ export class StdNote {
         private _term: DateTimeTerm,
         // outLinkNoteIdsは備えない。
         // → 代わりに、outlinkNoteIdsは必ず、belongsTo, relatesTo, referencesのいずれかに入れるルールを外部で設定して、
-        // その制約の中で、belongsTo, relatesTo, referencesを注入する。
+        // その制約の中で、belongsTo, relatesTo, references
         private _belongsTo: StdNoteIdList,
         private _relatesTo: StdNoteIdList,
         private _references: StdNoteIdList,

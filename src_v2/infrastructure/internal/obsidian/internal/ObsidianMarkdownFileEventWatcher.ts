@@ -19,7 +19,7 @@ export class ObsidianMarkdownFileEventWatcher implements MarkdownFileEventWatche
         return this._app.vault;
     }
 
-    onMarkdownFileMetadataChanged(callback: (path: MarkdownFilePath, metadata: MarkdownFileMetadata) => Promise<void>): void {
+    onMetadataChanged(callback: (path: MarkdownFilePath, metadata: MarkdownFileMetadata) => Promise<void>): void {
         const ref = this._metadataCache.on("changed", async (file: TFile, data: string, cache: CachedMetadata) => {
 
             const path = MarkdownFilePath.tryFrom(file.path);
@@ -36,7 +36,7 @@ export class ObsidianMarkdownFileEventWatcher implements MarkdownFileEventWatche
         this._plugin.registerEvent(ref);
     }
 
-    onMarkdownFilePathChanged(callback: (newPath: MarkdownFilePath, oldPath: MarkdownFilePath) => Promise<void>): void {
+    onPathChanged(callback: (newPath: MarkdownFilePath, oldPath: MarkdownFilePath) => Promise<void>): void {
         const ref = this._vault.on("rename", async (file: TAbstractFile, oldPath: string) => {
 
             const newMdPath = MarkdownFilePath.tryFrom(file.path);

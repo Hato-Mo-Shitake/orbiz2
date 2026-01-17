@@ -4,6 +4,9 @@ import { StdNoteId, StdNoteIdList, StdNoteName, StdNotePath } from "../../../dom
 import { Frontmatter, MarkdownFileMetadata } from "../markdown-file/markdown-file.rules";
 import { StdNoteCacheReader } from "./StdNoteCacheReader";
 
+/**
+ * キャッシュ依存の処理
+ */
 export class StdNoteIdTranslator {
     constructor(
         private readonly _cacheReader: StdNoteCacheReader,
@@ -14,15 +17,19 @@ export class StdNoteIdTranslator {
         return this._cacheReader.idMap;
     }
 
-    fromMarkdownFilePath(markdownFilePath: MarkdownFilePath): StdNoteId | null {
-        const path = StdNotePath.tryFrom(markdownFilePath.toString());
-        if (path === null) return null;
+    /**
+     * @param markdownFilePath 
+     * @returns 
+     */
+    tryFromStdNotePath(path: StdNotePath): StdNoteId | null {
         const name = path.getNoteName();
 
         const rawId = this._idMap.get(name.toString()) || null;
 
         return rawId ? StdNoteId.from(rawId) : null;
     }
+
+
 
     fromMarkdownFileMetadata(metadata: MarkdownFileMetadata): StdNoteIdList {
         const fm = metadata.frontmatter;

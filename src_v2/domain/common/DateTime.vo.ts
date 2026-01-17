@@ -11,6 +11,7 @@ export class DateTime extends ValueObject<Date> {
      */
     constructor(timestamp: number) {
 
+        // TODO: Date作成処理 -> インターフェースを通す。
         const date = new Date(timestamp);
 
         if (isNaN(date.getTime())) {

@@ -1,7 +1,7 @@
-import { IStdNoteRepository, StdNote, StdNoteId } from "../../../domain/std-note";
+import { StdNote, StdNoteId, StdNoteRepository } from "../../../domain/std-note";
 import { MarkdownFileReader, MarkdownFileWriter } from "../markdown-file/markdown-file.rules";
 
-export class StdNoteRepository implements IStdNoteRepository {
+export class StdNoteRepositoryImpl implements StdNoteRepository {
     constructor(
         private readonly _reader: MarkdownFileReader, // キャッシュreadではなく、直readを注入する。
         private readonly _writer: MarkdownFileWriter

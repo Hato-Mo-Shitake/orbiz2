@@ -78,6 +78,13 @@ export class ObsidianStdNoteCache implements StdNoteCacheInitializer, StdNoteCac
 
         const resolvedLinks = this._metadataCache.resolvedLinks;
         for (const [notePath, targets] of Object.entries(resolvedLinks)) {
+
+
+
+            // ここで、ノートパスから、frontmatter取れる。
+
+
+
             if (!this._appEnvRules.isStdFilePath(notePath)) continue;
 
             const file = getObsidianMarkdownFile(this._vault, notePath);
@@ -106,9 +113,12 @@ export class ObsidianStdNoteCache implements StdNoteCacheInitializer, StdNoteCac
                     console.error(`Not found StdNoteSource. path: ${targetPath}`);
                     continue;
                 }
+
+                // TODO: なんかおかしいな。これだと、内部リンクで繋がっているやつしか取れない。
                 targetSource.inLinkIds.add(noteId);
             }
 
+            // TODO: なんかおかしいな。これだと、内部リンクで繋がっているやつしか取れない。
             source.outLinkIds = outLinkIds;
         }
 

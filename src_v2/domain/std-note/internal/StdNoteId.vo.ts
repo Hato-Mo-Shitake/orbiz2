@@ -20,7 +20,7 @@ export class StdNoteId extends ValueObject<string> {
     }
 
     static generate(): StdNoteId {
-        return StdNoteId.from(v4())
+        return StdNoteId.from(v4()) // TODO: インターフェースを通す。
     }
 
     toString(): string {
