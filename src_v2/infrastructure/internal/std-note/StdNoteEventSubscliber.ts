@@ -1,5 +1,6 @@
 import { MarkdownFilePath } from "../../../domain/common/MarkdownFilePath.vo";
 import { StdNoteId, StdNotePath } from "../../../domain/std-note";
+import { TrashedNotePath } from "../../../domain/trashed-note/TrashedNotePath.vo";
 import { MarkdownFileMetadata } from "../markdown-file/markdown-file.rules";
 import { MarkdownFileEventWatcher } from "../markdown-file/MarkdownFileEventWatcher";
 import { StdNoteCacheUpdater } from "./StdNoteCacheUpdater";
@@ -30,17 +31,25 @@ export class StdNoteEventSubscriber {
 
             const noteId = this._idTranslator.tryFromStdNotePath(notePath);
             if (noteId === null) {
-                // ここに入ると、キャッシュが作成されていないノート -> 新規ノート
-                // 新規キャッシュ作成処理
-                // TODO: this._cacheUpdater.updateByCreatedNoteを呼ぶ。this._updateCacheByCreatedNote でもいい。
+                const rawId = metadata?.frontmatter?.["id"];
+                if (!String.isString(rawId)!) {
+                    console.error(`invalid std-note id. path: ${path}`);
+                    return;
+                }
+
+                const newOutLinkIdList = this._idTranslator.fromMarkdownFileMetadata(metadata);
+                this._cacheUpdater.updateByCreatedNote(
+                    StdNoteId.from(rawId),
+                    notePath,
+                    newOutLinkIdList
+                );
             } else {
-
-                // トラッシュ判定は、_subscribePathChanged に任せる。
-
-                // キャッシュ更新
-                this._updateCacheByChangedMetadata(noteId, metadata);
+                const newOutLinkIdList = this._idTranslator.fromMarkdownFileMetadata(metadata);
+                this._cacheUpdater.updateByChangedNoteLinkId(
+                    noteId,
+                    newOutLinkIdList
+                );
             }
-
 
             // ドメインイベント通知 例
             // this._eventBus.publish(new NoteLinksUpdatedEvent(noteId, outLinkIdList));
@@ -65,9 +74,12 @@ export class StdNoteEventSubscriber {
             const newNotePath = StdNotePath.tryFrom(newPath.toString());
 
             if (newNotePath === null) {
-                // trashed-noteドメインを使って、トラッシュ判定。
-                // トラッシュは ___/trash/ のディレクトリ以下に持っていくだけの処理の想定。論理削除
-                // TODO: this._cacheUpdater.updateByTrashedNoteを呼ぶ
+                if (!TrashedNotePath.isValidValue(newPath.toString())) {
+                    console.error(`想定外のエラー. path: ${newPath}`);
+                    return;
+                }
+
+                this._cacheUpdater.updateByTrashedNote(noteId);
                 return;
             }
 
@@ -76,13 +88,5 @@ export class StdNoteEventSubscriber {
                 newNotePath
             );
         });
-    }
-
-    private _updateCacheByChangedMetadata(noteId: StdNoteId, metadata: MarkdownFileMetadata) {
-        const newOutLinkIdList = this._idTranslator.fromMarkdownFileMetadata(metadata);
-        this._cacheUpdater.updateByChangedNoteLinkId(
-            noteId,
-            newOutLinkIdList
-        );
     }
 } 

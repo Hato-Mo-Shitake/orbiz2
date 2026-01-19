@@ -1,6 +1,8 @@
 import { App, MetadataCache, TFile, Vault } from "obsidian";
-import { StdNote, StdNoteId, StdNoteIdList, StdNotePath } from "../../../../domain/std-note";
+import { isStringArray } from "../../../../_utils/common/array.utils";
+import { StdNoteId, StdNoteIdList, StdNotePath } from "../../../../domain/std-note";
 import { AppEnvRules } from "../../app/AppEnvRules";
+import { Frontmatter } from "../../markdown-file/markdown-file.rules";
 import { StdNoteCacheValue, StdNoteIdsByName, StdNoteSource, StdNoteSourcesById } from "../../std-note/std-note-cache.rules.ts";
 import { StdNoteCacheInitializer } from "../../std-note/StdNoteCacheInitializer";
 import { StdNoteCacheReader } from "../../std-note/StdNoteCacheReader";
@@ -56,11 +58,32 @@ export class ObsidianStdNoteCache implements StdNoteCacheInitializer, StdNoteCac
         const sourcesById: StdNoteSourcesById = new Map<string, StdNoteSource>();
         const idsByName: StdNoteIdsByName = new Map<string, string>();
 
-        const files = await this._getAllStdFiles();
+        const tmpCacheMap = new Map<string, { file: TFile, id: string, fm: Frontmatter }>();
 
+        const files = await this._getAllStdFiles();
         files.forEach(file => {
-            const id = this._findRawNoteIdByTFile(file);
-            if (id === null) return;
+            const fm = getObsidianFrontmatterByFile(this._metadataCache, file);
+            const id = fm["id"];
+
+            if (id === undefined) {
+                console.error(`StdNoteId must not be empty. path: ${file.path}`);
+                // TODO: ここでデータ不備を記録する処理。他も同様。
+                // 不憫管理を行うドメイン作るか 
+                // １つの不備に対応するEntityを作成して。
+                return;
+            }
+
+            if (!String.isString(id)) {
+                console.error(`StdNoteId must be string. path: ${file.path}`);
+                return;
+            }
+
+            tmpCacheMap.set(file.path, {
+                file,
+                id,
+                fm,
+            });
+
             sourcesById.set(id, {
                 id,
                 path: file.path,
@@ -77,49 +100,43 @@ export class ObsidianStdNoteCache implements StdNoteCacheInitializer, StdNoteCac
         });
 
         const resolvedLinks = this._metadataCache.resolvedLinks;
-        for (const [notePath, targets] of Object.entries(resolvedLinks)) {
-
-
-
-            // ここで、ノートパスから、frontmatter取れる。
-
-
-
+        for (const [notePath, interanlOutLinkPaths] of Object.entries(resolvedLinks)) {
             if (!this._appEnvRules.isStdFilePath(notePath)) continue;
 
-            const file = getObsidianMarkdownFile(this._vault, notePath);
+            const tmpCache = tmpCacheMap.get(notePath);
+            if (tmpCache === undefined) {
+                // 想定外エラー
+                console.error(`Not found tmpCache. path: ${notePath}`);
+                continue;
+            }
+            const noteId = tmpCache.id;
+            const fm = tmpCache.fm;
 
-            const noteId = this._findRawNoteIdByTFile(file);
-            if (noteId === null) continue;
+            const outLinkIds = new Set<string>(this._extractOutLinkIdsFromFrontmatter(fm, notePath));
+            for (const internalOutLinkPath of Object.keys(interanlOutLinkPaths)) {
+                if (!this._appEnvRules.isStdFilePath(internalOutLinkPath)) continue;
+                const file = getObsidianMarkdownFile(this._vault, internalOutLinkPath);
+                const outLinkId = this._findRawNoteIdByTFile(file);
+                if (outLinkId === null) continue;
+
+                outLinkIds.add(outLinkId);
+            }
 
             const source = sourcesById.get(noteId);
             if (source === undefined) {
                 console.error(`Not found StdNoteSource. path: ${notePath}`);
                 continue;
             }
+            source.outLinkIds = outLinkIds;
 
-            const outLinkIds = new Set<string>();
-
-            for (const targetPath of Object.keys(targets)) {
-                if (!this._appEnvRules.isStdFilePath(targetPath)) continue;
-                const file = getObsidianMarkdownFile(this._vault, targetPath);
-                const targetId = this._findRawNoteIdByTFile(file);
-                if (targetId === null) continue;
-
-                outLinkIds.add(targetId);
-
-                const targetSource = sourcesById.get(targetId);
-                if (targetSource === undefined) {
-                    console.error(`Not found StdNoteSource. path: ${targetPath}`);
+            for (const outLinkId of outLinkIds) {
+                const outLinkNoteSource = sourcesById.get(outLinkId);
+                if (outLinkNoteSource === undefined) {
+                    console.error(`Not found StdNoteSource. id: ${outLinkId}`);
                     continue;
                 }
-
-                // TODO: なんかおかしいな。これだと、内部リンクで繋がっているやつしか取れない。
-                targetSource.inLinkIds.add(noteId);
+                outLinkNoteSource.inLinkIds.add(noteId);
             }
-
-            // TODO: なんかおかしいな。これだと、内部リンクで繋がっているやつしか取れない。
-            source.outLinkIds = outLinkIds;
         }
 
         this._cache = {
@@ -176,6 +193,65 @@ export class ObsidianStdNoteCache implements StdNoteCacheInitializer, StdNoteCac
         }
     }
 
+    async updateByCreatedNote(noteId: StdNoteId, notePath: StdNotePath, outLinkIdList: StdNoteIdList): Promise<void> {
+        if (this._cache === null) {
+            throw new Error("Not built ObsidianStdNoteCache.");
+        }
+
+        try {
+            const source = this.findSourceById(noteId);
+            if (source !== null) {
+                console.error(`Already exists StdNoteSource. id: ${noteId.toString()}`);
+                return;
+            }
+
+            const newSource = {
+                id: noteId.toString(),
+                path: notePath.toString(),
+                outLinkIds: new Set<string>(),
+                inLinkIds: new Set<string>(),
+            }
+
+            // 新規セットして、linkidの調整。
+            this._cache.sourceMap.set(noteId.toString(), newSource);
+            await this.updateByChangedNoteLinkId(
+                noteId,
+                outLinkIdList
+            );
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+    async updateByTrashedNote(noteId: StdNoteId): Promise<void> {
+        if (this._cache === null) {
+            throw new Error("Not built ObsidianStdNoteCache.");
+        }
+
+        const source = this.findSourceById(noteId);
+        if (source === null) {
+            console.error(`Not found StdNoteSource. id: ${noteId.toString()}`);
+            return;
+        }
+
+        const name = StdNotePath.from(source.path).getNoteName();
+        if (this._cache.idMap.get(name.toString()) !== noteId.toString()) {
+            throw new Error(
+                `想定外のエラー. ${this._cache.idMap.get(name.toString())} !== ${noteId.toString()}`
+            );
+        }
+
+        // ここで、他のStdNoteSourceのinlinkIdを削除用更新
+        await this.updateByChangedNoteLinkId(
+            noteId,
+            StdNoteIdList.from([])
+        );
+
+        // 削除
+        this._cache.idMap.delete(name.toString());
+        this._cache.sourceMap.delete(noteId.toString());
+    }
+
     private _updateSourceMapByChangedNotePath(noteId: StdNoteId, newPath: StdNotePath): void {
         const source = this.getSourceById(noteId);
         const oldPath = StdNotePath.from(source.path);
@@ -203,14 +279,6 @@ export class ObsidianStdNoteCache implements StdNoteCacheInitializer, StdNoteCac
 
         idMap.set(newName.toString(), noteId.toString());
         idMap.delete(oldName.toString());
-    }
-
-    async updateByCreatedNote(note: StdNote): Promise<void> {
-
-    }
-
-    async updateByTrashedNote(note: StdNote): Promise<void> {
-
     }
 
     private async _getAllMyFiles(): Promise<TFile[]> {
@@ -253,5 +321,27 @@ export class ObsidianStdNoteCache implements StdNoteCacheInitializer, StdNoteCac
         }
 
         return id
+    }
+
+    private _extractOutLinkIdsFromFrontmatter(fm: Frontmatter, notePath: string): string[] {
+        let belongsTo = fm["belongsTo"];
+        if (!isStringArray(belongsTo)) {
+            console.error(`Invalid belongsTo. path: ${notePath}`);
+            belongsTo = [];
+        }
+
+        let relatesTo = fm["relatesTo"];
+        if (!isStringArray(relatesTo)) {
+            console.error(`Invalid relatesTo. path: ${notePath}`);
+            relatesTo = [];
+        }
+
+        let references = fm["references"];
+        if (!isStringArray(references)) {
+            console.error(`Invalid references. path: ${notePath}`);
+            references = [];
+        }
+
+        return [...belongsTo as string[], ...relatesTo as string[], ...references as string[]];
     }
 }

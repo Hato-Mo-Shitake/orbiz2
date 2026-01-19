@@ -15,6 +15,7 @@ type StdNoteBaseProps = {
     kind: StdNoteKind;
     tagIds: TagIdList;
     term: DateTimeTerm;
+    outLinkNoteIds: StdNoteIdList;
     belongsTo: StdNoteIdList;
     relatesTo: StdNoteIdList;
     references: StdNoteIdList;
@@ -33,9 +34,7 @@ export class StdNote {
         private readonly _kind: StdNoteKind,
         private _tagIds: TagIdList,
         private _term: DateTimeTerm,
-        // outLinkNoteIdsは備えない。
-        // → 代わりに、outlinkNoteIdsは必ず、belongsTo, relatesTo, referencesのいずれかに入れるルールを外部で設定して、
-        // その制約の中で、belongsTo, relatesTo, references
+        private _outLinkNoteIds: StdNoteIdList,
         private _belongsTo: StdNoteIdList,
         private _relatesTo: StdNoteIdList,
         private _references: StdNoteIdList,
@@ -49,6 +48,7 @@ export class StdNote {
             props.kind,
             props.tagIds,
             props.term,
+            props.outLinkNoteIds,
             props.belongsTo,
             props.relatesTo,
             props.references,
@@ -62,6 +62,7 @@ export class StdNote {
             props.kind,
             props.tagIds,
             props.term,
+            props.outLinkNoteIds,
             props.belongsTo,
             props.relatesTo,
             props.references,
@@ -70,6 +71,18 @@ export class StdNote {
 
     private get _name(): StdNoteName {
         return this._path.getNoteName();
+    }
+
+    getId(): StdNoteId {
+        return this._id;
+    }
+
+    getPath(): StdNotePath {
+        return this._path;
+    }
+
+    getOutLinkNoteIds(): StdNoteIdList {
+        return this._outLinkNoteIds;
     }
 
     isKindOf(kind: StdNoteKindValue): boolean {
